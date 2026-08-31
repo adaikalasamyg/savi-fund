@@ -2,7 +2,7 @@
   "name": "SaVi Fund Manager",
   "short_name": "SaVi Fund",
   "description": "Friends Lending & Settlement",
-  "start_url": "/Lender.html",
+  "start_url": "/savi-fund/Lender.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",

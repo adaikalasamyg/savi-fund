@@ -1,5 +1,5 @@
 const CACHE = "savi-v1";
-const ASSETS = ["./Lender.html", "./manifest.json"];
+const ASSETS = ["/savi-fund/Lender.html", "/savi-fund/manifest.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
