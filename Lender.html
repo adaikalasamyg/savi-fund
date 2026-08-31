@@ -332,7 +332,7 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
   <div id="loans-scroll">
-    <div class="mob-table-wrap table-wrap"><table><thead><tr><th>Borrower</th><th>Loan</th><th>Outstanding</th><th>Interest Due</th><th>Rate</th><th>Given Date</th><th>Due Date</th><th>Created</th><th>Status</th><th>Action</th></tr></thead><tbody id="loanTable"><tr class="loading-row"><td colspan="10"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+    <div class="mob-table-wrap table-wrap"><table><thead><tr><th>Loan #</th><th>Borrower</th><th>Loan</th><th>Outstanding</th><th>Interest Due</th><th>Rate</th><th>Given Date</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead><tbody id="loanTable"><tr class="loading-row"><td colspan="10"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
     <div class="mob-card-wrap" id="loanCards"></div>
   </div>
 </section>
@@ -350,7 +350,7 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
   <div id="pay-scroll">
-    <div class="mob-table-wrap table-wrap"><table><thead><tr><th>Date</th><th>Borrower</th><th>Total</th><th>Principal</th><th>Interest</th><th>Method</th><th>Notes</th><th id="pay-action-th"></th></tr></thead><tbody id="paymentTable"><tr class="loading-row"><td colspan="8"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+    <div class="mob-table-wrap table-wrap"><table><thead><tr><th>Loan #</th><th>Date</th><th>Borrower</th><th>Total</th><th>Principal</th><th>Interest</th><th>Method</th><th>Notes</th><th id="pay-action-th"></th></tr></thead><tbody id="paymentTable"><tr class="loading-row"><td colspan="8"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
     <div class="mob-card-wrap" id="paymentCards"></div>
   </div>
 </section>
@@ -1141,22 +1141,24 @@ function renderLoans(){
       <button class="summary-tab">Settled<span style="color:#059669">${settledCount}</span></button>
     </div>`;
   const loanRows=list.length?list.map(b=>{
+    const archiveBtn=isAdmin&&b.status==="Settled"?`<button class="btn btn-sm" style="background:#fef3c7;color:#92400e" onclick="archiveLoan('${b.id}')" title="Archive & Clean">🗂️</button>`:'';
     const actions=`<div style="display:flex;gap:6px">
       ${b.outstanding>0?`<button class="btn btn-success btn-sm" onclick="quickReceive('${b.id}')">💵 Receive</button>`:""}
       ${isAdmin?`<button class="btn btn-gray btn-sm" onclick="openEditLoan('${b.id}')" title="Edit">✏️</button>`:''}
+      ${archiveBtn}
       ${isAdmin?`<button class="btn btn-danger btn-sm" onclick="deleteLoan('${b.id}','${b.name}')" title="Delete">🗑️</button>`:''}
     </div>`;
     return {b,actions};
   }):[];
   // desktop
   document.getElementById("loanTable").innerHTML=loanRows.length?loanRows.map(({b,actions})=>`<tr>
+    <td><span class="badge badge-blue" style="font-size:11px">${b.loan_number||'—'}</span></td>
     <td><b>${b.name}</b></td><td>${money(b.loan)}</td><td>${money(b.outstanding)}</td>
     <td style="color:#7c3aed">${money(b.interest_due)}</td><td>${b.rate}% ${b.type}</td>
     <td>${fmtDate(b.given_date)}</td><td>${fmtDate(b.due_date)}</td>
-    <td style="color:#94a3b8">${fmtDate(b.created_at)}</td>
     <td><span class="badge ${badgeClass(b.status)}">${b.status}</span></td>
     <td>${actions}</td>
-  </tr>`).join(""):`<tr><td colspan="10" class="empty">No loans found</td></tr>`;
+  </tr>`).join(""):`<tr><td colspan="11" class="empty">No loans found</td></tr>`;
   // mobile cards
   document.getElementById("loanCards").innerHTML=loanRows.length?loanRows.map(({b,actions},idx)=>{
     const cid='lc'+b.id;
@@ -1166,7 +1168,7 @@ function renderLoans(){
       <div class="mob-card-header" onclick="toggleCard(this)" style="cursor:pointer">
         <div>
           <div class="mob-card-title">${b.name}<i class="mob-card-chevron">&#9660;</i></div>
-          <div class="mob-card-badge"><span class="badge ${badgeClass(b.status)}">${b.status}</span></div>
+          <div class="mob-card-badge"><span class="badge badge-blue" style="font-size:10px">${b.loan_number||'—'}</span> <span class="badge ${badgeClass(b.status)}">${b.status}</span></div>
         </div>
         <div class="mob-card-actions" onclick="event.stopPropagation()">${actions}</div>
       </div>
@@ -1176,10 +1178,12 @@ function renderLoans(){
           <button class="mob-tab" onclick="switchMobTab('${cid}','dates',this)">Dates</button>
         </div>
         <div class="mob-tab-content" id="${cid}-loan">
+          <div class="row"><span>Loan #</span><span style="font-weight:600;color:#2563eb">${b.loan_number||'—'}</span></div>
           <div class="row"><span>Loan</span><span style="font-weight:600">${money(b.loan)}</span></div>
           <div class="row"><span>Outstanding</span><span style="color:#ef4444;font-weight:600">${money(b.outstanding)}</span></div>
           <div class="row"><span>Interest Due</span><span style="color:#7c3aed;font-weight:600">${money(b.interest_due)}</span></div>
           <div class="row"><span>Rate</span><span>${b.rate}% ${b.type}</span></div>
+          <div class="row"><span>Source</span><span style="color:#64748b;font-size:11px">${b.loan_source||'—'}</span></div>
         </div>
         <div class="mob-tab-content" id="${cid}-dates" style="display:none">
           <div class="row"><span>Given</span><span>${fmtDate(b.given_date)}</span></div>
@@ -1189,6 +1193,31 @@ function renderLoans(){
       </div>
     </div>`;
   }).join(""):`<div class="empty">No loans found</div>`;
+}
+async function archiveLoan(id){
+  const b=borrowers.find(x=>x.id===id);
+  if(!b) return;
+  if(!confirm(`Archive loan ${b.loan_number||id} for "${b.name}"?\n\nThis will DELETE all intermediate payment records and keep only a summary archive entry.\n\nThis cannot be undone.`)) return;
+  try{
+    const loanPayments=payments.filter(p=>p.borrower_id===id);
+    const totalInterestCollected=loanPayments.reduce((s,p)=>s+Number(p.interest),0);
+    const totalPrincipalCollected=loanPayments.reduce((s,p)=>s+Number(p.principal),0);
+    const lastPay=loanPayments.length?loanPayments.reduce((a,c)=>a.date>c.date?a:c):null;
+    const collectedBy=[...new Set(loanPayments.map(p=>p.method))].join(', ')||'—';
+    await sb("payments","DELETE",null,`?borrower_id=eq.${id}`);
+    await dbPost("payments",{
+      borrower_id:id,
+      borrower_name:b.name,
+      date:lastPay?.date||todayStr(),
+      total:totalPrincipalCollected+totalInterestCollected,
+      principal:totalPrincipalCollected,
+      interest:totalInterestCollected,
+      method:collectedBy,
+      notes:`[ARCHIVED] ${b.loan_number||''} | Loan: ${money(b.loan)} | Given: ${fmtDate(b.given_date)} | Settled: ${fmtDate(lastPay?.date)} | Source: ${b.loan_source||'—'}`
+    });
+    await loadAll();
+    toast(`Loan ${b.loan_number||''} archived.`);
+  }catch(e){toast("Error: "+e.message,false);}
 }
 async function deleteLoan(id,name){
   if(!confirm(`Delete loan for "${name}"? This will also delete related payments and cannot be undone.`)) return;
@@ -1252,12 +1281,15 @@ function renderPayments(){
       <button class="summary-tab">Interest<span style="color:#7c3aed">${money(totalI)}</span></button>
     </div>`;
   // desktop
-  document.getElementById("paymentTable").innerHTML=list.length?list.map(p=>`<tr>
+  document.getElementById("paymentTable").innerHTML=list.length?list.map(p=>{
+    const lb=borrowers.find(x=>x.id===p.borrower_id);
+    return `<tr>
+    <td><span class="badge badge-blue" style="font-size:10px">${lb?.loan_number||'—'}</span></td>
     <td>${fmtDate(p.date)}</td><td><b>${p.borrower_name}</b></td><td>${money(p.total)}</td>
     <td>${money(p.principal)}</td><td style="color:#7c3aed">${money(p.interest)}</td>
     <td><span class="badge badge-blue">${p.method}</span></td><td style="color:#94a3b8">${p.notes||"—"}</td>
     <td>${isAdmin?`<button class="btn btn-danger btn-sm" onclick="deletePayment('${p.id}','${p.borrower_id}',${p.principal},${p.interest})" title="Delete">🗑️</button>`:""}</td>
-  </tr>`).join(""):`<tr><td colspan="8" class="empty">No payments found</td></tr>`;
+  </tr>`;}).join(""):`<tr><td colspan="9" class="empty">No payments found</td></tr>`;
   // mobile cards
   document.getElementById("paymentCards").innerHTML=list.length?list.map((p,idx)=>{
     const cid='pc'+p.id;
@@ -1568,6 +1600,16 @@ function calcGive(){
   document.getElementById('g-sourceTotal').textContent=money(src);
 }
 
+async function generateLoanNumber(){
+  const all=await dbGet("borrowers","?select=loan_number&loan_number=not.is.null&order=loan_number.desc&limit=1");
+  let next=1;
+  if(all&&all.length&&all[0].loan_number){
+    const m=all[0].loan_number.match(/(\d+)$/);
+    if(m) next=parseInt(m[1])+1;
+  }
+  return "LN-"+String(next).padStart(4,"0");
+}
+
 async function saveLoan(){
   const name=document.getElementById("g-name").value;
   const amount=givePartnerRows.reduce((s,r)=>s+givePartnerTotal(r),0);
@@ -1582,18 +1624,20 @@ async function saveLoan(){
   setBusy("saveLoanBtn",true);
   const existing=borrowers.find(b=>b.name===name&&b.loan===0);
   try{
+    const loan_number=await generateLoanNumber();
+    const loanSource=givePartnerRows.map(r=>`${r.name}(${[r.cash>0?'Cash':null,r.upi>0?'UPI':null,r.bank>0?'Bank':null].filter(Boolean).join('+')})`).join(', ');
     if(existing){
-      await dbPatch("borrowers",`?id=eq.${existing.id}`,{loan:amount,outstanding:amount,interest_due:0,rate,type,given_date:given||todayStr(),due_date:due||null,status:"Active"});
+      await dbPatch("borrowers",`?id=eq.${existing.id}`,{loan_number,loan:amount,outstanding:amount,interest_due:0,rate,type,given_date:given||todayStr(),due_date:due||null,status:"Active",loan_source:loanSource});
     } else {
-      await dbPost("borrowers",{name,mobile:null,address:null,loan:amount,outstanding:amount,interest_due:0,rate,type,given_date:given||todayStr(),due_date:due||null,status:"Active"});
+      await dbPost("borrowers",{loan_number,name,mobile:null,address:null,loan:amount,outstanding:amount,interest_due:0,rate,type,given_date:given||todayStr(),due_date:due||null,status:"Active",loan_source:loanSource});
     }
     await Promise.all([
-      ...givePartnerRows.map(r=>dbPost("account_ledger",{date:given||todayStr(),description:`Loan to ${name} from ${r.name}`,type:"Debit",cash:Number(r.cash)||0,upi:Number(r.upi)||0,bank:Number(r.bank)||0})),
-      dbPost("activities",{text:`${name} — ${money(amount)} loan given`,sub:`${type} ${rate}% • ${fmtDate(given)}`,color:"blue"})
+      ...givePartnerRows.map(r=>dbPost("account_ledger",{date:given||todayStr(),description:`[${loan_number}] Loan to ${name} from ${r.name}`,type:"Debit",cash:Number(r.cash)||0,upi:Number(r.upi)||0,bank:Number(r.bank)||0})),
+      dbPost("activities",{text:`${name} — ${money(amount)} loan given`,sub:`${loan_number} • ${type} ${rate}% • ${fmtDate(given)}`,color:"blue"})
     ]);
     closeModal("giveModal");
     await loadAll();
-    toast("Loan saved successfully.");
+    toast(`Loan ${loan_number} saved successfully.`);
   }catch(e){toast("Error: "+e.message,false);}
   finally{document.getElementById("saveLoanBtn").disabled=false;document.getElementById("saveLoanBtn").textContent="Save Loan";}
 }
@@ -1687,7 +1731,8 @@ function populateReceiveLoan(){
   const sel=document.getElementById("r-borrower");
   if(!sel) return;
   const loans=borrowers.filter(b=>b.outstanding>0&&b.name===name);
-  sel.innerHTML=loans.map(b=>`<option value="${b.id}">${money(b.outstanding)} — ${fmtDate(b.given_date)}</option>`).join("")||`<option value="">No active loans</option>`;
+  sel.innerHTML=loans.map(b=>`<option value="${b.id}">${b.loan_number||'—'} • ${money(b.outstanding)} — ${fmtDate(b.given_date)}</option>`).join("")||`<option value="">No active loans</option>`;
+
   updateReceiveInfo();
 }
 function updateReceiveInfo(){
