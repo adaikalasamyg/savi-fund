@@ -72,10 +72,10 @@ tr:hover td{background:#f8fafc}
 .activity-dot.green{background:#10b981}.activity-dot.blue{background:#3b82f6}.activity-dot.orange{background:#f59e0b}
 .activity-text{font-size:13px;color:#374151}
 .activity-time{font-size:11px;color:#94a3b8;margin-top:2px}
-.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.search-input{flex:1;min-width:180px;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none}
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:nowrap;align-items:center}
+.search-input{flex:1;min-width:0;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none}
 .search-input:focus{border-color:#2563eb}
-.filter-select{padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none}
+.filter-select{width:auto;flex-shrink:0;padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:16px;z-index:100}
 .modal.show{display:flex}
 .modal-box{background:#fff;border-radius:16px;width:min(680px,100%);max-height:92vh;overflow-y:auto;padding:24px}
@@ -144,9 +144,12 @@ tr:hover td{background:#f8fafc}
 .mob-tab-content .row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9}
 .mob-tab-content .row:last-child{border-bottom:0}
 .mob-tab-content .row span:first-child{color:#64748b}
-.summary-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap}
-.summary-pill{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 16px;font-size:13px;display:flex;align-items:center;gap:8px}
-.summary-pill b{font-size:15px}
+.summary-row{margin-bottom:14px}
+.summary-tabs{display:flex;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff}
+.summary-tab{flex:1;border:0;background:none;padding:10px 6px;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;text-align:center;border-right:1px solid #e2e8f0;transition:all .15s}
+.summary-tab:last-child{border-right:0}
+.summary-tab.active{background:#1e3a5f;color:#fff}
+.summary-tab span{display:block;font-size:14px;font-weight:700;margin-top:3px}
 /* LOADER */
 .loader{display:inline-block;width:18px;height:18px;border:3px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -1073,11 +1076,15 @@ function renderLoans(){
   const list=borrowers.filter(b=>b.loan>0&&b.name.toLowerCase().includes(search)&&(!sf||b.status===sf));
   const totalLoan=list.reduce((s,b)=>s+Number(b.loan),0);
   const totalOut=list.reduce((s,b)=>s+Number(b.outstanding),0);
+  const activeCount=list.filter(b=>b.status!=="Settled").length;
+  const settledCount=list.filter(b=>b.status==="Settled").length;
   document.getElementById("loan-summary").innerHTML=`
-    <div class="summary-pill">Active Loans: <b>${list.filter(b=>b.status!=="Settled").length}</b></div>
-    <div class="summary-pill">Given: <b>${money(totalLoan)}</b></div>
-    <div class="summary-pill">Outstanding: <b style="color:#ef4444">${money(totalOut)}</b></div>
-    <div class="summary-pill">Settled: <b style="color:#059669">${list.filter(b=>b.status==="Settled").length}</b></div>`;
+    <div class="summary-tabs">
+      <button class="summary-tab active">Active Loans<span>${activeCount}</span></button>
+      <button class="summary-tab">Given<span>${money(totalLoan)}</span></button>
+      <button class="summary-tab">Outstanding<span style="color:#ef4444">${money(totalOut)}</span></button>
+      <button class="summary-tab">Settled<span style="color:#059669">${settledCount}</span></button>
+    </div>`;
   const loanRows=list.length?list.map(b=>{
     const actions=`<div style="display:flex;gap:6px">
       ${b.outstanding>0?`<button class="btn btn-success btn-sm" onclick="quickReceive('${b.id}')">💵 Receive</button>`:""}
@@ -1184,9 +1191,11 @@ function renderPayments(){
   const totalC=payments.reduce((s,p)=>s+Number(p.total),0);
   const totalI=payments.reduce((s,p)=>s+Number(p.interest),0);
   document.getElementById("pay-summary").innerHTML=`
-    <div class="summary-pill">Collections: <b>${payments.length}</b></div>
-    <div class="summary-pill">Total: <b style="color:#059669">${money(totalC)}</b></div>
-    <div class="summary-pill">Interest: <b style="color:#7c3aed">${money(totalI)}</b></div>`;
+    <div class="summary-tabs">
+      <button class="summary-tab active">Collections<span>${payments.length}</span></button>
+      <button class="summary-tab">Total<span style="color:#059669">${money(totalC)}</span></button>
+      <button class="summary-tab">Interest<span style="color:#7c3aed">${money(totalI)}</span></button>
+    </div>`;
   // desktop
   document.getElementById("paymentTable").innerHTML=list.length?list.map(p=>`<tr>
     <td>${fmtDate(p.date)}</td><td><b>${p.borrower_name}</b></td><td>${money(p.total)}</td>
