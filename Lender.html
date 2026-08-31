@@ -30,6 +30,19 @@ body{font-family:Arial,'Segoe UI',sans-serif;background:#f0f2f8;color:#172033;fo
 .topbar-sub{font-size:12px;color:#64748b;margin-top:3px}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .avatar{background:#1e3a5f;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.notif-btn{position:relative;background:none;border:0;cursor:pointer;font-size:20px;padding:4px;line-height:1}
+.notif-badge{position:absolute;top:-2px;right:-2px;background:#ef4444;color:#fff;border-radius:50%;font-size:9px;font-weight:700;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 3px;pointer-events:none}
+.notif-panel{display:none;position:absolute;top:48px;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.13);z-index:50;width:300px;max-height:360px;overflow-y:auto}
+.notif-panel.show{display:block}
+.notif-header{padding:12px 16px;font-size:13px;font-weight:700;border-bottom:1px solid #f1f5f9;color:#0f172a}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .1s}
+.notif-item:hover{background:#f8fafc}
+.notif-item:last-child{border-bottom:0}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.notif-dot.green{background:#10b981}.notif-dot.blue{background:#3b82f6}.notif-dot.orange{background:#f59e0b}
+.notif-text{font-size:13px;color:#374151;line-height:1.4}
+.notif-sub{font-size:11px;color:#94a3b8;margin-top:2px}
+.notif-empty{padding:24px;text-align:center;color:#94a3b8;font-size:13px}
 .page{display:none}.page.active{display:block;height:100%}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
 .card{background:#fff;border-radius:12px;padding:18px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
@@ -235,6 +248,11 @@ tr:hover td{background:#f8fafc}
   </div>
   <div class="topbar-right" style="position:relative">
     <div style="font-size:12px;color:#64748b;text-align:right"><div id="todayDate"></div><div id="topbarUser"></div></div>
+    <button class="notif-btn" onclick="toggleNotifPanel()" id="notifBtn">🔔<span class="notif-badge" id="notifBadge" style="display:none">0</span></button>
+    <div class="notif-panel" id="notifPanel">
+      <div class="notif-header">🔔 Notifications</div>
+      <div id="notifList"><div class="notif-empty">No notifications</div></div>
+    </div>
     <div class="avatar" id="topbarAvatar" onclick="toggleProfileMenu()" style="cursor:pointer">?</div>
     <div id="profileMenu" style="display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:50;min-width:130px">
       <button onclick="logout()" style="width:100%;border:0;background:none;padding:11px 16px;text-align:left;cursor:pointer;font-size:13px;color:#dc2626;font-weight:600;border-radius:10px">🚪 Logout</button>
@@ -693,7 +711,43 @@ function toggleProfileMenu(){
 document.addEventListener("click",e=>{
   if(!e.target.closest("#topbarAvatar")&&!e.target.closest("#profileMenu"))
     document.getElementById("profileMenu").style.display="none";
+  if(!e.target.closest("#notifBtn")&&!e.target.closest("#notifPanel"))
+    document.getElementById("notifPanel").classList.remove("show");
 });
+
+let notifSeen=Number(localStorage.getItem("notifSeen")||0);
+function renderNotifications(){
+  const unseen=activities.filter((_,i)=>i<activities.length&&activities[i].id>notifSeen).length;
+  const badge=document.getElementById("notifBadge");
+  badge.textContent=unseen>9?"9+":unseen;
+  badge.style.display=unseen>0?"flex":"none";
+  const pageMap=text=>{
+    if(/loan|given|money/i.test(text)) return "loans";
+    if(/received|payment|collection/i.test(text)) return "payments";
+    if(/partner/i.test(text)) return "partners";
+    if(/borrower/i.test(text)) return "borrowers";
+    return "dashboard";
+  };
+  document.getElementById("notifList").innerHTML=activities.slice(0,15).map(a=>`
+    <div class="notif-item" onclick="notifNavigate('${pageMap(a.text)}')">
+      <div class="notif-dot ${a.color}"></div>
+      <div><div class="notif-text">${a.text}</div><div class="notif-sub">${a.sub}</div></div>
+    </div>`).join("")||`<div class="notif-empty">No notifications</div>`;
+}
+function toggleNotifPanel(){
+  const panel=document.getElementById("notifPanel");
+  panel.classList.toggle("show");
+  if(panel.classList.contains("show")&&activities.length){
+    notifSeen=activities[0].id||0;
+    localStorage.setItem("notifSeen",notifSeen);
+    document.getElementById("notifBadge").style.display="none";
+  }
+}
+function notifNavigate(page){
+  document.getElementById("notifPanel").classList.remove("show");
+  const navBtn=document.querySelector(`.nav-btn[onclick*="'${page}'"]`);
+  showPage(page,navBtn);
+}
 
 /* ── LOAD ALL DATA ── */
 async function loadAll(){
@@ -707,6 +761,7 @@ async function loadAll(){
     ]);
     refreshStatuses();
     renderAll();
+    renderNotifications();
   } catch(e){
     toast("DB connection failed: "+e.message, false);
   }
