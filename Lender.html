@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SaVi Fund">
+<link rel="manifest" href="manifest.json">
+<title>SaVi Fund Manager</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,'Segoe UI',sans-serif;background:#f0f2f8;color:#172033;font-size:14px}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#0f172a;color:#fff;display:flex;flex-direction:column;z-index:30}
+.logo{padding:22px 18px 18px;border-bottom:1px solid #1e293b}
+.logo-title{font-size:18px;font-weight:700}
+.logo-sub{font-size:11px;color:#64748b;margin-top:4px}
+.nav{flex:1;padding:12px 10px;overflow-y:auto}
+.nav-btn{width:100%;border:0;background:transparent;color:#94a3b8;padding:11px 12px;margin:2px 0;border-radius:8px;text-align:left;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:10px;transition:all .15s}
+.nav-btn:hover,.nav-btn.active{background:#1e3a5f;color:#fff}
+.nav-btn .icon{font-size:16px;width:20px;text-align:center}
+.nav-section{font-size:10px;color:#475569;padding:10px 12px 4px;text-transform:uppercase;letter-spacing:.5px}
+.main{margin-left:220px;height:100vh;display:flex;flex-direction:column;padding:0}
+.topbar{padding:16px 24px;flex-shrink:0;background:#f0f2f8;position:sticky;top:0;z-index:25}
+.page-content{flex:1;overflow-y:auto;padding:0 24px 24px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.topbar h1{font-size:24px;font-weight:700}
+.topbar-sub{font-size:12px;color:#64748b;margin-top:3px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.avatar{background:#1e3a5f;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.page{display:none}.page.active{display:block;height:100%}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.card{background:#fff;border-radius:12px;padding:18px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card.blue{border-left:4px solid #3b82f6}.card.green{border-left:4px solid #10b981}
+.card.orange{border-left:4px solid #f59e0b}.card.red{border-left:4px solid #ef4444}
+.card.purple{border-left:4px solid #8b5cf6}
+.stat-label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.stat-value{font-size:22px;font-weight:700;margin-top:6px;color:#0f172a}
+.stat-note{font-size:11px;color:#94a3b8;margin-top:4px}
+.alert-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.alert-card{background:#fff;border-radius:12px;padding:16px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:14px}
+.alert-dot{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.alert-dot.red{background:#fee2e2}.alert-dot.orange{background:#fef3c7}
+.alert-info{flex:1}
+.alert-label{font-size:11px;color:#64748b;font-weight:600}
+.alert-value{font-size:18px;font-weight:700;margin-top:2px}
+.alert-count{font-size:11px;color:#94a3b8;margin-top:2px}
+.content-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+.section-card{background:#fff;border-radius:12px;padding:18px;border:1px solid #e2e8f0}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.section-header h2{font-size:15px;font-weight:700}
+.btn{border:0;padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:opacity .15s}
+.btn:hover{opacity:.88}
+.btn-primary{background:#2563eb;color:#fff}.btn-success{background:#059669;color:#fff}
+.btn-light{background:#eff6ff;color:#2563eb}.btn-gray{background:#f1f5f9;color:#475569}
+.btn-danger{background:#fee2e2;color:#dc2626}.btn-sm{padding:6px 10px;font-size:12px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:10px;border-bottom:2px solid #f1f5f9;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.4px;text-align:left;white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid #f8fafc;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:#f8fafc}
+.badge{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.badge-red{background:#fee2e2;color:#b91c1c}.badge-orange{background:#fef3c7;color:#92400e}
+.badge-green{background:#dcfce7;color:#065f46}.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-gray{background:#f1f5f9;color:#475569}
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.activity-item:last-child{border-bottom:0}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.activity-dot.green{background:#10b981}.activity-dot.blue{background:#3b82f6}.activity-dot.orange{background:#f59e0b}
+.activity-text{font-size:13px;color:#374151}
+.activity-time{font-size:11px;color:#94a3b8;margin-top:2px}
+.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-input{flex:1;min-width:180px;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none}
+.search-input:focus{border-color:#2563eb}
+.filter-select{padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:16px;z-index:100}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:16px;width:min(680px,100%);max-height:92vh;overflow-y:auto;padding:24px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-header h2{font-size:18px;font-weight:700}
+.close-btn{border:0;background:#f1f5f9;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;color:#64748b}
+.close-btn:hover{background:#e2e8f0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.field input,.field select{padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none;font-family:inherit}
+.field select,.psel{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center;padding-right:32px;cursor:pointer}
+.psel{flex:1;padding:8px 32px 8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;outline:none}
+.field input:focus,.field select:focus{border-color:#2563eb}
+.full{grid-column:1/-1}
+.form-section{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:14px;margin-top:4px}
+.form-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+.form-row:not(:last-child){border-bottom:1px solid #e2e8f0}
+.form-row input{width:130px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:7px;font-size:13px;text-align:right}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.alloc-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #f1f5f9}
+.alloc-row:last-child{border-bottom:0;font-weight:700}
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.progress-bar{height:8px;background:#e2e8f0;border-radius:4px;margin-top:6px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;background:#2563eb}
+.due-filter{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.due-chip{padding:6px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:#64748b}
+.due-chip.active{background:#2563eb;color:#fff;border-color:#2563eb}
+.account-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#0f172a;z-index:30;padding:6px 0}
+.mobile-nav-inner{display:flex;justify-content:space-around}
+.mob-btn{border:0;background:none;color:#64748b;font-size:10px;padding:6px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.mob-btn .icon{font-size:20px}
+.mob-btn.active{color:#60a5fa}
+.borrower-cards{display:none;flex-direction:column;gap:10px}
+.borrower-card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px}
+.borrower-card.collapsed .mob-card-body{max-height:0!important}
+.borrower-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.borrower-card-name{font-size:15px;font-weight:700}
+.borrower-card-actions{display:flex;gap:6px}
+.borrower-card-tabs{display:flex;gap:0;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:10px}
+.borrower-tab{flex:1;border:0;background:#f8fafc;color:#64748b;padding:7px 4px;font-size:11px;font-weight:600;cursor:pointer}
+.borrower-tab.active{background:#2563eb;color:#fff}
+.borrower-tab-content{font-size:13px}
+.borrower-tab-content .row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9}
+.borrower-tab-content .row:last-child{border-bottom:0}
+.borrower-tab-content .row span:first-child{color:#64748b}
+@media(max-width:900px){
+  .borrower-cards{display:flex}.borrower-table-wrap{display:none}
+  .mob-card-wrap{display:flex !important}.mob-table-wrap{display:none !important}
+}
+.mob-card-wrap{display:none;flex-direction:column;gap:10px}
+.mob-card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px}
+.mob-card-body{overflow:hidden;transition:max-height .25s ease}
+.mob-card.collapsed .mob-card-body{max-height:0!important}
+.mob-card.collapsed .mob-card-chevron,.borrower-card.collapsed .mob-card-chevron{transform:rotate(-90deg)}
+.mob-card-chevron{display:inline-block;transition:transform .2s;font-style:normal;font-size:12px;color:#94a3b8;margin-left:6px}
+.mob-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.mob-card-title{font-size:14px;font-weight:700}
+.mob-card-badge{margin-top:2px}
+.mob-card-actions{display:flex;gap:6px;flex-shrink:0}
+.mob-card-tabs{display:flex;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:10px}
+.mob-tab{flex:1;border:0;background:#f8fafc;color:#64748b;padding:7px 4px;font-size:11px;font-weight:600;cursor:pointer}
+.mob-tab.active{background:#2563eb;color:#fff}
+.mob-tab-content{font-size:13px}
+.mob-tab-content .row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9}
+.mob-tab-content .row:last-child{border-bottom:0}
+.mob-tab-content .row span:first-child{color:#64748b}
+.summary-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.summary-pill{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 16px;font-size:13px;display:flex;align-items:center;gap:8px}
+.summary-pill b{font-size:15px}
+/* LOADER */
+.loader{display:inline-block;width:18px;height:18px;border:3px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-row td{text-align:center;padding:30px;color:#94a3b8}
+/* TOAST */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.show{opacity:1}
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;z-index:999}
+#loginScreen.hidden{display:none}
+.login-box{background:#fff;border-radius:18px;padding:36px 32px;width:min(380px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{font-size:32px;text-align:center;margin-bottom:6px}
+.login-title{font-size:20px;font-weight:700;text-align:center;margin-bottom:4px}
+.login-sub{font-size:12px;color:#64748b;text-align:center;margin-bottom:24px}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;margin-bottom:5px}
+.login-field input{width:100%;padding:11px 13px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none}
+.login-field input:focus{border-color:#2563eb}
+.login-btn{width:100%;padding:12px;background:#2563eb;color:#fff;border:0;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px}
+.login-btn:hover{background:#1d4ed8}
+.login-err{color:#dc2626;font-size:12px;text-align:center;margin-top:10px;min-height:18px}
+@media(max-width:900px){
+  .sidebar{display:none}.main{margin-left:0}
+  .topbar{padding:12px 14px}
+  .page-content{padding:0 14px 80px}
+  .cards{grid-template-columns:1fr 1fr}.alert-cards{grid-template-columns:1fr 1fr}
+  .content-grid{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr}
+  .account-cards{grid-template-columns:1fr 1fr}.mobile-nav{display:block}
+  #loans-sticky{position:sticky;top:0;z-index:20;background:#f0f2f8;padding-bottom:0}
+  #loans-scroll{overflow-y:auto;max-height:calc(100vh - 80px);padding-bottom:8px}
+  #loans-scroll .section-card{border-top-left-radius:0;border-top-right-radius:0;border-top:0}
+  #pay-sticky{position:sticky;top:0;z-index:20;background:#f0f2f8;padding-bottom:0}
+  #pay-scroll{overflow-y:auto;max-height:calc(100vh - 80px);padding-bottom:8px}
+  #pay-scroll .section-card{border-top-left-radius:0;border-top-right-radius:0;border-top:0}
+}
+@media(max-width:550px){
+  .cards{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}
+  .full{grid-column:auto}.alert-cards{grid-template-columns:1fr}
+  .account-cards{grid-template-columns:1fr}.topbar h1{font-size:20px}.modal-box{padding:16px}
+  .page-content{padding:0 10px 80px}
+}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">💰</div>
+    <div class="login-title">Savi Fund Manager</div>
+    <div class="login-sub">Friends Lending &amp; Settlement</div>
+    <div class="login-field"><label>Username</label><input id="l-user" placeholder="Enter your name" onkeydown="if(event.key==='Enter') doLogin()"></div>
+    <div class="login-field"><label>Password</label><input id="l-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter') doLogin()"></div>
+    <button class="login-btn" onclick="doLogin()">Login</button>
+    <div class="login-err" id="l-err"></div>
+  </div>
+</div>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-title">💰 SaVi Joint Fund</div>
+    <div class="logo-sub">Friends Lending & Settlement</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Main</div>
+    <button class="nav-btn active" onclick="showPage('dashboard',this)"><span class="icon">🏠</span>Dashboard</button>
+    <button class="nav-btn" onclick="showPage('partners',this)"><span class="icon">👥</span>Partners</button>
+    <button class="nav-btn" onclick="showPage('borrowers',this)"><span class="icon">👤</span>Borrowers</button>
+    <div class="nav-section">Transactions</div>
+    <button class="nav-btn" onclick="showPage('loans',this)"><span class="icon">💸</span>Loans / Payments</button>
+    <button class="nav-btn" onclick="showPage('payments',this)"><span class="icon">💵</span>Payments</button>
+    <button class="nav-btn" onclick="showPage('accounts',this)"><span class="icon">🏦</span>Accounts</button>
+    <div class="nav-section">Tracking</div>
+    <button class="nav-btn" onclick="showPage('duedates',this)"><span class="icon">📅</span>Due Dates</button>
+    <button class="nav-btn" onclick="showPage('reports',this)"><span class="icon">📊</span>Reports</button>
+  </nav>
+</aside>
+
+<main class="main">
+<div class="topbar">
+  <div>
+    <h1 id="pageTitle">Dashboard</h1>
+    <div class="topbar-sub">Joint Fino</div>
+  </div>
+  <div class="topbar-right" style="position:relative">
+    <div style="font-size:12px;color:#64748b;text-align:right"><div id="todayDate"></div><div id="topbarUser"></div></div>
+    <div class="avatar" id="topbarAvatar" onclick="toggleProfileMenu()" style="cursor:pointer">?</div>
+    <div id="profileMenu" style="display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:50;min-width:130px">
+      <button onclick="logout()" style="width:100%;border:0;background:none;padding:11px 16px;text-align:left;cursor:pointer;font-size:13px;color:#dc2626;font-weight:600;border-radius:10px">🚪 Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-content">
+<!-- DASHBOARD -->
+<section id="dashboard" class="page active">
+  <div class="cards">
+    <div class="card blue"><div class="stat-label">Total Partner Fund</div><div class="stat-value" id="d-totalFund">₹0</div><div class="stat-note">Total contributions</div></div>
+    <div class="card orange"><div class="stat-label">Principal Outstanding</div><div class="stat-value" id="d-outstanding">₹0</div><div class="stat-note">Currently with borrowers</div></div>
+    <div class="card green"><div class="stat-label">Available Fund</div><div class="stat-value" id="d-available">₹0</div><div class="stat-note">Ready to lend</div></div>
+    <div class="card purple"><div class="stat-label">Interest Received</div><div class="stat-value" id="d-interest">₹0</div><div class="stat-note">Total collected</div></div>
+  </div>
+  <div class="alert-cards">
+    <div class="alert-card">
+      <div class="alert-dot red">🔴</div>
+      <div class="alert-info"><div class="alert-label">Overdue</div><div class="alert-value" id="d-overdue-amt">₹0</div><div class="alert-count" id="d-overdue-count">0 borrowers</div></div>
+      <button class="btn btn-danger btn-sm" onclick="showPage('duedates',null,'overdue')">View</button>
+    </div>
+    <div class="alert-card">
+      <div class="alert-dot orange">🟠</div>
+      <div class="alert-info"><div class="alert-label">Due Soon (7 days)</div><div class="alert-value" id="d-duesoon-amt">₹0</div><div class="alert-count" id="d-duesoon-count">0 borrowers</div></div>
+      <button class="btn btn-sm" style="background:#fef3c7;color:#92400e" onclick="showPage('duedates',null,'soon')">View</button>
+    </div>
+  </div>
+  <div id="d-userMgmt" style="display:none;margin-bottom:20px">
+    <div class="section-card">
+      <div class="section-header"><h2>👤 User Management</h2><button class="btn btn-primary btn-sm" onclick="openModal('createUserModal')">+ Add User</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Username</th><th>Display Name</th><th>Role</th><th>Action</th></tr></thead><tbody id="d-userTable"><tr class="loading-row"><td colspan="4"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+    </div>
+  </div>
+  <div class="content-grid">
+    <div class="section-card">
+      <div class="section-header"><h2>📅 Upcoming Collections</h2><button class="btn btn-light btn-sm" onclick="showPage('borrowers')">View All</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Borrower</th><th>Outstanding</th><th>Due</th></tr></thead><tbody id="d-dueTable"><tr class="loading-row"><td colspan="3"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><h2>⚡ Recent Activity</h2><button class="btn btn-light btn-sm" onclick="showPage('payments')">All</button></div>
+      <div id="d-activity"><span class="loader"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section id="partners" class="page">
+  <div class="section-header" style="margin-bottom:16px"><h2>👥 Partners</h2><span id="partner-add-btn"></span></div>
+  <div class="cards" id="partner-stat-cards"></div>
+  <div class="section-card">
+    <div class="section-header"><h2>Partner Details</h2><button class="btn btn-light btn-sm" onclick="loadAll()">🔄 Refresh</button></div>
+    <div class="mob-table-wrap table-wrap"><table><thead><tr><th>Partner</th><th>Contribution</th><th>Pending</th><th>Cash</th><th>UPI</th><th>Bank</th><th>Remarks</th><th id="partner-action-th"></th></tr></thead><tbody id="partnerTable"><tr class="loading-row"><td colspan="8"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+    <div class="mob-card-wrap" id="partnerCards"></div>
+  </div>
+</section>
+
+<!-- BORROWERS -->
+<section id="borrowers" class="page">
+  <div class="section-header" style="margin-bottom:14px"><h2>👤 Borrowers</h2><div style="display:flex;gap:8px"><button class="btn btn-light" onclick="loadAll()">🔄 Refresh</button><button class="btn btn-primary" onclick="openModal('addBorrowerModal')">+ Add Borrower</button></div></div>
+  <div class="toolbar">
+    <input class="search-input" id="searchBorrower" placeholder="🔍 Search borrower..." oninput="renderBorrowers()">
+  </div>
+  <div class="section-card borrower-table-wrap"><div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Mobile</th><th>Address</th><th style="color:#ef4444">Debit</th><th style="color:#059669">Credit</th><th style="color:#2563eb">Balance</th><th>Action</th></tr></thead><tbody id="borrowerTable"><tr class="loading-row"><td colspan="8"><span class="loader"></span>Loading...</td></tr></tbody></table></div></div>
+  <div class="borrower-cards" id="borrowerCards"></div></section>
+
+<!-- LOANS -->
+<section id="loans" class="page">
+  <div id="loans-sticky">
+    <div class="section-header" style="margin-bottom:14px"><h2>💸 Loans / Payments</h2><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="openModal('giveModal')">+ Give Money</button><button class="btn btn-success" onclick="openModal('receiveModal')">💵 Receive</button></div></div>
+    <div class="summary-row" id="loan-summary"></div>
+    <div class="section-card" style="margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0">
+      <div class="toolbar" style="margin-bottom:0">
+        <input class="search-input" id="searchLoan" placeholder="🔍 Search..." oninput="renderLoans()">
+        <select class="filter-select" id="filterLoanStatus" onchange="renderLoans()"><option value="">All</option><option value="Active">Active</option><option value="Overdue">Overdue</option><option value="Due Soon">Due Soon</option><option value="Settled">Settled</option></select>
+      </div>
+    </div>
+  </div>
+  <div id="loans-scroll">
+    <div class="mob-table-wrap table-wrap"><table><thead><tr><th>Borrower</th><th>Loan</th><th>Outstanding</th><th>Interest Due</th><th>Rate</th><th>Given Date</th><th>Due Date</th><th>Created</th><th>Status</th><th>Action</th></tr></thead><tbody id="loanTable"><tr class="loading-row"><td colspan="10"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+    <div class="mob-card-wrap" id="loanCards"></div>
+  </div>
+</section>
+
+<!-- PAYMENTS -->
+<section id="payments" class="page">
+  <div id="pay-sticky">
+    <div class="section-header" style="margin-bottom:14px"><h2>💵 Payment Collections</h2><button class="btn btn-success" onclick="openModal('receiveModal')">+ Receive Payment</button></div>
+    <div class="summary-row" id="pay-summary"></div>
+    <div class="section-card" style="margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0">
+      <div class="toolbar" style="margin-bottom:0">
+        <input class="search-input" id="searchPayment" placeholder="🔍 Search..." oninput="renderPayments()">
+        <select class="filter-select" id="filterPayMethod" onchange="renderPayments()"><option value="">All Methods</option><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Bank">Bank</option></select>
+      </div>
+    </div>
+  </div>
+  <div id="pay-scroll">
+    <div class="mob-table-wrap table-wrap"><table><thead><tr><th>Date</th><th>Borrower</th><th>Total</th><th>Principal</th><th>Interest</th><th>Method</th><th>Notes</th><th id="pay-action-th"></th></tr></thead><tbody id="paymentTable"><tr class="loading-row"><td colspan="8"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+    <div class="mob-card-wrap" id="paymentCards"></div>
+  </div>
+</section>
+
+<!-- ACCOUNTS -->
+<section id="accounts" class="page">
+  <div class="section-header" style="margin-bottom:16px"><h2>🏦 Accounts</h2><div style="display:flex;gap:8px"><button class="btn btn-light" onclick="loadAll()">🔄 Refresh</button><button class="btn btn-primary" onclick="openModal('accountModal')">+ Add Entry</button></div></div>
+  <div class="account-cards">
+    <div class="card green"><div class="stat-label">💵 Cash Balance</div><div class="stat-value" id="acc-cash">₹0</div><div class="stat-note">Physical cash on hand</div></div>
+    <div class="card blue"><div class="stat-label">📱 UPI Balance</div><div class="stat-value" id="acc-upi">₹0</div><div class="stat-note">UPI / Wallet</div></div>
+    <div class="card purple"><div class="stat-label">🏦 Bank Balance</div><div class="stat-value" id="acc-bank">₹0</div><div class="stat-note">Bank account</div></div>
+  </div>
+  <div class="section-card">
+    <div class="section-header"><h2>Account Ledger</h2></div>
+    <div class="table-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Cash</th><th>UPI</th><th>Bank</th><th id="acc-action-th"></th></tr></thead><tbody id="accountTable"><tr class="loading-row"><td colspan="7"><span class="loader"></span>Loading...</td></tr></tbody></table></div>
+  </div>
+</section>
+
+<!-- DUE DATES -->
+<section id="duedates" class="page">
+  <div class="section-header" style="margin-bottom:14px"><h2>📅 Due Dates</h2><button class="btn btn-primary" onclick="openModal('receiveModal')">💵 Receive Payment</button></div>
+  <div class="due-filter">
+    <button class="due-chip active" onclick="filterDue('all',this)">All</button>
+    <button class="due-chip" onclick="filterDue('overdue',this)">🔴 Overdue</button>
+    <button class="due-chip" onclick="filterDue('soon',this)">🟠 Due Soon (7d)</button>
+    <button class="due-chip" onclick="filterDue('active',this)">🟢 Active</button>
+    <button class="due-chip" onclick="filterDue('settled',this)">✅ Settled</button>
+  </div>
+  <div class="section-card"><div class="table-wrap"><table><thead><tr><th>Borrower</th><th>Loan</th><th>Outstanding</th><th>Interest Due</th><th>Due Date</th><th>Days Left</th><th>Status</th><th>Action</th></tr></thead><tbody id="dueTable"><tr class="loading-row"><td colspan="8"><span class="loader"></span>Loading...</td></tr></tbody></table></div></div>
+</section>
+
+<!-- REPORTS -->
+<section id="reports" class="page">
+  <div class="section-header" style="margin-bottom:16px"><h2>📊 Reports</h2></div>
+  <div class="cards" style="margin-bottom:20px">
+    <div class="card blue"><div class="stat-label">Total Loans Given</div><div class="stat-value" id="r-totalLoans">₹0</div></div>
+    <div class="card green"><div class="stat-label">Total Collected</div><div class="stat-value" id="r-totalCollected">₹0</div></div>
+    <div class="card purple"><div class="stat-label">Interest Earned</div><div class="stat-value" id="r-totalInterest">₹0</div></div>
+    <div class="card orange"><div class="stat-label">Pending Recovery</div><div class="stat-value" id="r-pending">₹0</div></div>
+  </div>
+  <div class="report-grid">
+    <div class="section-card" style="max-width:340px"><div class="section-header"><h2>Partner-wise Settlement</h2></div><div id="r-partnerReport"></div></div>
+    <div class="section-card"><div class="section-header"><h2>Borrower Summary</h2></div><div class="table-wrap"><table><thead><tr><th>Borrower</th><th>Loan</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody id="r-borrowerReport"></tbody></table></div></div>
+  </div>
+</section>
+</div><!-- end page-content -->
+</main>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mob-btn active" onclick="showPage('dashboard',this)"><span class="icon">🏠</span>Home</button>
+    <button class="mob-btn" onclick="showPage('partners',this)"><span class="icon">👥</span>Partners</button>
+    <button class="mob-btn" onclick="showPage('borrowers',this)"><span class="icon">👤</span>Borrowers</button>
+    <button class="mob-btn" onclick="showPage('loans',this)"><span class="icon">💸</span>Loans</button>
+    <button class="mob-btn" onclick="showPage('payments',this)"><span class="icon">💵</span>Receive</button>
+    <button class="mob-btn" onclick="showPage('reports',this)"><span class="icon">📊</span>Reports</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- EDIT LOAN MODAL -->
+<div class="modal" id="editLoanModal"><div class="modal-box">
+  <div class="modal-header"><h2>✏️ Edit Loan</h2><button class="close-btn" onclick="closeModal('editLoanModal')">×</button></div>
+  <div class="form-grid">
+    <input type="hidden" id="el-id">
+    <div class="field"><label>Borrower</label><input id="el-name" disabled style="background:#f8fafc"></div>
+    <div class="field"><label>Loan Amount (₹)</label><input id="el-amount" type="number"></div>
+    <div class="field"><label>Outstanding (₹)</label><input id="el-outstanding" type="number"></div>
+    <div class="field"><label>Interest Due (₹)</label><input id="el-interest" type="number"></div>
+    <div class="field"><label>Rate (%)</label><input id="el-rate" type="number"></div>
+    <div class="field"><label>Interest Type</label><select id="el-type"><option>Monthly</option><option>Daily</option><option>Fixed</option></select></div>
+    <div class="field"><label>Date Given</label><input id="el-given" type="date"></div>
+    <div class="field"><label>Due Date</label><input id="el-due" type="date"></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('editLoanModal')">Cancel</button>
+    <button class="btn btn-primary" id="updateLoanBtn" onclick="updateLoan()">Update Loan</button>
+  </div>
+</div></div>
+
+<!-- EDIT BORROWER MODAL -->
+<div class="modal" id="editBorrowerModal"><div class="modal-box">
+  <div class="modal-header"><h2>✏️ Edit Borrower</h2><button class="close-btn" onclick="closeModal('editBorrowerModal')">×</button></div>
+  <div class="form-grid">
+    <input type="hidden" id="eb-id">
+    <div class="field"><label>Full Name</label><input id="eb-name"></div>
+    <div class="field"><label>Mobile</label><input id="eb-mobile" maxlength="15"></div>
+    <div class="field full"><label>Address</label><input id="eb-address"></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('editBorrowerModal')">Cancel</button>
+    <button class="btn btn-primary" id="updateBorrowerBtn" onclick="updateBorrower()">Update Borrower</button>
+  </div>
+</div></div>
+
+<!-- ADD BORROWER MODAL -->
+<div class="modal" id="addBorrowerModal"><div class="modal-box">
+  <div class="modal-header"><h2>👤 Add Borrower</h2><button class="close-btn" onclick="closeModal('addBorrowerModal')">x</button></div>
+  <div class="form-grid">
+    <div class="field"><label>Full Name</label><input id="ab-name" placeholder="e.g. Ravi Kumar"></div>
+    <div class="field"><label>Mobile</label><input id="ab-mobile" placeholder="e.g. 9876543210" maxlength="15"></div>
+    <div class="field full"><label>Address</label><input id="ab-address" placeholder="e.g. 12, Main St, Chennai"></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('addBorrowerModal')">Cancel</button>
+    <button class="btn btn-primary" id="saveAddBorrowerBtn" onclick="saveAddBorrower()">Save Borrower</button>
+  </div>
+</div></div>
+
+<!-- GIVE MONEY MODAL -->
+<div class="modal" id="giveModal"><div class="modal-box">
+  <div class="modal-header"><h2>💸 Give Money</h2><button class="close-btn" onclick="closeModal('giveModal')">×</button></div>
+  <div class="form-grid">
+    <div class="field full"><label>Borrower</label><select id="g-name"></select></div>
+    <div class="field full" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="field"><label>Date Given</label><input id="g-date" type="date" style="font-size:11px;padding:8px 6px"></div>
+      <div class="field"><label>Due Date</label><input id="g-due" type="date" style="font-size:11px;padding:8px 6px"></div>
+    </div>
+    <div class="field full" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="field"><label>Interest</label><input id="g-rate" type="number" value="3" style="max-width:140px"></div>
+      <div class="field"><label>Interest Type</label><select id="g-type"><option>Monthly</option><option>Daily</option><option>Fixed</option></select></div>
+    </div>
+    <div class="field full"><label>Payment Source <button type="button" onclick="addGivePartnerRow()" style="margin-left:8px;padding:2px 10px;font-size:11px;border:1px solid #2563eb;border-radius:6px;background:#eff6ff;color:#2563eb;cursor:pointer;font-weight:600">+ Add Partner</button></label>
+      <div class="form-section">
+        <div id="g-partner-rows"></div>
+        <div class="form-row" style="margin-top:6px"><b>Loan Amount</b><b id="g-sourceTotal" style="color:#059669">₹0</b></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('giveModal')">Cancel</button>
+    <button class="btn btn-primary" id="saveLoanBtn" onclick="saveLoan()">Save Loan</button>
+  </div>
+</div></div>
+
+<!-- RECEIVE MONEY MODAL -->
+<div class="modal" id="receiveModal"><div class="modal-box">
+  <div class="modal-header"><h2>💵 Receive Payment</h2><button class="close-btn" onclick="closeModal('receiveModal')">×</button></div>
+  <div class="form-grid">
+    <div class="field"><label>Borrower</label><select id="r-borrower-name" onchange="populateReceiveLoan()"></select></div>
+    <div class="field"><label>Loan</label><select id="r-borrower" onchange="updateReceiveInfo()"></select></div>
+    <div class="field"><label>Date Received</label><input id="r-date" type="date"></div>
+    <div class="field full"><label>Payment Collection <button type="button" onclick="addRecvPartnerRow()" style="margin-left:8px;padding:2px 10px;font-size:11px;border:1px solid #059669;border-radius:6px;background:#f0fdf4;color:#059669;cursor:pointer;font-weight:600">+ Add Partner</button></label>
+      <div class="form-section">
+        <div id="r-partner-rows"></div>
+        <div class="form-row" style="margin-top:6px"><b>Total Collected</b><b id="r-sourceTotal" style="color:#059669">₹0</b></div>
+      </div>
+    </div>
+    <div class="field full" style="display:grid;grid-template-columns:140px 140px;gap:14px">
+      <div class="field"><label>Principal (₹)</label><input id="r-principal" type="number" placeholder="0" oninput="updateReceiveInfo()"></div>
+      <div class="field"><label>Interest (₹)</label><input id="r-interest" type="number" placeholder="0" oninput="updateReceiveInfo()"></div>
+    </div>
+    <div class="field full"><label>Notes / Reference</label><input id="r-notes" placeholder="Optional transaction reference"></div>
+    <div class="field full"><div class="form-section">
+      <div class="form-row"><span>Borrower Outstanding</span><b id="r-outstanding" style="color:#ef4444">₹0</b></div>
+      <div class="form-row"><span>Principal + Interest</span><b id="r-piCheck" style="color:#64748b">₹0</b></div>
+      <div class="form-row"><span>After This Payment</span><b id="r-afterPay" style="color:#059669">₹0</b></div>
+    </div></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('receiveModal')">Cancel</button>
+    <button class="btn btn-success" id="savePayBtn" onclick="savePayment()">Save Collection</button>
+  </div>
+</div></div>
+
+<!-- PARTNER TRANSACTION MODAL -->
+<div class="modal" id="partnerTxModal"><div class="modal-box">
+  <div class="modal-header"><h2 id="ptx-title">➕ Add Contribution</h2><button class="close-btn" onclick="closeModal('partnerTxModal')">×</button></div>
+  <div class="form-grid">
+    <input type="hidden" id="ptx-type">
+    <div class="field"><label>Partner</label><input id="ptx-name" disabled style="background:#f8fafc"></div>
+    <div class="field"><label>Date</label><input id="ptx-date" type="date"></div>
+    <div class="field"><label>Amount (₹)</label><input id="ptx-amount" type="text" placeholder="0" oninput="fmtComma(this)"></div>
+    <div class="field"><label>Method</label><select id="ptx-method"><option>Cash</option><option>UPI</option><option>Bank</option></select></div>
+    <div class="field full"><label>Remarks</label><input id="ptx-remarks" placeholder="Optional notes"></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('partnerTxModal')">Cancel</button>
+    <button class="btn btn-primary" id="savePartnerTxBtn" onclick="savePartnerTx()">Save</button>
+  </div>
+</div></div>
+
+<!-- ADD PARTNER MODAL -->
+<div class="modal" id="partnerModal"><div class="modal-box">
+  <div class="modal-header"><h2>👥 Add Partner</h2><button class="close-btn" onclick="closeModal('partnerModal')">×</button></div>
+  <div class="form-grid">
+    <div class="field"><label>Partner Name</label><select id="p-name"></select></div>
+    <div class="field"><label>Amount (₹)</label><input id="p-contrib" type="text" placeholder="0" oninput="fmtComma(this)"></div>
+    <div class="field full"><label>Remarks</label><input id="p-remarks" placeholder="Optional notes"></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('partnerModal')">Cancel</button>
+    <button class="btn btn-primary" id="savePartnerBtn" onclick="savePartner()">Add Partner</button>
+  </div>
+</div></div>
+
+<!-- ACCOUNT ENTRY MODAL -->
+<div class="modal" id="accountModal"><div class="modal-box">
+  <div class="modal-header"><h2>🏦 Add Account Entry</h2><button class="close-btn" onclick="closeModal('accountModal')">×</button></div>
+  <div class="form-grid">
+    <div class="field"><label>Date</label><input id="ac-date" type="date"></div>
+    <div class="field"><label>Description</label><input id="ac-desc" placeholder="e.g. Partner deposit"></div>
+    <div class="field"><label>Type</label><select id="ac-type"><option>Credit</option><option>Debit</option></select></div>
+    <div class="field"><label>Cash (₹)</label><input id="ac-cash" type="number" value="0"></div>
+    <div class="field"><label>UPI (₹)</label><input id="ac-upi" type="number" value="0"></div>
+    <div class="field"><label>Bank (₹)</label><input id="ac-bank" type="number" value="0"></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('accountModal')">Cancel</button>
+    <button class="btn btn-primary" id="saveAccBtn" onclick="saveAccountEntry()">Save Entry</button>
+  </div>
+</div></div>
+
+<!-- CREATE USER MODAL -->
+<div class="modal" id="createUserModal"><div class="modal-box">
+  <div class="modal-header"><h2>👤 Add User</h2><button class="close-btn" onclick="closeModal('createUserModal')">×</button></div>
+  <div class="form-grid">
+    <div class="field"><label>Username</label><input id="cu-username" placeholder="e.g. frienda" autocomplete="off"></div>
+    <div class="field"><label>Display Name</label><input id="cu-display" placeholder="e.g. Friend A"></div>
+    <div class="field"><label>Password</label><input id="cu-pass" type="password" placeholder="Password" autocomplete="new-password"></div>
+    <div class="field"><label>Role</label><select id="cu-role"><option value="partner">Partner</option><option value="admin">Admin</option></select></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('createUserModal')">Cancel</button>
+    <button class="btn btn-primary" id="saveUserBtn" onclick="saveUser()">Add User</button>
+  </div>
+</div></div>
+
+<!-- EDIT USER MODAL -->
+<div class="modal" id="editUserModal"><div class="modal-box">
+  <div class="modal-header"><h2>✏️ Edit User</h2><button class="close-btn" onclick="closeModal('editUserModal')">×</button></div>
+  <div class="form-grid">
+    <input type="hidden" id="eu-id">
+    <div class="field"><label>Username</label><input id="eu-username" autocomplete="off"></div>
+    <div class="field"><label>Display Name</label><input id="eu-display"></div>
+    <div class="field"><label>New Password <span style="color:#94a3b8;font-weight:400">(leave blank to keep)</span></label><input id="eu-pass" type="password" placeholder="New password" autocomplete="new-password"></div>
+    <div class="field"><label>Role</label><select id="eu-role"><option value="partner">Partner</option><option value="admin">Admin</option></select></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-gray" onclick="closeModal('editUserModal')">Cancel</button>
+    <button class="btn btn-primary" id="updateUserBtn" onclick="updateUser()">Update User</button>
+  </div>
+</div></div>
+
+<script>
+/* ── SUPABASE CONFIG (replace key with your anon key) ── */
+const SUPABASE_URL = "https://jhrbyvgibjamxkbrnjpf.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpocmJ5dmdpYmphbXhrYnJuanBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4ODY1MDAsImV4cCI6MjEwMzQ2MjUwMH0.a2vNzps7YYGV9RkeCSE0SlaTjfmTdMzgkzent7aKQQk"; // paste your anon key here
+
+/* ── SUPABASE API ── */
+async function sb(table, method="GET", body=null, query=""){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`,{
+    method,
+    headers:{
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer "+SUPABASE_KEY,
+      "Content-Type": "application/json",
+      "Prefer": method==="POST"?"return=representation":"",
+    },
+    body: body ? JSON.stringify(body) : null
+  });
+  if(!res.ok){ const e=await res.text(); throw new Error(e); }
+  if(method==="DELETE"||res.status===204) return null;
+  return res.json();
+}
+const dbGet  = (t,q="")      => sb(t,"GET",null,q);
+const dbPost = (t,b)         => sb(t,"POST",b);
+const dbPatch= (t,q,b)       => sb(t,"PATCH",b,q);
+
+/* ── LOGGED IN USER ── */
+let currentUser = "";
+
+/* ── IN-MEMORY CACHE ── */
+let partners=[], borrowers=[], payments=[], accountLedger=[], activities=[];
+
+/* ── HELPERS ── */
+const money  = v => "₹"+Number(v||0).toLocaleString("en-IN");
+const todayStr = () => new Date().toISOString().slice(0,10);
+const fmtDate  = d => d?new Date(d).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}):"—";
+function daysLeft(due){
+  if(!due) return null;
+  return Math.ceil((new Date(due)-new Date())/(1000*60*60*24));
+}
+function statusFromDue(due,outstanding){
+  if(outstanding<=0) return "Settled";
+  const d=daysLeft(due);
+  if(d===null) return "Active";
+  if(d<0) return "Overdue";
+  if(d<=7) return "Due Soon";
+  return "Active";
+}
+function badgeClass(s){
+  return s==="Overdue"?"badge-red":s==="Due Soon"?"badge-orange":s==="Settled"?"badge-green":"badge-blue";
+}
+function toast(msg,ok=true){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.style.background=ok?"#059669":"#dc2626";
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2800);
+}
+function setBusy(btnId,busy){
+  const b=document.getElementById(btnId);
+  if(!b) return;
+  b.disabled=busy;
+  b.innerHTML=busy?`<span class="loader"></span>Saving...`:b.dataset.label||b.textContent;
+}
+
+/* ── LOGIN ── */
+const USERS = {
+  "admin":   {password:"admin123",  display:"Admin"},
+  "you":     {password:"pass1",     display:"You"},
+  "friend a":{password:"passa",     display:"Friend A"},
+  "friend b":{password:"passb",     display:"Friend B"},
+  "friend c":{password:"passc",     display:"Friend C"}
+};
+function doLogin(){
+  const user=document.getElementById("l-user").value.trim().toLowerCase();
+  const pass=document.getElementById("l-pass").value;
+  const match=USERS[user];
+  if(!match||match.password!==pass){
+    document.getElementById("l-err").textContent="Invalid username or password.";
+    return;
+  }
+  currentUser=match.display;
+  sessionStorage.setItem("jfm_user",currentUser);
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("topbarUser").textContent=currentUser;
+  document.getElementById("topbarAvatar").textContent=currentUser.charAt(0).toUpperCase();
+  loadAll();
+}
+function checkSession(){
+  const saved=sessionStorage.getItem("jfm_user");
+  if(saved){
+    currentUser=saved;
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("topbarUser").textContent=currentUser;
+    document.getElementById("topbarAvatar").textContent=currentUser.charAt(0).toUpperCase();
+    loadAll();
+  }
+}
+function logout(){
+  sessionStorage.removeItem("jfm_user");
+  currentUser="";
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("l-user").value="";
+  document.getElementById("l-pass").value="";
+  document.getElementById("l-err").textContent="";
+  document.getElementById("profileMenu").style.display="none";
+}
+function toggleProfileMenu(){
+  const m=document.getElementById("profileMenu");
+  m.style.display=m.style.display==="none"?"block":"none";
+}
+document.addEventListener("click",e=>{
+  if(!e.target.closest("#topbarAvatar")&&!e.target.closest("#profileMenu"))
+    document.getElementById("profileMenu").style.display="none";
+});
+
+/* ── LOAD ALL DATA ── */
+async function loadAll(){
+  try{
+    [partners, borrowers, payments, accountLedger, activities] = await Promise.all([
+      dbGet("partners","?order=created_at"),
+      dbGet("borrowers","?order=created_at.desc"),
+      dbGet("payments","?order=date.desc"),
+      dbGet("account_ledger","?order=date.desc"),
+      dbGet("activities","?order=created_at.desc&limit=20")
+    ]);
+    refreshStatuses();
+    renderAll();
+  } catch(e){
+    toast("DB connection failed: "+e.message, false);
+  }
+}
+
+
+function refreshStatuses(){
+  borrowers.forEach(b=>{
+    if(b.outstanding>0) b.status=statusFromDue(b.due_date,b.outstanding);
+  });
+}
+
+/* ── NAVIGATION ── */
+function showPage(id,btn,filter){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".mob-btn").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  const titles={dashboard:"Dashboard",partners:"Partners",borrowers:"Borrowers",loans:"Loans / Payments",payments:"Payments",accounts:"Accounts",duedates:"Due Dates",reports:"Reports"};
+  document.getElementById("pageTitle").textContent=titles[id]||"";
+  renderAll();
+  if(id==="duedates"&&filter) filterDue(filter,document.querySelector(`.due-chip[onclick*="${filter}"]`));
+}
+
+function renderAll(){
+  const active=document.querySelector(".page.active")?.id;
+  if(active==="dashboard") renderDashboard();
+  else if(active==="partners") renderPartners();
+  else if(active==="borrowers") renderBorrowers();
+  else if(active==="loans") renderLoans();
+  else if(active==="payments") renderPayments();
+  else if(active==="accounts") renderAccounts();
+  else if(active==="duedates") renderDueDates();
+  else if(active==="reports") renderReports();
+}
+
+/* ── USER MANAGEMENT (admin only) ── */
+let usersCache=[];
+async function renderUserManagement(forceRefresh=false){
+  const el=document.getElementById("d-userMgmt");
+  if(currentUser.toLowerCase()!=="admin"){el.style.display="none";return;}
+  el.style.display="block";
+  try{
+    if(forceRefresh||!usersCache.length) usersCache=await dbGet("users","?order=created_at");
+    document.getElementById("d-userTable").innerHTML=usersCache.map(u=>`<tr>
+      <td><b>${u.username}</b></td>
+      <td>${u.display_name}</td>
+      <td><span class="badge ${u.role==="admin"?"badge-blue":"badge-gray"}">${u.role}</span></td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-gray btn-sm" onclick="openEditUser('${u.id}')" title="Edit">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}','${u.username}')" title="Delete">🗑️</button>
+      </td>
+    </tr>`).join("")||`<tr><td colspan="4" class="empty">No users</td></tr>`;
+  }catch(e){
+    document.getElementById("d-userTable").innerHTML=`<tr><td colspan="4" class="empty">Could not load users</td></tr>`;
+  }
+}
+function openEditUser(id){
+  const u=usersCache.find(x=>x.id===id);
+  if(!u) return;
+  document.getElementById("eu-id").value=u.id;
+  document.getElementById("eu-username").value=u.username;
+  document.getElementById("eu-display").value=u.display_name;
+  document.getElementById("eu-pass").value="";
+  document.getElementById("eu-role").value=u.role;
+  openModal("editUserModal");
+}
+async function saveUser(){
+  const username=document.getElementById("cu-username").value.trim().toLowerCase();
+  const display=document.getElementById("cu-display").value.trim();
+  const pass=document.getElementById("cu-pass").value;
+  const role=document.getElementById("cu-role").value;
+  if(!username||!display||!pass){toast("Fill all fields.",false);return;}
+  setBusy("saveUserBtn",true);
+  try{
+    await dbPost("users",{username,password:pass,display_name:display,role});
+    closeModal("createUserModal");
+    await renderUserManagement(true);
+    toast("User created.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{const b=document.getElementById("saveUserBtn");b.disabled=false;b.textContent="Add User";}
+}
+async function updateUser(){
+  const id=document.getElementById("eu-id").value;
+  const username=document.getElementById("eu-username").value.trim().toLowerCase();
+  const display=document.getElementById("eu-display").value.trim();
+  const pass=document.getElementById("eu-pass").value;
+  const role=document.getElementById("eu-role").value;
+  if(!username||!display){toast("Fill required fields.",false);return;}
+  const body={username,display_name:display,role};
+  if(pass) body.password=pass;
+  setBusy("updateUserBtn",true);
+  try{
+    await dbPatch("users",`?id=eq.${id}`,body);
+    closeModal("editUserModal");
+    await renderUserManagement(true);
+    toast("User updated.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{const b=document.getElementById("updateUserBtn");b.disabled=false;b.textContent="Update User";}
+}
+async function deleteUser(id,username){
+  if(!confirm(`Delete user "${username}"? This cannot be undone.`)) return;
+  try{
+    await sb("users","DELETE",null,`?id=eq.${id}`);
+    await renderUserManagement(true);
+    toast("User deleted.");
+  }catch(e){toast("Error: "+e.message,false);}
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  const totalFund=partners.reduce((s,p)=>s+Number(p.contribution),0);
+  const outstanding=borrowers.reduce((s,b)=>s+Number(b.outstanding),0);
+  const totalInterest=payments.reduce((s,p)=>s+Number(p.interest),0);
+  const overdueBorr=borrowers.filter(b=>b.status==="Overdue");
+  const soonBorr=borrowers.filter(b=>b.status==="Due Soon");
+  document.getElementById("d-totalFund").textContent=money(totalFund);
+  document.getElementById("d-outstanding").textContent=money(outstanding);
+  document.getElementById("d-available").textContent=money(totalFund-outstanding);
+  document.getElementById("d-interest").textContent=money(totalInterest);
+  document.getElementById("d-overdue-amt").textContent=money(overdueBorr.reduce((s,b)=>s+Number(b.outstanding),0));
+  document.getElementById("d-overdue-count").textContent=overdueBorr.length+" borrower"+(overdueBorr.length!==1?"s":"");
+  document.getElementById("d-duesoon-amt").textContent=money(soonBorr.reduce((s,b)=>s+Number(b.outstanding),0));
+  document.getElementById("d-duesoon-count").textContent=soonBorr.length+" borrower"+(soonBorr.length!==1?"s":"");
+  document.getElementById("d-dueTable").innerHTML=borrowers
+    .filter(b=>b.outstanding>0)
+    .sort((a,b)=>(daysLeft(a.due_date)||999)-(daysLeft(b.due_date)||999))
+    .slice(0,5)
+    .map(b=>{
+      const dl=daysLeft(b.due_date);
+      const dueText=dl===null?'—':dl<0?`${Math.abs(dl)}d over`:dl===0?'Today':`${dl}d`;
+      const dueColor=dl===null?'':dl<0?'color:#ef4444':dl<=7?'color:#f59e0b':'color:#059669';
+      return `<tr><td><b>${b.name}</b></td><td>${money(b.outstanding)}</td><td style="${dueColor};font-weight:600">${dueText}</td></tr>`;
+    })
+    .join("")||`<tr><td colspan="4" class="empty">No active loans</td></tr>`;
+  document.getElementById("d-activity").innerHTML=activities.slice(0,6).map(a=>`
+    <div class="activity-item"><div class="activity-dot ${a.color}"></div>
+    <div><div class="activity-text">${a.text}</div><div class="activity-time">${a.sub}</div></div></div>`).join("")||"<div class='empty'>No activity yet</div>";
+  renderUserManagement();
+}
+
+/* ── PARTNERS ── */
+function renderPartners(){
+  const isAdmin=currentUser.toLowerCase()==="admin";
+  const addBtn=document.getElementById("partner-add-btn");
+  if(addBtn) addBtn.innerHTML=isAdmin?`<button class="btn btn-primary" onclick="openModal('partnerModal')">+ Add Partner</button>`:"";
+  const actionTh=document.getElementById("partner-action-th");
+  if(actionTh) actionTh.textContent=isAdmin?"Action":"";
+  // group by name
+  const grouped=[];
+  partners.forEach(p=>{
+    const key=p.name.trim().toLowerCase();
+    const ex=grouped.find(x=>x.key===key);
+    if(ex){
+      ex.contribution+=Number(p.contribution);
+      ex.remarks=[ex.remarks,p.remarks].filter(Boolean).join('; ');
+    } else {
+      grouped.push({key,name:p.name.trim(),contribution:Number(p.contribution),remarks:p.remarks||'',id:p.id});
+    }
+  });
+  const totalFund=grouped.reduce((s,p)=>s+p.contribution,0);
+  document.getElementById("partner-stat-cards").innerHTML=grouped.map(p=>{
+      const isMe=p.name.toLowerCase()===currentUser.toLowerCase();
+      return `<div class="card ${isMe?'green':'blue'}"><div class="stat-label">${p.name}${isMe?' (You)':''}</div><div class="stat-value">${money(p.contribution)}</div></div>`;
+    }).join("");
+  // per-partner stats from account_ledger
+  function partnerLedgerStats(name){
+    const key=name.trim().toLowerCase();
+    let givenCash=0,givenUpi=0,givenBank=0,recvCash=0,recvUpi=0,recvBank=0;
+    accountLedger.forEach(e=>{
+      const desc=(e.description||'').toLowerCase();
+      if(e.type==="Debit"&&desc.includes('from '+key)){
+        givenCash+=Number(e.cash||0);givenUpi+=Number(e.upi||0);givenBank+=Number(e.bank||0);
+      }
+      if(e.type==="Credit"&&desc.includes('to '+key)){
+        recvCash+=Number(e.cash||0);recvUpi+=Number(e.upi||0);recvBank+=Number(e.bank||0);
+      }
+    });
+    return {
+      pendingCash:Math.max(0,givenCash-recvCash),
+      pendingUpi:Math.max(0,givenUpi-recvUpi),
+      pendingBank:Math.max(0,givenBank-recvBank),
+      pending:Math.max(0,(givenCash+givenUpi+givenBank)-(recvCash+recvUpi+recvBank))
+    };
+  }
+  document.getElementById("partnerTable").innerHTML=partners.map(p=>{
+    const isMe=p.name.toLowerCase()===currentUser.toLowerCase();
+    const youBadge=isMe?` <span class="badge badge-green">You</span>`:"";
+    const s=partnerLedgerStats(p.name);
+    const actions=isAdmin
+      ?`<td style="display:flex;gap:6px">
+          <button class="btn btn-success btn-sm" onclick="openPartnerTx('${p.id}','${p.name}','add')" title="Add Contribution">➕</button>
+          <button class="btn btn-light btn-sm" onclick="openPartnerTx('${p.id}','${p.name}','return')" title="Return">↩️</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePartner('${p.id}','${p.name}')" title="Delete">🗑️</button>
+        </td>`
+      :`<td></td>`;
+    return `<tr style="${isMe?"background:#f0fdf4":""}"><td><b>${p.name}</b>${youBadge}</td><td>${money(p.contribution)}</td><td style="color:#ef4444;font-weight:600">${money(s.pending)}</td><td>${s.pendingCash?money(s.pendingCash):'—'}</td><td>${s.pendingUpi?money(s.pendingUpi):'—'}</td><td>${s.pendingBank?money(s.pendingBank):'—'}</td><td>${p.remarks||'—'}</td>${actions}</tr>`;
+  }).join("")||`<tr><td colspan="8" class="empty">No partners</td></tr>`;
+  // mobile cards
+  document.getElementById("partnerCards").innerHTML=partners.map((p,idx)=>{
+    const isMe=p.name.toLowerCase()===currentUser.toLowerCase();
+    const youBadge=isMe?` <span class="badge badge-green">You</span>`:'';
+    const s=partnerLedgerStats(p.name);
+    const actBtns=isAdmin?`
+      <button class="btn btn-success btn-sm" onclick="openPartnerTx('${p.id}','${p.name}','add')" title="Add">➕</button>
+      <button class="btn btn-light btn-sm" onclick="openPartnerTx('${p.id}','${p.name}','return')" title="Return">↩️</button>
+      <button class="btn btn-danger btn-sm" onclick="deletePartner('${p.id}','${p.name}')" title="Delete">🗑️</button>`:'';
+    const cid='pc'+p.id;
+    const collapsed=idx>0?'collapsed':'';
+    const bodyH=idx>0?'max-height:0':'max-height:500px';
+    return `<div class="mob-card ${collapsed}" style="${isMe?'background:#f0fdf4':''}">
+      <div class="mob-card-header" onclick="toggleCard(this)" style="cursor:pointer">
+        <div><div class="mob-card-title">${p.name}${youBadge}<i class="mob-card-chevron">&#9660;</i></div></div>
+        <div class="mob-card-actions" onclick="event.stopPropagation()">${actBtns}</div>
+      </div>
+      <div class="mob-card-body" style="${bodyH}">
+        <div class="mob-card-tabs">
+          <button class="mob-tab active" onclick="switchMobTab('${cid}','summary',this)">Summary</button>
+          <button class="mob-tab" onclick="switchMobTab('${cid}','breakdown',this)">Breakdown</button>
+        </div>
+        <div class="mob-tab-content" id="${cid}-summary">
+          <div class="row"><span>Contribution</span><span style="font-weight:600">${money(p.contribution)}</span></div>
+          <div class="row"><span>Pending</span><span style="color:#ef4444;font-weight:600">${money(s.pending)}</span></div>
+        </div>
+        <div class="mob-tab-content" id="${cid}-breakdown" style="display:none">
+          <div class="row"><span>Cash</span><span>${s.pendingCash?money(s.pendingCash):'—'}</span></div>
+          <div class="row"><span>UPI</span><span>${s.pendingUpi?money(s.pendingUpi):'—'}</span></div>
+          <div class="row"><span>Bank</span><span>${s.pendingBank?money(s.pendingBank):'—'}</span></div>
+          <div class="row"><span>Remarks</span><span style="color:#94a3b8">${p.remarks||'—'}</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty">No partners</div>';
+}
+async function deletePartner(id,name){
+  if(!confirm(`Delete partner "${name}"? This cannot be undone.`)) return;
+  try{
+    await sb("partners","DELETE",null,`?id=eq.${id}`);
+    partners=await dbGet("partners","?order=created_at");
+    renderPartners();
+    toast("Partner deleted.");
+  }catch(e){toast("Error: "+e.message,false);}
+}
+function openPartnerTx(id,name,type){
+  document.getElementById("ptx-type").value=type;
+  document.getElementById("ptx-name").value=name;
+  document.getElementById("ptx-date").value=todayStr();
+  document.getElementById("ptx-amount").value="";
+  document.getElementById("ptx-remarks").value="";
+  document.getElementById("ptx-title").textContent=type==="add"?"➕ Add Contribution":"↩️ Return to Partner";
+  document.getElementById("savePartnerTxBtn").className="btn btn-sm "+(type==="add"?"btn-success":"btn-light");
+  openModal("partnerTxModal");
+}
+async function savePartnerTx(){
+  const type=document.getElementById("ptx-type").value;
+  const name=document.getElementById("ptx-name").value;
+  const amount=parseComma(document.getElementById("ptx-amount").value);
+  const date=document.getElementById("ptx-date").value;
+  const method=document.getElementById("ptx-method").value;
+  const remarks=document.getElementById("ptx-remarks").value.trim();
+  if(amount<=0){toast("Enter a valid amount.",false);return;}
+  setBusy("savePartnerTxBtn",true);
+  const isReturn=type==="return";
+  const contribution=isReturn?-amount:amount;
+  const ledgerType=isReturn?"Debit":"Credit";
+  const desc=isReturn?`Return to ${name}`:`Contribution from ${name}`;
+  const cash=method==="Cash"?amount:0;
+  const upi=method==="UPI"?amount:0;
+  const bank=method==="Bank"?amount:0;
+  try{
+    await dbPost("partners",{name,contribution,share:0,remarks});
+    await dbPost("account_ledger",{date:date||todayStr(),description:desc,type:ledgerType,cash,upi,bank});
+    closeModal("partnerTxModal");
+    partners=await dbGet("partners","?order=created_at");
+    renderPartners();
+    toast(isReturn?"Return recorded.":"Contribution added.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{const b=document.getElementById("savePartnerTxBtn");b.disabled=false;b.textContent="Save";}
+}
+
+/* ── BORROWERS ── */
+function renderBorrowers(){
+  const search=(document.getElementById("searchBorrower")?.value||"").toLowerCase();
+  const seen=new Set();
+  const unique=[];
+  borrowers.forEach(b=>{
+    const key=b.name.trim().toLowerCase();
+    if(!seen.has(key)){seen.add(key);unique.push(b);}
+  });
+  const list=unique.filter(b=>b.name.toLowerCase().includes(search)||(b.mobile||'').includes(search));
+  const rows=list.length?list.map((b,i)=>{
+    const debit=borrowers.filter(x=>x.name.trim().toLowerCase()===b.name.trim().toLowerCase()).reduce((s,x)=>s+Number(x.loan),0);
+    const credit=payments.filter(p=>p.borrower_name.trim().toLowerCase()===b.name.trim().toLowerCase()).reduce((s,p)=>s+Number(p.total),0);
+    const balance=debit-credit;
+    return {b,i,debit,credit,balance};
+  }):[];
+  // desktop table
+  document.getElementById("borrowerTable").innerHTML=rows.length?rows.map(({b,i,debit,credit,balance})=>`<tr>
+      <td style="color:#94a3b8">${i+1}</td>
+      <td><b>${b.name}</b></td>
+      <td>${b.mobile||'—'}</td>
+      <td style="white-space:normal;max-width:180px">${b.address||'—'}</td>
+      <td style="color:#ef4444;font-weight:600">${debit>0?money(debit):'—'}</td>
+      <td style="color:#059669;font-weight:600">${credit>0?money(credit):'—'}</td>
+      <td style="color:#2563eb;font-weight:600">${money(balance)}</td>
+      <td><div style="display:flex;gap:6px">
+        <button class="btn btn-gray btn-sm" onclick="openEditBorrower('${b.id}')" title="Edit">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteBorrower('${b.id}','${b.name}')" title="Delete">🗑️</button>
+      </div></td>
+    </tr>`).join(""):`<tr><td colspan="8" class="empty">No borrowers found</td></tr>`;
+  // mobile cards
+  document.getElementById("borrowerCards").innerHTML=rows.length?rows.map(({b,i,debit,credit,balance},idx)=>{
+    const cid='bc'+b.id;
+    const collapsed=idx>0?'collapsed':'';
+    const bodyH=idx>0?'max-height:0':'max-height:500px';
+    return `<div class="borrower-card ${collapsed}">
+      <div class="borrower-card-header" onclick="toggleCard(this)" style="cursor:pointer">
+        <div class="borrower-card-name">${i+1}. ${b.name}<i class="mob-card-chevron">&#9660;</i></div>
+        <div class="borrower-card-actions" onclick="event.stopPropagation()">
+          <button class="btn btn-gray btn-sm" onclick="openEditBorrower('${b.id}')" title="Edit">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBorrower('${b.id}','${b.name}')" title="Delete">🗑️</button>
+        </div>
+      </div>
+      <div class="mob-card-body" style="${bodyH}">
+        <div class="borrower-card-tabs">
+          <button class="borrower-tab active" onclick="switchBTab('${cid}','info',this)">Info</button>
+          <button class="borrower-tab" onclick="switchBTab('${cid}','finance',this)">Finance</button>
+        </div>
+        <div class="borrower-tab-content" id="${cid}">
+          <div class="row"><span>Mobile</span><span>${b.mobile||'—'}</span></div>
+          <div class="row"><span>Address</span><span style="text-align:right;max-width:60%">${b.address||'—'}</span></div>
+        </div>
+        <div class="borrower-tab-content" id="${cid}-finance" style="display:none">
+          <div class="row"><span>Debit</span><span style="color:#ef4444;font-weight:600">${debit>0?money(debit):'—'}</span></div>
+          <div class="row"><span>Credit</span><span style="color:#059669;font-weight:600">${credit>0?money(credit):'—'}</span></div>
+          <div class="row"><span>Balance</span><span style="color:#2563eb;font-weight:600">${money(balance)}</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join(""):`<div class="empty">No borrowers found</div>`;
+}
+function switchBTab(cid,tab,btn){
+  document.getElementById(cid).style.display=tab==='info'?'block':'none';
+  document.getElementById(cid+'-finance').style.display=tab==='finance'?'block':'none';
+  btn.closest('.borrower-card-tabs').querySelectorAll('.borrower-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+function switchMobTab(cid,tab,btn){
+  btn.closest('.mob-card-tabs').querySelectorAll('.mob-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.mob-card').querySelectorAll('.mob-tab-content').forEach(c=>c.style.display='none');
+  document.getElementById(cid+'-'+tab).style.display='block';
+}
+function toggleCard(el){
+  const card=el.closest('.mob-card,.borrower-card');
+  const body=card.querySelector('.mob-card-body');
+  const collapsed=card.classList.toggle('collapsed');
+  if(!collapsed) body.style.maxHeight=body.scrollHeight+'px';
+}
+
+/* ── LOANS ── */
+function renderLoans(){
+  const isAdmin=currentUser.toLowerCase()==="admin";
+  const search=(document.getElementById("searchLoan")?.value||"").toLowerCase();
+  const sf=document.getElementById("filterLoanStatus")?.value||"";
+  const list=borrowers.filter(b=>b.loan>0&&b.name.toLowerCase().includes(search)&&(!sf||b.status===sf));
+  const totalLoan=list.reduce((s,b)=>s+Number(b.loan),0);
+  const totalOut=list.reduce((s,b)=>s+Number(b.outstanding),0);
+  document.getElementById("loan-summary").innerHTML=`
+    <div class="summary-pill">Active Loans: <b>${list.filter(b=>b.status!=="Settled").length}</b></div>
+    <div class="summary-pill">Given: <b>${money(totalLoan)}</b></div>
+    <div class="summary-pill">Outstanding: <b style="color:#ef4444">${money(totalOut)}</b></div>
+    <div class="summary-pill">Settled: <b style="color:#059669">${list.filter(b=>b.status==="Settled").length}</b></div>`;
+  const loanRows=list.length?list.map(b=>{
+    const actions=`<div style="display:flex;gap:6px">
+      ${b.outstanding>0?`<button class="btn btn-success btn-sm" onclick="quickReceive('${b.id}')">💵 Receive</button>`:""}
+      ${isAdmin?`<button class="btn btn-gray btn-sm" onclick="openEditLoan('${b.id}')" title="Edit">✏️</button>`:''}
+      ${isAdmin?`<button class="btn btn-danger btn-sm" onclick="deleteLoan('${b.id}','${b.name}')" title="Delete">🗑️</button>`:''}
+    </div>`;
+    return {b,actions};
+  }):[];
+  // desktop
+  document.getElementById("loanTable").innerHTML=loanRows.length?loanRows.map(({b,actions})=>`<tr>
+    <td><b>${b.name}</b></td><td>${money(b.loan)}</td><td>${money(b.outstanding)}</td>
+    <td style="color:#7c3aed">${money(b.interest_due)}</td><td>${b.rate}% ${b.type}</td>
+    <td>${fmtDate(b.given_date)}</td><td>${fmtDate(b.due_date)}</td>
+    <td style="color:#94a3b8">${fmtDate(b.created_at)}</td>
+    <td><span class="badge ${badgeClass(b.status)}">${b.status}</span></td>
+    <td>${actions}</td>
+  </tr>`).join(""):`<tr><td colspan="10" class="empty">No loans found</td></tr>`;
+  // mobile cards
+  document.getElementById("loanCards").innerHTML=loanRows.length?loanRows.map(({b,actions},idx)=>{
+    const cid='lc'+b.id;
+    const collapsed=idx>0?'collapsed':'';
+    const bodyH=idx>0?'max-height:0':'max-height:500px';
+    return `<div class="mob-card ${collapsed}">
+      <div class="mob-card-header" onclick="toggleCard(this)" style="cursor:pointer">
+        <div>
+          <div class="mob-card-title">${b.name}<i class="mob-card-chevron">&#9660;</i></div>
+          <div class="mob-card-badge"><span class="badge ${badgeClass(b.status)}">${b.status}</span></div>
+        </div>
+        <div class="mob-card-actions" onclick="event.stopPropagation()">${actions}</div>
+      </div>
+      <div class="mob-card-body" style="${bodyH}">
+        <div class="mob-card-tabs">
+          <button class="mob-tab active" onclick="switchMobTab('${cid}','loan',this)">Loan</button>
+          <button class="mob-tab" onclick="switchMobTab('${cid}','dates',this)">Dates</button>
+        </div>
+        <div class="mob-tab-content" id="${cid}-loan">
+          <div class="row"><span>Loan</span><span style="font-weight:600">${money(b.loan)}</span></div>
+          <div class="row"><span>Outstanding</span><span style="color:#ef4444;font-weight:600">${money(b.outstanding)}</span></div>
+          <div class="row"><span>Interest Due</span><span style="color:#7c3aed;font-weight:600">${money(b.interest_due)}</span></div>
+          <div class="row"><span>Rate</span><span>${b.rate}% ${b.type}</span></div>
+        </div>
+        <div class="mob-tab-content" id="${cid}-dates" style="display:none">
+          <div class="row"><span>Given</span><span>${fmtDate(b.given_date)}</span></div>
+          <div class="row"><span>Due</span><span>${fmtDate(b.due_date)}</span></div>
+          <div class="row"><span>Created</span><span style="color:#94a3b8">${fmtDate(b.created_at)}</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join(""):`<div class="empty">No loans found</div>`;
+}
+async function deleteLoan(id,name){
+  if(!confirm(`Delete loan for "${name}"? This will also delete related payments and cannot be undone.`)) return;
+  try{
+    await sb("payments","DELETE",null,`?borrower_id=eq.${id}`);
+    await sb("borrowers","DELETE",null,`?id=eq.${id}`);
+    await loadAll();
+    toast("Loan deleted.");
+  }catch(e){toast("Error: "+e.message,false);}
+}
+function openEditLoan(id){
+  const b=borrowers.find(x=>x.id===id);
+  if(!b) return;
+  document.getElementById("el-id").value=b.id;
+  document.getElementById("el-name").value=b.name;
+  document.getElementById("el-amount").value=b.loan;
+  document.getElementById("el-outstanding").value=b.outstanding;
+  document.getElementById("el-interest").value=b.interest_due;
+  document.getElementById("el-rate").value=b.rate;
+  document.getElementById("el-type").value=b.type;
+  document.getElementById("el-given").value=b.given_date||"";
+  document.getElementById("el-due").value=b.due_date||"";
+  openModal("editLoanModal");
+}
+async function updateLoan(){
+  const id=document.getElementById("el-id").value;
+  const loan=Number(document.getElementById("el-amount").value)||0;
+  const outstanding=Number(document.getElementById("el-outstanding").value)||0;
+  const interest_due=Number(document.getElementById("el-interest").value)||0;
+  const rate=Number(document.getElementById("el-rate").value)||0;
+  const type=document.getElementById("el-type").value;
+  const given_date=document.getElementById("el-given").value;
+  const due_date=document.getElementById("el-due").value;
+  if(loan<=0){toast("Enter loan amount.",false);return;}
+  setBusy("updateLoanBtn",true);
+  try{
+    const b=borrowers.find(x=>x.id===id);
+    const status=statusFromDue(due_date,outstanding);
+    await dbPatch("borrowers",`?id=eq.${id}`,{loan,outstanding,interest_due,rate,type,given_date:given_date||null,due_date:due_date||null,status});
+    closeModal("editLoanModal");
+    await loadAll();
+    toast("Loan updated.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{const b=document.getElementById("updateLoanBtn");b.disabled=false;b.textContent="Update Loan";}
+}
+
+/* ── PAYMENTS ── */
+function renderPayments(){
+  const isAdmin=currentUser.toLowerCase()==="admin";
+  const actionTh=document.getElementById("pay-action-th");
+  if(actionTh) actionTh.textContent=isAdmin?"Action":"";
+  const search=(document.getElementById("searchPayment")?.value||"").toLowerCase();
+  const mf=document.getElementById("filterPayMethod")?.value||"";
+  const list=payments.filter(p=>p.borrower_name.toLowerCase().includes(search)&&(!mf||p.method.includes(mf)));
+  const totalC=payments.reduce((s,p)=>s+Number(p.total),0);
+  const totalI=payments.reduce((s,p)=>s+Number(p.interest),0);
+  document.getElementById("pay-summary").innerHTML=`
+    <div class="summary-pill">Collections: <b>${payments.length}</b></div>
+    <div class="summary-pill">Total: <b style="color:#059669">${money(totalC)}</b></div>
+    <div class="summary-pill">Interest: <b style="color:#7c3aed">${money(totalI)}</b></div>`;
+  // desktop
+  document.getElementById("paymentTable").innerHTML=list.length?list.map(p=>`<tr>
+    <td>${fmtDate(p.date)}</td><td><b>${p.borrower_name}</b></td><td>${money(p.total)}</td>
+    <td>${money(p.principal)}</td><td style="color:#7c3aed">${money(p.interest)}</td>
+    <td><span class="badge badge-blue">${p.method}</span></td><td style="color:#94a3b8">${p.notes||"—"}</td>
+    <td>${isAdmin?`<button class="btn btn-danger btn-sm" onclick="deletePayment('${p.id}','${p.borrower_id}',${p.principal},${p.interest})" title="Delete">🗑️</button>`:""}</td>
+  </tr>`).join(""):`<tr><td colspan="8" class="empty">No payments found</td></tr>`;
+  // mobile cards
+  document.getElementById("paymentCards").innerHTML=list.length?list.map((p,idx)=>{
+    const cid='pc'+p.id;
+    const collapsed=idx>0?'collapsed':'';
+    const bodyH=idx>0?'max-height:0':'max-height:500px';
+    return `<div class="mob-card ${collapsed}">
+      <div class="mob-card-header" onclick="toggleCard(this)" style="cursor:pointer">
+        <div>
+          <div class="mob-card-title">${p.borrower_name}<i class="mob-card-chevron">&#9660;</i></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">${fmtDate(p.date)}</div>
+        </div>
+        <div class="mob-card-actions" onclick="event.stopPropagation()">
+          <span class="badge badge-blue">${p.method}</span>
+          ${isAdmin?`<button class="btn btn-danger btn-sm" onclick="deletePayment('${p.id}','${p.borrower_id}',${p.principal},${p.interest})" title="Delete">🗑️</button>`:""}
+        </div>
+      </div>
+      <div class="mob-card-body" style="${bodyH}">
+        <div class="mob-card-tabs">
+          <button class="mob-tab active" onclick="switchMobTab('${cid}','amt',this)">Amount</button>
+          <button class="mob-tab" onclick="switchMobTab('${cid}','notes',this)">Notes</button>
+        </div>
+        <div class="mob-tab-content" id="${cid}-amt">
+          <div class="row"><span>Total</span><span style="font-weight:600">${money(p.total)}</span></div>
+          <div class="row"><span>Principal</span><span>${money(p.principal)}</span></div>
+          <div class="row"><span>Interest</span><span style="color:#7c3aed;font-weight:600">${money(p.interest)}</span></div>
+        </div>
+        <div class="mob-tab-content" id="${cid}-notes" style="display:none">
+          <div class="row"><span>Notes</span><span style="color:#94a3b8">${p.notes||"—"}</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join(""):`<div class="empty">No payments found</div>`;
+}
+async function deletePayment(id,borrowerId,principal,interest){
+  if(!confirm("Delete this payment? The borrower's outstanding balance will be restored.")) return;
+  try{
+    await sb("payments","DELETE",null,`?id=eq.${id}`);
+    const b=borrowers.find(x=>x.id===borrowerId);
+    if(b){
+      const newOut=Number(b.outstanding)+Number(principal);
+      const newInt=Number(b.interest_due)+Number(interest);
+      await dbPatch("borrowers",`?id=eq.${borrowerId}`,{outstanding:newOut,interest_due:newInt,status:statusFromDue(b.due_date,newOut)});
+    }
+    await loadAll();
+    toast("Payment deleted.");
+  }catch(e){toast("Error: "+e.message,false);}
+}
+
+/* ── ACCOUNTS ── */
+function renderAccounts(){
+  const isAdmin=currentUser.toLowerCase()==="admin";
+  const actionTh=document.getElementById("acc-action-th");
+  if(actionTh) actionTh.textContent=isAdmin?"Action":"";
+  let cash=0,upi=0,bank=0;
+  accountLedger.forEach(e=>{const s=e.type==="Credit"?1:-1;cash+=s*Number(e.cash);upi+=s*Number(e.upi);bank+=s*Number(e.bank);});
+  document.getElementById("acc-cash").textContent=money(cash);
+  document.getElementById("acc-upi").textContent=money(upi);
+  document.getElementById("acc-bank").textContent=money(bank);
+  document.getElementById("accountTable").innerHTML=accountLedger.map(e=>`<tr>
+    <td>${fmtDate(e.date)}</td><td>${e.description}</td>
+    <td><span class="badge ${e.type==="Credit"?"badge-green":"badge-red"}">${e.type}</span></td>
+    <td>${e.cash?money(e.cash):"—"}</td><td>${e.upi?money(e.upi):"—"}</td><td>${e.bank?money(e.bank):"—"}</td>
+    <td>${isAdmin?`<button class="btn btn-danger btn-sm" onclick="deleteAccountEntry('${e.id}')" title="Delete">🗑️</button>`:""}</td>
+  </tr>`).join("")||`<tr><td colspan="7" class="empty">No entries</td></tr>`;
+}
+async function deleteAccountEntry(id){
+  if(!confirm("Delete this ledger entry? This cannot be undone.")) return;
+  try{
+    await sb("account_ledger","DELETE",null,`?id=eq.${id}`);
+    accountLedger=await dbGet("account_ledger","?order=date.desc");
+    renderAccounts();
+    toast("Entry deleted.");
+  }catch(e){toast("Error: "+e.message,false);}
+}
+
+/* ── DUE DATES ── */
+let currentDueFilter="all";
+function filterDue(f,btn){
+  currentDueFilter=f;
+  document.querySelectorAll(".due-chip").forEach(c=>c.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  renderDueDates();
+}
+function renderDueDates(){
+  let list=[...borrowers];
+  if(currentDueFilter==="overdue") list=list.filter(b=>b.status==="Overdue");
+  else if(currentDueFilter==="soon") list=list.filter(b=>b.status==="Due Soon");
+  else if(currentDueFilter==="active") list=list.filter(b=>b.status==="Active");
+  else if(currentDueFilter==="settled") list=list.filter(b=>b.status==="Settled");
+  list.sort((a,b)=>(daysLeft(a.due_date)||999)-(daysLeft(b.due_date)||999));
+  document.getElementById("dueTable").innerHTML=list.length?list.map(b=>{
+    const dl=daysLeft(b.due_date);
+    const dlText=dl===null?"—":dl<0?`${Math.abs(dl)}d overdue`:dl===0?"Today":`${dl} days`;
+    const dlColor=dl===null?"":dl<0?"color:#ef4444":dl<=7?"color:#f59e0b":"color:#059669";
+    return `<tr><td><b>${b.name}</b></td><td>${money(b.loan)}</td><td>${money(b.outstanding)}</td>
+      <td style="color:#7c3aed">${money(b.interest_due)}</td><td>${fmtDate(b.due_date)}</td>
+      <td style="${dlColor};font-weight:600">${dlText}</td>
+      <td><span class="badge ${badgeClass(b.status)}">${b.status}</span></td>
+      <td>${b.outstanding>0?`<button class="btn btn-success btn-sm" onclick="quickReceive('${b.id}')">Receive</button>`:`<span class="badge badge-green">✓ Settled</span>`}</td>
+    </tr>`;
+  }).join(""):`<tr><td colspan="8" class="empty">No records</td></tr>`;
+}
+
+/* ── REPORTS ── */
+function renderReports(){
+  const totalLoans=borrowers.reduce((s,b)=>s+Number(b.loan),0);
+  const totalCollected=payments.reduce((s,p)=>s+Number(p.total),0);
+  const totalInterest=payments.reduce((s,p)=>s+Number(p.interest),0);
+  const totalOut=borrowers.reduce((s,b)=>s+Number(b.outstanding),0);
+  document.getElementById("r-totalLoans").textContent=money(totalLoans);
+  document.getElementById("r-totalCollected").textContent=money(totalCollected);
+  document.getElementById("r-totalInterest").textContent=money(totalInterest);
+  document.getElementById("r-pending").textContent=money(totalOut);
+  document.getElementById("r-partnerReport").innerHTML=partners.map(p=>{
+    const lent=Math.round(totalOut*p.share/100);
+    const interest=Math.round(totalInterest*p.share/100);
+    return `<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;font-size:13px"><b>${p.name}</b><span>${money(p.contribution)}</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.share}%"></div></div>
+      <div style="font-size:11px;color:#64748b;margin-top:4px">Lent: ${money(lent)} • Interest: ${money(interest)}</div>
+    </div>`;
+  }).join("");
+  document.getElementById("r-borrowerReport").innerHTML=borrowers.map(b=>`<tr>
+    <td><b>${b.name}</b></td><td>${money(b.loan)}</td>
+    <td style="color:#059669">${money(b.loan-b.outstanding)}</td>
+    <td style="color:#ef4444">${money(b.outstanding)}</td>
+  </tr>`).join("");
+}
+</script>
+
+<script>
+/* ── COMMA FORMAT ── */
+function fmtComma(el){
+  const raw=el.value.replace(/,/g,'').replace(/[^0-9]/g,'');
+  el.value=raw?Number(raw).toLocaleString('en-IN'):'';
+}
+function parseComma(v){ return Number((v||'').replace(/,/g,'')); }
+
+/* ── ADD BORROWER ── */
+function normMobile(m){ return (m||'').replace(/\D/g,''); }
+async function saveAddBorrower(){
+  const name=document.getElementById("ab-name").value.trim();
+  const mobile=document.getElementById("ab-mobile").value.trim();
+  const address=document.getElementById("ab-address").value.trim();
+  if(!name){toast("Enter borrower name.",false);return;}
+  if(mobile&&!/^[0-9+\-\s]{7,15}$/.test(mobile)){toast("Enter a valid mobile number.",false);return;}
+  // fresh fetch to avoid stale cache
+  try{ borrowers=await dbGet("borrowers","?order=created_at.desc"); }catch(e){}
+  const dupName=borrowers.find(b=>b.name.trim().toLowerCase()===name.toLowerCase());
+  if(dupName){toast(`Borrower "${name}" already exists.`,false);return;}
+  if(mobile){
+    const nm=normMobile(mobile);
+    const dupMobile=borrowers.find(b=>b.mobile&&normMobile(b.mobile)===nm);
+    if(dupMobile){toast(`Mobile ${mobile} already registered under "${dupMobile.name}".`,false);return;}
+  }
+  setBusy("saveAddBorrowerBtn",true);
+  try{
+    await dbPost("borrowers",{name,mobile:mobile||null,address:address||null,loan:0,outstanding:0,interest_due:0,rate:0,type:"Monthly",given_date:todayStr(),due_date:null,status:"Active"});
+    document.getElementById("ab-name").value="";
+    document.getElementById("ab-mobile").value="";
+    document.getElementById("ab-address").value="";
+    closeModal("addBorrowerModal");
+    borrowers=await dbGet("borrowers","?order=created_at.desc");
+    renderBorrowers();
+    toast("Borrower added.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{const b=document.getElementById("saveAddBorrowerBtn");b.disabled=false;b.textContent="Save Borrower";}
+}
+
+function openEditBorrower(id){
+  const b=borrowers.find(x=>x.id===id);
+  if(!b) return;
+  document.getElementById("eb-id").value=b.id;
+  document.getElementById("eb-name").value=b.name;
+  document.getElementById("eb-mobile").value=b.mobile||"";
+  document.getElementById("eb-address").value=b.address||"";
+  openModal("editBorrowerModal");
+}
+async function updateBorrower(){
+  const id=document.getElementById("eb-id").value;
+  const name=document.getElementById("eb-name").value.trim();
+  const mobile=document.getElementById("eb-mobile").value.trim();
+  const address=document.getElementById("eb-address").value.trim();
+  if(!name){toast("Enter borrower name.",false);return;}
+  if(mobile&&!/^[0-9+\-\s]{7,15}$/.test(mobile)){toast("Enter a valid mobile number.",false);return;}
+  const dupName=borrowers.find(b=>b.id!==id&&b.name.trim().toLowerCase()===name.toLowerCase());
+  if(dupName){toast(`Borrower "${name}" already exists.`,false);return;}
+  if(mobile){
+    const nm=normMobile(mobile);
+    const dupMobile=borrowers.find(b=>b.id!==id&&b.mobile&&normMobile(b.mobile)===nm);
+    if(dupMobile){toast(`Mobile ${mobile} already registered under "${dupMobile.name}".`,false);return;}
+  }
+  setBusy("updateBorrowerBtn",true);
+  try{
+    await dbPatch("borrowers",`?id=eq.${id}`,{name,mobile:mobile||null,address:address||null});
+    closeModal("editBorrowerModal");
+    await loadAll();
+    toast("Borrower updated.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{const b=document.getElementById("updateBorrowerBtn");b.disabled=false;b.textContent="Update Borrower";}
+}
+async function deleteBorrower(id,name){
+  if(!confirm(`Delete borrower "${name}" and all related payments? This cannot be undone.`)) return;
+  try{
+    await sb("payments","DELETE",null,`?borrower_id=eq.${id}`);
+    await sb("borrowers","DELETE",null,`?id=eq.${id}`);
+    await loadAll();
+    toast("Borrower deleted.");
+  }catch(e){toast("Error: "+e.message,false);}
+}
+function openGiveForBorrower(name){
+  openModal("giveModal");
+  setTimeout(()=>{
+    const sel=document.getElementById("g-name");
+    if(sel) sel.value=name;
+  },50);
+}
+
+/* ── GIVE MONEY — partner source rows ── */
+let givePartnerRows=[];
+let giveRowId=0;
+function getPartnerNames(){
+  const seen=new Set();
+  return partners.filter(p=>{const k=p.name.trim().toLowerCase();if(seen.has(k))return false;seen.add(k);return true;}).map(p=>p.name.trim());
+}
+function partnerOpts(selected='', exclude=[]){
+  return getPartnerNames()
+    .filter(n=>n===selected||!exclude.includes(n))
+    .map(n=>`<option value='${n}' ${n===selected?'selected':''}>${n}</option>`).join('');
+}
+function addGivePartnerRow(name=''){
+  const id=++giveRowId;
+  const used=new Set(givePartnerRows.map(r=>r.name));
+  const defaultName=name||getPartnerNames().find(n=>!used.has(n))||'';
+  if(!defaultName){toast('All partners already added.',false);return;}
+  givePartnerRows.push({id,name:defaultName,cash:0,upi:0,bank:0});
+  renderGivePartnerRows();
+}
+function removeGivePartnerRow(id){
+  givePartnerRows=givePartnerRows.filter(r=>r.id!==id);
+  renderGivePartnerRows();
+  calcGive();
+}
+function givePartnerTotal(r){ return (Number(r.cash)||0)+(Number(r.upi)||0)+(Number(r.bank)||0); }
+function renderGivePartnerRows(){
+  var container=document.getElementById('g-partner-rows');
+  if(!container) return;
+  var inp='padding:5px 7px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;text-align:right;width:100%';
+  container.innerHTML='';
+  givePartnerRows.forEach(function(r){
+    var excl=givePartnerRows.filter(function(x){return x.id!==r.id;}).map(function(x){return x.name;});
+    var wrap=document.createElement('div');
+    wrap.style.cssText='border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;background:#fff';
+    var top=document.createElement('div');
+    top.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px';
+    var sel=document.createElement('select');
+    sel.className='psel';
+    sel.innerHTML=partnerOpts(r.name,excl);
+    sel.addEventListener('change',function(){
+      var row=givePartnerRows.find(function(x){return x.id===r.id;});
+      if(row){row.name=sel.value;renderGivePartnerRows();calcGive();}
+    });
+    var rmBtn=document.createElement('button');
+    rmBtn.type='button';
+    rmBtn.textContent='\u2715';
+    rmBtn.style.cssText='margin-left:8px;border:0;background:#fee2e2;color:#dc2626;border-radius:6px;padding:4px 9px;cursor:pointer;font-size:13px';
+    rmBtn.addEventListener('click',function(){removeGivePartnerRow(r.id);});
+    top.appendChild(sel);
+    top.appendChild(rmBtn);
+    var grid=document.createElement('div');
+    grid.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px';
+    [['cash','Cash'],['upi','UPI'],['bank','Bank']].forEach(function(pair){
+      var field=pair[0],label=pair[1];
+      var cell=document.createElement('div');
+      var lbl=document.createElement('div');
+      lbl.style.cssText='font-size:10px;color:#64748b;margin-bottom:3px';
+      lbl.textContent=label;
+      var inp2=document.createElement('input');
+      inp2.type='number';
+      inp2.placeholder='0';
+      inp2.value=r[field]||'';
+      inp2.style.cssText=inp;
+      inp2.addEventListener('input',function(){
+        var row=givePartnerRows.find(function(x){return x.id===r.id;});
+        if(row){row[field]=inp2.value;calcGive();}
+      });
+      cell.appendChild(lbl);
+      cell.appendChild(inp2);
+      grid.appendChild(cell);
+    });
+    var tot=document.createElement('div');
+    tot.style.cssText='text-align:right;font-size:12px;color:#2563eb;font-weight:600';
+    tot.innerHTML='Partner Total: <span id="gpt-'+r.id+'">'+money(givePartnerTotal(r))+'</span>';
+    wrap.appendChild(top);
+    wrap.appendChild(grid);
+    wrap.appendChild(tot);
+    container.appendChild(wrap);
+  });
+}
+function calcGive(){
+  let src=0;
+  givePartnerRows.forEach(r=>{
+    const t=givePartnerTotal(r);
+    src+=t;
+    const el=document.getElementById('gpt-'+r.id);
+    if(el) el.textContent=money(t);
+  });
+  document.getElementById('g-sourceTotal').textContent=money(src);
+}
+
+async function saveLoan(){
+  const name=document.getElementById("g-name").value;
+  const amount=givePartnerRows.reduce((s,r)=>s+givePartnerTotal(r),0);
+  const due=document.getElementById("g-due").value;
+  const given=document.getElementById("g-date").value;
+  const rate=Number(document.getElementById("g-rate").value)||0;
+  const type=document.getElementById("g-type").value;
+  if(!name||amount<=0){toast("Select a borrower and add partner sources.",false);return;}
+  if(!givePartnerRows.length){toast("Add at least one payment source partner.",false);return;}
+  const invalidRow=givePartnerRows.find(r=>!r.name||givePartnerTotal(r)<=0);
+  if(invalidRow){toast(`Partner "${invalidRow.name||'(unnamed)'}" has no amount entered.`,false);return;}
+  setBusy("saveLoanBtn",true);
+  const existing=borrowers.find(b=>b.name===name&&b.loan===0);
+  try{
+    if(existing){
+      await dbPatch("borrowers",`?id=eq.${existing.id}`,{loan:amount,outstanding:amount,interest_due:0,rate,type,given_date:given||todayStr(),due_date:due||null,status:"Active"});
+    } else {
+      await dbPost("borrowers",{name,mobile:null,address:null,loan:amount,outstanding:amount,interest_due:0,rate,type,given_date:given||todayStr(),due_date:due||null,status:"Active"});
+    }
+    await Promise.all([
+      ...givePartnerRows.map(r=>dbPost("account_ledger",{date:given||todayStr(),description:`Loan to ${name} from ${r.name}`,type:"Debit",cash:Number(r.cash)||0,upi:Number(r.upi)||0,bank:Number(r.bank)||0})),
+      dbPost("activities",{text:`${name} — ${money(amount)} loan given`,sub:`${type} ${rate}% • ${fmtDate(given)}`,color:"blue"})
+    ]);
+    closeModal("giveModal");
+    await loadAll();
+    toast("Loan saved successfully.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{document.getElementById("saveLoanBtn").disabled=false;document.getElementById("saveLoanBtn").textContent="Save Loan";}
+}
+
+/* ── RECEIVE PAYMENT ── */
+let recvPartnerRows=[], recvRowId=0;
+function recvPartnerTotal(r){ return (Number(r.cash)||0)+(Number(r.upi)||0)+(Number(r.bank)||0); }
+function calcRecvTotal(){
+  let t=0;
+  recvPartnerRows.forEach(r=>{
+    const rt=recvPartnerTotal(r);
+    t+=rt;
+    const el=document.getElementById('rpt-'+r.id);
+    if(el) el.textContent=money(rt);
+  });
+  document.getElementById('r-sourceTotal').textContent=money(t);
+  updateReceiveInfo();
+}
+function addRecvPartnerRow(){
+  const id=++recvRowId;
+  const used=new Set(recvPartnerRows.map(r=>r.name));
+  const defaultName=getPartnerNames().find(n=>!used.has(n))||'';
+  if(!defaultName){toast('All partners already added.',false);return;}
+  recvPartnerRows.push({id,name:defaultName,cash:0,upi:0,bank:0});
+  renderRecvPartnerRows();
+}
+function removeRecvPartnerRow(id){
+  recvPartnerRows=recvPartnerRows.filter(r=>r.id!==id);
+  renderRecvPartnerRows();
+  calcRecvTotal();
+}
+function renderRecvPartnerRows(){
+  var container=document.getElementById('r-partner-rows');
+  if(!container) return;
+  var inpStyle='padding:5px 7px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;text-align:right;width:100%';
+  container.innerHTML='';
+  recvPartnerRows.forEach(function(r){
+    var excl=recvPartnerRows.filter(function(x){return x.id!==r.id;}).map(function(x){return x.name;});
+    var wrap=document.createElement('div');
+    wrap.style.cssText='border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;background:#fff';
+    var top=document.createElement('div');
+    top.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px';
+    var sel=document.createElement('select');
+    sel.className='psel';
+    sel.innerHTML=partnerOpts(r.name,excl);
+    sel.addEventListener('change',function(){
+      var row=recvPartnerRows.find(function(x){return x.id===r.id;});
+      if(row){row.name=sel.value;renderRecvPartnerRows();calcRecvTotal();}
+    });
+    var rmBtn=document.createElement('button');
+    rmBtn.type='button';
+    rmBtn.textContent='\u2715';
+    rmBtn.style.cssText='margin-left:8px;border:0;background:#fee2e2;color:#dc2626;border-radius:6px;padding:4px 9px;cursor:pointer;font-size:13px';
+    rmBtn.addEventListener('click',function(){removeRecvPartnerRow(r.id);});
+    top.appendChild(sel);
+    top.appendChild(rmBtn);
+    var grid=document.createElement('div');
+    grid.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px';
+    [['cash','Cash'],['upi','UPI'],['bank','Bank']].forEach(function(pair){
+      var field=pair[0],label=pair[1];
+      var cell=document.createElement('div');
+      var lbl=document.createElement('div');
+      lbl.style.cssText='font-size:10px;color:#64748b;margin-bottom:3px';
+      lbl.textContent=label;
+      var inp=document.createElement('input');
+      inp.type='number'; inp.placeholder='0'; inp.value=r[field]||'';
+      inp.style.cssText=inpStyle;
+      inp.addEventListener('input',function(){
+        var row=recvPartnerRows.find(function(x){return x.id===r.id;});
+        if(row){row[field]=inp.value;calcRecvTotal();}
+      });
+      cell.appendChild(lbl); cell.appendChild(inp); grid.appendChild(cell);
+    });
+    var tot=document.createElement('div');
+    tot.style.cssText='text-align:right;font-size:12px;color:#059669;font-weight:600';
+    tot.innerHTML='Partner Total: <span id="rpt-'+r.id+'">'+money(recvPartnerTotal(r))+'</span>';
+    wrap.appendChild(top); wrap.appendChild(grid); wrap.appendChild(tot);
+    container.appendChild(wrap);
+  });
+}
+function populateReceiveBorrower(){
+  const sel=document.getElementById("r-borrower-name");
+  if(!sel) return;
+  const seen=new Set();
+  const unique=borrowers.filter(b=>b.outstanding>0&&!seen.has(b.name.toLowerCase())&&seen.add(b.name.toLowerCase()));
+  sel.innerHTML=unique.map(b=>`<option value="${b.name}">${b.name}</option>`).join("")||`<option value="">No active borrowers</option>`;
+  populateReceiveLoan();
+}
+function populateReceiveLoan(){
+  const name=document.getElementById("r-borrower-name")?.value;
+  const sel=document.getElementById("r-borrower");
+  if(!sel) return;
+  const loans=borrowers.filter(b=>b.outstanding>0&&b.name===name);
+  sel.innerHTML=loans.map(b=>`<option value="${b.id}">${money(b.outstanding)} — ${fmtDate(b.given_date)}</option>`).join("")||`<option value="">No active loans</option>`;
+  updateReceiveInfo();
+}
+function updateReceiveInfo(){
+  const id=document.getElementById("r-borrower")?.value;
+  const b=borrowers.find(x=>x.id===id);
+  const principal=Number(document.getElementById("r-principal")?.value)||0;
+  const interest=Number(document.getElementById("r-interest")?.value)||0;
+  const total=recvPartnerRows.reduce((s,r)=>s+recvPartnerTotal(r),0);
+  if(b){
+    document.getElementById("r-outstanding").textContent=money(b.outstanding);
+    document.getElementById("r-afterPay").textContent=money(Math.max(0,b.outstanding-principal));
+  }
+  const piEl=document.getElementById("r-piCheck");
+  if(piEl){
+    const pi=principal+interest;
+    piEl.textContent=money(pi);
+    piEl.style.color=pi===total&&total>0?'#059669':'#ef4444';
+  }
+}
+function quickReceive(id){
+  openModal("receiveModal");
+  setTimeout(()=>{
+    const b=borrowers.find(x=>x.id===id);
+    if(b){
+      const nameSel=document.getElementById("r-borrower-name");
+      if(nameSel){nameSel.value=b.name;populateReceiveLoan();}
+      const loanSel=document.getElementById("r-borrower");
+      if(loanSel){loanSel.value=id;updateReceiveInfo();}
+    }
+  },50);
+}
+
+async function savePayment(){
+  const id=document.getElementById("r-borrower").value;
+  const b=borrowers.find(x=>x.id===id);
+  const total=recvPartnerRows.reduce((s,r)=>s+recvPartnerTotal(r),0);
+  const principal=Number(document.getElementById("r-principal").value)||0;
+  const interest=Number(document.getElementById("r-interest").value)||0;
+  const notes=document.getElementById("r-notes").value;
+  const date=document.getElementById("r-date").value;
+  if(!b){toast("Select a borrower.",false);return;}
+  if(!recvPartnerRows.length){toast("Add at least one payment source.",false);return;}
+  if(total<=0){toast("Enter amounts in partner rows.",false);return;}
+  if(principal+interest!==total){toast(`Principal + Interest (${money(principal+interest)}) must equal Total (${money(total)}).`,false);return;}
+  const method=[...new Set(recvPartnerRows.flatMap(r=>[r.cash>0?'Cash':null,r.upi>0?'UPI':null,r.bank>0?'Bank':null].filter(Boolean)))].join(' + ')||'Cash';
+  setBusy("savePayBtn",true);
+  try{
+    const newOut=Math.max(0,Number(b.outstanding)-principal);
+    const newInt=Math.max(0,Number(b.interest_due)-interest);
+    const newStatus=newOut===0?"Settled":statusFromDue(b.due_date,newOut);
+    await dbPatch("borrowers",`?id=eq.${id}`,{outstanding:newOut,interest_due:newInt,status:newStatus});
+    const totalCash=recvPartnerRows.reduce((s,r)=>s+(Number(r.cash)||0),0);
+    const totalUpi=recvPartnerRows.reduce((s,r)=>s+(Number(r.upi)||0),0);
+    const totalBank=recvPartnerRows.reduce((s,r)=>s+(Number(r.bank)||0),0);
+    await Promise.all([
+      dbPost("payments",{borrower_id:id,borrower_name:b.name,date:date||todayStr(),total,principal,interest,method,notes}),
+      ...recvPartnerRows.map(r=>dbPost("account_ledger",{date:date||todayStr(),description:`Payment from ${b.name} to ${r.name}`,type:"Credit",cash:Number(r.cash)||0,upi:Number(r.upi)||0,bank:Number(r.bank)||0})),
+      dbPost("activities",{text:`${b.name} — ${money(total)} received`,sub:`${method} • ${fmtDate(date)}`,color:"green"})
+    ]);
+    closeModal("receiveModal");
+    await loadAll();
+    showPage('payments', document.querySelector('.nav-btn[onclick*="payments"]'));
+    toast("Collection saved successfully.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{document.getElementById("savePayBtn").disabled=false;document.getElementById("savePayBtn").textContent="Save Collection";}
+}
+
+async function savePartner(){
+  const name=document.getElementById("p-name").value;
+  const contrib=parseComma(document.getElementById("p-contrib").value);
+  const remarks=document.getElementById("p-remarks").value.trim();
+  if(!name||contrib<=0){toast("Select a partner and enter amount.",false);return;}
+  setBusy("savePartnerBtn",true);
+  try{
+    await dbPost("partners",{name,contribution:contrib,share:0,remarks});
+    document.getElementById("p-contrib").value="";
+    document.getElementById("p-remarks").value="";
+    closeModal("partnerModal");
+    await loadAll();
+    toast("Partner added.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{const b=document.getElementById("savePartnerBtn");b.disabled=false;b.textContent="Add Partner";}
+}
+
+/* ── ACCOUNT MODAL ── */
+async function saveAccountEntry(){
+  const date=document.getElementById("ac-date").value;
+  const desc=document.getElementById("ac-desc").value.trim();
+  const type=document.getElementById("ac-type").value;
+  const cash=Number(document.getElementById("ac-cash").value)||0;
+  const upi=Number(document.getElementById("ac-upi").value)||0;
+  const bank=Number(document.getElementById("ac-bank").value)||0;
+  if(!desc){toast("Enter description.",false);return;}
+  setBusy("saveAccBtn",true);
+  try{
+    await dbPost("account_ledger",{date:date||todayStr(),description:desc,type,cash,upi,bank});
+    closeModal("accountModal");
+    await loadAll();
+    toast("Entry saved.");
+  }catch(e){toast("Error: "+e.message,false);}
+  finally{document.getElementById("saveAccBtn").disabled=false;document.getElementById("saveAccBtn").textContent="Save Entry";}
+}
+
+/* ── MODALS ── */
+function openModal(id){
+  document.getElementById(id).classList.add("show");
+  if(id==="receiveModal"){recvPartnerRows=[];recvRowId=0;renderRecvPartnerRows();populateReceiveBorrower();calcRecvTotal();}
+  if(id==="giveModal"){givePartnerRows=[];giveRowId=0;renderGivePartnerRows();populateGiveBorrower();calcGive();}
+  if(id==="partnerModal") populatePartnerNameDropdown();
+}
+function populateGiveBorrower(){
+  const sel=document.getElementById("g-name");
+  if(!sel) return;
+  const seen=new Set(),unique=borrowers.filter(b=>{const k=b.name.trim().toLowerCase();return seen.has(k)?false:seen.add(k)});
+  sel.innerHTML=unique.map(b=>`<option value="${b.name}">${b.name}</option>`).join("")||
+    `<option value="">No borrowers — add one first</option>`;
+}
+async function populatePartnerNameDropdown(){
+  try{
+    const users=await dbGet("users","?order=display_name");
+    usersCache=users;
+    const used=new Set(partners.map(p=>p.name.toLowerCase()));
+    const opts=users
+      .filter(u=>u.role!=="admin"&&!used.has(u.display_name.toLowerCase()))
+      .map(u=>`<option value="${u.display_name}">${u.display_name}</option>`);
+    const sel=document.getElementById("p-name");
+    sel.innerHTML=opts.length?opts.join(""):`<option value="">No users available</option>`;
+  }catch(e){
+    document.getElementById("p-name").innerHTML=`<option value="">Error loading users</option>`;
+  }
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove("show");
+}
+document.querySelectorAll(".modal").forEach(m=>{
+  m.addEventListener("click",e=>{if(e.target===m) m.classList.remove("show");});
+});
+
+/* ── LOGOUT BUTTON ── */
+document.querySelector(".nav").insertAdjacentHTML("beforeend",
+  `<div style="padding-top:16px;margin-top:12px;border-top:1px solid #1e293b">
+    <button class="nav-btn" onclick="logout()"><span class="icon">🚪</span>Logout</button>
+  </div>`);
+
+/* ── INIT ── */
+document.getElementById("g-date").value=todayStr();
+document.getElementById("r-date").value=todayStr();
+document.getElementById("ac-date").value=todayStr();
+document.getElementById("todayDate").textContent=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short"});
+checkSession();
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
