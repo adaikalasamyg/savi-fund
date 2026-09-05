@@ -1,5 +1,10 @@
-const CACHE = "savi-v1";
-const ASSETS = ["/savi-fund/Lender.html", "/savi-fund/manifest.json"];
+const CACHE = "savi-v2";
+const ASSETS = [
+  "./Lender.html",
+  "./manifest.json",
+  "./icon-192.png",
+  "./icon-512.png"
+];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
@@ -15,6 +20,6 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    caches.match(e.request).then(cached => cached || fetch(e.request))
   );
 });
