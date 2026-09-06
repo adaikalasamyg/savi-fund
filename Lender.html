@@ -47,7 +47,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 /* SUMMARY */
 .summary-section{padding:18px 20px 0}
 .section-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
-.summary-grid-2x2{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.summary-grid-2x2{display:grid;grid-template-columns:0.7fr 1.3fr 1.3fr 0.7fr;gap:8px}
 .sum-card{border-radius:16px;padding:14px 8px;box-shadow:0 4px 20px rgba(31,45,61,.05);border:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;position:relative}
 .sum-card.blue{background:#EEF4FF}
 .sum-card.green{background:#F1FAF6}
@@ -164,10 +164,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .hist-label{font-size:13px;font-weight:600;color:var(--dark-text)}
 .hist-meta{font-size:11px;color:var(--muted);margin-top:1px}
 .hist-amount{font-size:13px;font-weight:700;flex-shrink:0}
-.popup-actions{padding:20px 20px 0;display:flex;border-radius:14px;overflow:hidden;border:1.5px solid #E2E8F0}
-.pa-edit{flex:1;padding:14px;background:linear-gradient(135deg,#0F4C81,#0e7490);border:none;border-right:1.5px solid #E2E8F0;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
-.pa-del{flex:1;padding:13px;background:#FFF0F0;border:none;border-right:1.5px solid #E2E8F0;color:var(--red);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-.pa-close{flex:1;padding:12px;background:#F1F5F9;border:none;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit}
+.popup-actions{padding:20px 20px 0;display:flex;justify-content:center;gap:10px}
+.pa-edit{width:90px;padding:13px 0;background:linear-gradient(135deg,#0F4C81,#0e7490);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center}
+.pa-del{width:90px;padding:13px 0;background:#EF4444;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-align:center}
+.pa-close{width:90px;padding:13px 0;background:#1e293b;border:none;border-radius:12px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;text-align:center}
 
 /* LOAN LIST */
 .list-section{padding:14px 20px 0}
@@ -329,20 +329,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .rpt-kpi-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
 .rpt-kpi-sub{font-size:10px;margin-top:2px}
 /* donut chart */
-.rpt-donut-wrap{position:relative;width:130px;height:130px;flex-shrink:0}
-.rpt-donut-wrap svg{width:130px;height:130px;transform:rotate(-90deg)}
+.rpt-donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
+.rpt-donut-wrap svg{width:110px;height:110px;transform:rotate(-90deg)}
 .rpt-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .rpt-donut-val{font-size:16px;font-weight:800;color:var(--dark-text)}
 .rpt-donut-lbl{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase}
 .rpt-chart-card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.05);border:1px solid #EEF1F5;margin-bottom:10px}
 .rpt-chart-title{font-size:12px;font-weight:700;color:var(--dark-text);margin-bottom:12px}
-.rpt-chart-row{display:flex;align-items:center;gap:10px}
-.rpt-legend{display:flex;flex-direction:column;gap:8px;flex:1}
-.rpt-legend-item{display:flex;align-items:center;gap:8px}
-.rpt-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.rpt-legend-name{font-size:12px;color:var(--dark-text);font-weight:600;flex:1}
-.rpt-legend-val{font-size:12px;font-weight:700;color:var(--dark-text)}
-.rpt-legend-pct{font-size:10px;color:var(--muted);margin-left:4px}
+.rpt-chart-row{display:flex;align-items:center;gap:10px;min-width:0}
+.rpt-legend{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+.rpt-legend-item{display:flex;align-items:center;gap:6px;min-width:0}
+.rpt-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.rpt-legend-name{font-size:11px;color:var(--dark-text);font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rpt-legend-val{font-size:11px;font-weight:700;color:var(--dark-text);flex-shrink:0;white-space:nowrap}
+.rpt-legend-pct{font-size:10px;color:var(--muted);margin-left:2px}
 /* horizontal bar chart */
 .rpt-bar-chart{display:flex;flex-direction:column;gap:10px}
 .rpt-bar-row{display:flex;flex-direction:column;gap:4px}
@@ -407,6 +407,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .login-err{font-size:12px;color:#EF4444;text-align:center;margin-top:10px;min-height:18px}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:#fff;font-size:13px;font-weight:600;padding:10px 20px;border-radius:999px;opacity:0;transition:opacity .25s,transform .25s;z-index:9999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* CUSTOM MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:20px;width:100%;max-width:320px;overflow:hidden;animation:slideUp .2s ease}
+.modal-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px}
+.modal-body{padding:24px 20px 20px;text-align:center}
+.modal-title{font-size:15px;font-weight:700;color:var(--dark-text);margin-bottom:6px}
+.modal-msg{font-size:13px;color:var(--muted);line-height:1.5}
+.modal-actions{display:flex;border-top:1px solid var(--border)}
+.modal-btn{flex:1;padding:14px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;background:#fff;color:var(--muted)}
+.modal-btn.primary{color:#2563EB}
+.modal-btn.danger{color:#EF4444}
+.modal-btn+.modal-btn{border-left:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -610,7 +623,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           </div>
         </div>
         <div class="lce-actions">
-          <button class="view-loan-btn" onclick="document.getElementById('loanPopup').classList.add('open')">View Loan Details ›</button>
+          <button class="view-loan-btn" onclick="openLoanPopup()">View Loan Details ›</button>
           <button class="edit-sq" onclick="openEditPopup()">
             <svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
@@ -865,10 +878,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <button class="popup-close" onclick="document.getElementById('loanPopup').classList.remove('open')">✕</button>
         </div>
         <div class="popup-id-row">
-          <div class="popup-loan-num">LN0003</div>
-          <span class="popup-status-badge">● Active</span>
+          <div class="popup-loan-num" id="lpLoanNum">—</div>
+          <span class="popup-status-badge" id="lpStatusBadge">● Active</span>
         </div>
-        <div class="popup-meta">Borrower: Aravinthraj &nbsp;·&nbsp; Given: 01 Sep 2025</div>
+        <div class="popup-meta" id="lpMeta"></div>
       </div>
 
       <div class="popup-body">
@@ -876,133 +889,31 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         <!-- Financials -->
         <div class="popup-section">
           <div class="popup-section-title">💰 Financials</div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Loan Amount</div></div><div class="ir-val">₹20,000</div></div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot red"></div><div class="ir-label">Outstanding</div></div><div class="ir-val red">₹20,000</div></div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Total Received</div></div><div class="ir-val green">₹5,000</div></div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot purple"></div><div class="ir-label">Interest Due</div></div><div class="ir-val">₹0</div></div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Interest Rate</div></div><div class="ir-val">3% Daily</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Loan Amount</div></div><div class="ir-val" id="lpAmount">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot red"></div><div class="ir-label">Outstanding</div></div><div class="ir-val red" id="lpOutstanding">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Total Received</div></div><div class="ir-val green" id="lpReceived">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot purple"></div><div class="ir-label">Interest Due</div></div><div class="ir-val" id="lpInterest">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Notes</div></div><div class="ir-val" id="lpNotes">—</div></div>
         </div>
 
         <!-- Dates -->
         <div class="popup-section">
           <div class="popup-section-title">📅 Dates</div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Given Date</div></div><div class="ir-val">01 Sep 2025</div></div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot orange"></div><div class="ir-label">Due Date</div></div><div class="ir-val">01 Dec 2026</div></div>
-          <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Last Updated</div></div><div class="ir-val">01 Sep 2026</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Given Date</div></div><div class="ir-val" id="lpGivenDate">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot orange"></div><div class="ir-label">Due Date</div></div><div class="ir-val" id="lpDueDate">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Settle Date</div></div><div class="ir-val" id="lpSettleDate">—</div></div>
         </div>
 
         <!-- Funding Sources -->
         <div class="popup-section">
           <div class="popup-section-title">💼 Funding Sources</div>
-          <div class="source-list">
-
-            <!-- Victo: Cash + UPI -->
-            <div class="source-row">
-              <div class="source-header">
-                <div class="source-avatar" style="background:#EEF4FF;color:#2563EB">V</div>
-                <div class="source-name">Victo</div>
-                <div class="source-total">₹12,000</div>
-              </div>
-              <div class="source-methods">
-                <div class="method-row">
-                  <div class="method-icon cash"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" fill="#16A34A" opacity=".15"/><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/><path d="M2 10h20M2 14h20" stroke="#16A34A" stroke-width="1"/></svg></div>
-                  <div class="method-label">Cash</div>
-                  <div class="method-amount">₹7,000</div>
-                </div>
-                <div class="method-row">
-                  <div class="method-icon upi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#2563EB" stroke-width="1.5"/></svg></div>
-                  <div class="method-label">UPI</div>
-                  <div class="method-amount">₹5,000</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Rajan: Bank only -->
-            <div class="source-row">
-              <div class="source-header">
-                <div class="source-avatar" style="background:#EFFAF5;color:#16A34A">R</div>
-                <div class="source-name">Rajan</div>
-                <div class="source-total">₹5,000</div>
-              </div>
-              <div class="source-methods">
-                <div class="method-row">
-                  <div class="method-icon bank"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5" stroke-linejoin="round"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg></div>
-                  <div class="method-label">Bank Transfer</div>
-                  <div class="method-amount">₹5,000</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Self: Cash + Bank -->
-            <div class="source-row">
-              <div class="source-header">
-                <div class="source-avatar" style="background:#F5F1FF;color:#7C3AED">S</div>
-                <div class="source-name">Self</div>
-                <div class="source-total">₹8,000</div>
-              </div>
-              <div class="source-methods">
-                <div class="method-row">
-                  <div class="method-icon cash"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" fill="#16A34A" opacity=".15"/><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/><path d="M2 10h20M2 14h20" stroke="#16A34A" stroke-width="1"/></svg></div>
-                  <div class="method-label">Cash</div>
-                  <div class="method-amount">₹3,000</div>
-                </div>
-                <div class="method-row">
-                  <div class="method-icon bank"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5" stroke-linejoin="round"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg></div>
-                  <div class="method-label">Bank Transfer</div>
-                  <div class="method-amount">₹5,000</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          <div id="lpSourceList"></div>
         </div>
 
         <!-- Payment History -->
         <div class="popup-section">
           <div class="popup-section-title">🧾 Payment History</div>
-          <div class="hist-row">
-            <div class="hist-icon" style="background:#EFFAF5;color:#16A34A">↓</div>
-            <div class="hist-info">
-              <div class="hist-label">Aravinthraj → Victo</div>
-              <div class="hist-meta">15 Oct 2025 &nbsp;·&nbsp;
-                <span class="method-icon cash" style="width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" fill="#16A34A" opacity=".15"/><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/><path d="M2 10h20M2 14h20" stroke="#16A34A" stroke-width="1"/></svg></span>
-                <span style="font-size:11px;color:#16A34A;font-weight:600">Cash</span>
-              </div>
-            </div>
-            <div class="hist-amount" style="color:#16A34A">+₹2,000</div>
-          </div>
-          <div class="hist-row">
-            <div class="hist-icon" style="background:#EFFAF5;color:#16A34A">↓</div>
-            <div class="hist-info">
-              <div class="hist-label">Aravinthraj → Rajan</div>
-              <div class="hist-meta">01 Dec 2025 &nbsp;·&nbsp;
-                <span class="method-icon upi" style="width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#2563EB" stroke-width="1.5"/></svg></span>
-                <span style="font-size:11px;color:#2563EB;font-weight:600">UPI</span>
-                <span style="font-size:10px;color:var(--muted)">· aravinth@upi</span>
-              </div>
-            </div>
-            <div class="hist-amount" style="color:#16A34A">+₹3,000</div>
-          </div>
-          <div class="hist-row">
-            <div class="hist-icon" style="background:#EFFAF5;color:#16A34A">↓</div>
-            <div class="hist-info">
-              <div class="hist-label">Aravinthraj → Self</div>
-              <div class="hist-meta">10 Jan 2026 &nbsp;·&nbsp;
-                <span class="method-icon bank" style="width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5" stroke-linejoin="round"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg></span>
-                <span style="font-size:11px;color:#7C3AED;font-weight:600">Bank</span>
-                <span style="font-size:10px;color:var(--muted)">· SBI ···4521</span>
-              </div>
-            </div>
-            <div class="hist-amount" style="color:#16A34A">+₹4,000</div>
-          </div>
-          <div class="hist-row">
-            <div class="hist-icon" style="background:#FFF1F1;color:#EF4444">↑</div>
-            <div class="hist-info">
-              <div class="hist-label">Interest Added</div>
-              <div class="hist-meta">01 Jan 2026 &nbsp;·&nbsp; <span style="font-size:11px;color:var(--muted);font-weight:500">Manual entry</span></div>
-            </div>
-            <div class="hist-amount" style="color:#EF4444">+₹600</div>
-          </div>
+          <div id="lpHistoryList"></div>
         </div>
 
         <div class="popup-actions">
@@ -1048,6 +959,22 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
             <input id="epDueDate" class="field-input" type="date" style="font-size:12px;padding:10px 8px">
           </div>
         </div>
+        <div class="field-row-2">
+          <div class="field-group">
+            <div class="field-label">Interest Rate (%)</div>
+            <input id="epInterestRate" class="field-input" type="number" placeholder="0" step="0.1">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Interest Type</div>
+            <select id="epInterestType" class="field-input">
+              <option value="">-- None --</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="fixed">Fixed</option>
+            </select>
+          </div>
+        </div>
         <div class="field-group">
           <div class="field-label">Notes</div>
           <input id="epNotes" class="field-input" type="text" placeholder="optional">
@@ -1056,7 +983,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         <div class="edit-section-label">Funding Sources</div>
         <div id="sources-list"></div>
 
-        <button class="add-partner-btn" onclick="addPartner()">+ Add Partner</button>
+        <select id="epPartnerSelect" class="field-input" style="margin-bottom:8px"><option value="">+ Add Partner</option></select>
 
         <div style="display:flex;gap:10px">
           <button class="edit-save-btn" style="flex:1" onclick="saveEditLoan()">Update</button>
@@ -1070,7 +997,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   <div class="edit-popup-overlay" id="newLoanPopup" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="edit-sheet">
       <div class="popup-handle"></div>
-      <div class="edit-sheet-top">
+      <div class="edit-sheet-top" style="padding-top:12px">
         <div class="edit-sheet-top-row">
           <div class="edit-sheet-title">New Loan</div>
           <button class="popup-close" onclick="document.getElementById('newLoanPopup').classList.remove('open')">✕</button>
@@ -1095,6 +1022,22 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <div class="field-group">
             <div class="field-label">Due Date</div>
             <input id="nlDueDate" class="field-input" type="date" style="font-size:12px;padding:10px 8px">
+          </div>
+        </div>
+        <div class="field-row-2">
+          <div class="field-group">
+            <div class="field-label">Interest Rate (%)</div>
+            <input id="nlInterestRate" class="field-input" type="number" placeholder="0" step="0.1">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Interest Type</div>
+            <select id="nlInterestType" class="field-input">
+              <option value="">-- None --</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="fixed">Fixed</option>
+            </select>
           </div>
         </div>
         <div class="field-group">
@@ -1482,9 +1425,62 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 </div>
 
 <div id="toast" class="toast"></div>
+
+<!-- CUSTOM MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-body">
+      <div class="modal-icon" id="modalIcon"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-msg" id="modalMsg"></div>
+    </div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return day+' '+months[+m-1];}
+
+function showModal(msg,type='error'){
+  const cfg={error:{icon:'⚠️',bg:'#FFF1F1',title:'Error'},info:{icon:'ℹ️',bg:'#EEF4FF',title:'Info'}};
+  const c=cfg[type]||cfg.error;
+  document.getElementById('modalIcon').style.background=c.bg;
+  document.getElementById('modalIcon').textContent=c.icon;
+  document.getElementById('modalTitle').textContent=c.title;
+  document.getElementById('modalMsg').textContent=msg;
+  document.getElementById('modalActions').innerHTML='<button class="modal-btn primary" onclick="document.getElementById(\'modalOverlay\').classList.remove(\'open\')">OK</button>';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function showPrompt(label,onOk){
+  document.getElementById('modalIcon').style.background='#EEF4FF';
+  document.getElementById('modalIcon').textContent='✏️';
+  document.getElementById('modalTitle').textContent='Enter Name';
+  document.getElementById('modalMsg').innerHTML=`<input id="modalPromptInput" class="field-input" type="text" placeholder="${label}" style="margin-top:8px;width:100%">`;
+  document.getElementById('modalActions').innerHTML=
+    '<button class="modal-btn" onclick="document.getElementById(\'modalOverlay\').classList.remove(\'open\')" >Cancel</button>'
+    +'<button class="modal-btn primary" id="modalPromptOk">OK</button>';
+  document.getElementById('modalOverlay').classList.add('open');
+  const inp=document.getElementById('modalPromptInput');
+  inp.focus();
+  document.getElementById('modalPromptOk').onclick=()=>{
+    const val=inp.value.trim();
+    if(!val)return;
+    document.getElementById('modalOverlay').classList.remove('open');
+    onOk(val);
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter')document.getElementById('modalPromptOk').click();};
+}
+function showConfirm(msg,onOk){
+  document.getElementById('modalIcon').style.background='#FFF8E8';
+  document.getElementById('modalIcon').textContent='🗑️';
+  document.getElementById('modalTitle').textContent='Confirm';
+  document.getElementById('modalMsg').textContent=msg;
+  document.getElementById('modalActions').innerHTML=
+    '<button class="modal-btn" onclick="document.getElementById(\'modalOverlay\').classList.remove(\'open\')" >Cancel</button>'
+    +'<button class="modal-btn danger" id="modalOkBtn">Delete</button>';
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalOkBtn').onclick=()=>{document.getElementById('modalOverlay').classList.remove('open');onOk();};
+}
 
 const SUPABASE_URL='https://lyjywbtmsbgsuudikvyv.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5anl3YnRtc2Jnc3V1ZGlrdnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1ODE4NTAsImV4cCI6MjEwNDE1Nzg1MH0.B7WPDdsITBb1boU3LGtRbYPMsl9Xeb3YMdBWAQZu_AA';
@@ -1508,7 +1504,7 @@ async function doLogin(){
   const username=document.getElementById('loginUser').value.trim();
   const pwd=document.getElementById('loginPass').value;
   document.getElementById('loginErr').textContent='';
-  const {data,error}=await sb.from('users').select('*').eq('username',username).eq('password',pwd).single();
+  const {data,error}=await sb.from('users').select('*').eq('username',username).eq('password',pwd).eq('status','active').single();
   if(error||!data){document.getElementById('loginErr').textContent='Invalid username or password';return;}
   sessionStorage.setItem('sf_user',JSON.stringify(data));
   await applyLogin(data);
@@ -1516,34 +1512,35 @@ async function doLogin(){
 async function applyLogin(user){
   const name=user.name||user.username;
   const role=user.type||'User';
+  currentUserType=role;
   document.getElementById('loginPage').classList.add('hidden');
   document.querySelector('.avatar').textContent=name[0].toUpperCase();
   document.querySelector('.am-avatar').textContent=name[0].toUpperCase();
   document.querySelector('.am-name').textContent=name;
   document.querySelector('.am-role').textContent=role;
   // load all users from DB
-  const {data:dbUsers}=await sb.from('users').select('id,username,name,type,password');
+  const {data:dbUsers}=await sb.from('users').select('id,username,name,type,password,status');
   if(dbUsers){
     users.length=0;
-    dbUsers.forEach(u=>users.push({id:u.id,username:u.username,name:u.name,type:u.type,password:u.password||''}));
+    dbUsers.forEach(u=>users.push({id:u.id,username:u.username,name:u.name,type:u.type,password:u.password||'',status:u.status||'active'}));
     userSeq=users.length+1;
     renderUsers();
   }
   // load borrowers from DB
-  const {data:dbBorrowers}=await sb.from('borrowers').select('*');
+  const {data:dbBorrowers}=await sb.from('borrowers').select('*').neq('status','deleted');
   if(dbBorrowers){
     borrowers.length=0;
-    dbBorrowers.forEach(b=>borrowers.push({id:b.id,bId:b.id,name:b.name,mobile:b.mobile||'',address:b.address||''}));
+    dbBorrowers.forEach(b=>borrowers.push({id:b.id,bId:b.id,name:b.name,mobile:b.mobile||'',address:b.address||'',status:b.status||'active'}));
     borrowerSeq=borrowers.length+1;
     renderBorrowers();
   }
   // load partners from DB
-  const {data:dbPartners}=await sb.from('partners').select('*');
+  const {data:dbPartners}=await sb.from('partners').select('*').neq('status','deleted');
   if(dbPartners){
     partners.length=0;
     dbPartners.forEach(p=>{
       const u=users.find(x=>x.id===p.user_id);
-    partners.push({partnerId:p.id,userId:p.user_id,name:u?u.name:p.user_id,phone:p.phone||'',invested:p.invested||0,balance:p.balance||0,cash_bal:p.cash_bal||0,upi_bal:p.upi_bal||0,bank_bal:p.bank_bal||0,transactions:[]});
+    partners.push({partnerId:p.id,userId:p.user_id,name:u?u.name:p.user_id,phone:p.phone||'',invested:p.invested||0,balance:p.balance||0,cash_bal:p.cash_bal||0,upi_bal:p.upi_bal||0,bank_bal:p.bank_bal||0,status:p.status||'active',transactions:[]});
     });
     renderPartners();
   }
@@ -1571,6 +1568,7 @@ async function doLogout(){
   document.getElementById('loginPage').classList.remove('hidden');
 }
 
+let currentUserType='';  // set on login
 const loans=[];
 let activeFilter='active';
 let lceIdx=0;
@@ -1629,10 +1627,22 @@ function updateList(){
         lceDelBtn.style.display='none';
       } else {
         lceDelBtn.style.display='';
-        lceDelBtn.classList.toggle('del-disabled',!recvDisabled);
-        lceDelBtn.classList.toggle('del-tooltip',!recvDisabled);
-        lceDelBtn.style.pointerEvents=recvDisabled?'':'none';
-        lceDelBtn.onclick=recvDisabled?()=>settleLoan(l.id):null;
+        lceDelBtn.classList.remove('del-disabled','del-tooltip');
+        lceDelBtn.style.pointerEvents='';
+        const loanReceipts=receipts.filter(r=>r.loan_id===l.id);
+        const amtNum=Number(String(l.amount).replace(/[^0-9]/g,''));
+        if(!loanReceipts.length && outNum===amtNum){
+          // no receipts, untouched — allow hard delete
+          lceDelBtn.onclick=()=>deleteLoan(l.id);
+        } else if(outNum===0){
+          // fully settled — prompt to settle
+          lceDelBtn.onclick=()=>settleLoan(l.id);
+        } else {
+          // has receipts but still outstanding — blocked
+          lceDelBtn.classList.add('del-disabled','del-tooltip');
+          lceDelBtn.style.pointerEvents='none';
+          lceDelBtn.onclick=null;
+        }
       }
     }
     document.getElementById('lceBadge').textContent=l.name;
@@ -1642,6 +1652,8 @@ function updateList(){
     // sum interest: use saved total_interest for settled loans, live receipts for active
     const loanInterest=l.status==='settled'?l.interest_due:receipts.filter(r=>r.loan_id===l.id).reduce((s,r)=>s+Number(r.interest||0),0);
     document.getElementById('lceInterest').textContent='₹'+loanInterest.toLocaleString('en-IN');
+    const rateLabel=l.interest_rate?(l.interest_rate+'% '+(l.interest_type?l.interest_type.charAt(0).toUpperCase()+l.interest_type.slice(1):'')):'—';
+    document.getElementById('lceRate').textContent=rateLabel;
     document.getElementById('lceSource').textContent=(l.sources&&l.sources.length)?(()=>{const p=partners.find(x=>x.partnerId===l.sources[0].partner_id);return p?p.name:l.sources[0].partner_id;})():'—';
     document.getElementById('lceUpdated').textContent=fmtDate(l.given_date);
   }
@@ -1682,31 +1694,31 @@ const avatarColors=[
 ];
 let partnerCount=0;
 function addPartner(){
-  const name=prompt('Partner name:');
-  if(!name||!name.trim())return;
-  const c=avatarColors[partnerCount%avatarColors.length];
-  partnerCount++;
-  const initial=name.trim()[0].toUpperCase();
-  const el=document.createElement('div');
-  el.className='source-entry';
-  el.innerHTML=`
-    <div class="source-entry-header">
-      <div class="source-entry-avatar" style="background:${c.bg};color:${c.color}">${initial}</div>
-      <div class="source-entry-name">${name.trim()}</div>
-      <button class="src-del-btn" onclick="removeSource(this)" title="Remove partner">✕</button>
-    </div>
-    <div class="source-method-fields">
-      <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-      <div class="method-field"><div class="method-field-label">UPI (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-      <div class="method-field"><div class="method-field-label">Bank (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-    </div>`;
-  document.getElementById('sources-list').appendChild(el);
+  showPrompt('Partner name',name=>{
+    const c=avatarColors[partnerCount%avatarColors.length];
+    partnerCount++;
+    const el=document.createElement('div');
+    el.className='source-entry';
+    el.innerHTML=`
+      <div class="source-entry-header">
+        <div class="source-entry-avatar" style="background:${c.bg};color:${c.color}">${name[0].toUpperCase()}</div>
+        <div class="source-entry-name">${name}</div>
+        <button class="src-del-btn" onclick="removeSource(this)" title="Remove partner">✕</button>
+      </div>
+      <div class="source-method-fields">
+        <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">UPI (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">Bank (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+      </div>`;
+    document.getElementById('sources-list').appendChild(el);
+  });
 }
 function openNewLoanPopup(){
   const bSel=document.getElementById('nlBorrower');
-  bSel.innerHTML='<option value="">-- Select borrower --</option>'+borrowers.map(b=>`<option value="${b.bId}">${b.name}</option>`).join('');
+  bSel.innerHTML='<option value="">-- Select borrower --</option>'+borrowers.filter(b=>b.status==='active').map(b=>`<option value="${b.bId}">${b.name}</option>`).join('');
   const pSel=document.getElementById('nlPartnerSelect');
-  pSel.innerHTML='<option value="">+ Add Partner</option>'+partners.map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
+  const activePtrs=partners.filter(p=>p.status==='active');
+  pSel.innerHTML=(activePtrs.length?'<option value="">— Select Partner —</option>':'<option value="">+ Add Partner</option>')+activePtrs.map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
   pSel.onchange=function(){
     if(!this.value)return;
     const p=partners.find(x=>x.partnerId===this.value);
@@ -1736,43 +1748,47 @@ function openNewLoanPopup(){
   document.getElementById('new-sources-list').innerHTML='';
   newPartnerCount=0;
   const today=new Date().toISOString().split('T')[0];
+  document.getElementById('nlInterestRate').value='';
+  document.getElementById('nlInterestType').value='';
   document.getElementById('nlGivenDate').value=today;
   document.getElementById('nlDueDate').value='';
   document.getElementById('newLoanPopup').classList.add('open');
 }
 let newPartnerCount=0;
 function addNewPartner(){
-  const name=prompt('Partner name:');
-  if(!name||!name.trim())return;
-  const c=avatarColors[newPartnerCount%avatarColors.length];
-  newPartnerCount++;
-  const el=document.createElement('div');
-  el.className='source-entry';
-  el.innerHTML=`
-    <div class="source-entry-header">
-      <div class="source-entry-avatar" style="background:${c.bg};color:${c.color}">${name.trim()[0].toUpperCase()}</div>
-      <div class="source-entry-name">${name.trim()}</div>
-      <button class="src-del-btn" onclick="this.closest('.source-entry').remove()" title="Remove">✕</button>
-    </div>
-    <div class="source-method-fields">
-      <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-      <div class="method-field"><div class="method-field-label">UPI (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-      <div class="method-field"><div class="method-field-label">Bank (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-    </div>`;
-  document.getElementById('new-sources-list').appendChild(el);
+  showPrompt('Partner name',name=>{
+    const c=avatarColors[newPartnerCount%avatarColors.length];
+    newPartnerCount++;
+    const el=document.createElement('div');
+    el.className='source-entry';
+    el.innerHTML=`
+      <div class="source-entry-header">
+        <div class="source-entry-avatar" style="background:${c.bg};color:${c.color}">${name[0].toUpperCase()}</div>
+        <div class="source-entry-name">${name}</div>
+        <button class="src-del-btn" onclick="this.closest('.source-entry').remove()" title="Remove">✕</button>
+      </div>
+      <div class="source-method-fields">
+        <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">UPI (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">Bank (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+      </div>`;
+    document.getElementById('new-sources-list').appendChild(el);
+  });
 }
 
 async function saveNewLoan(){
   const borrowerId=document.getElementById('nlBorrower').value;
   const b=borrowers.find(x=>x.bId===borrowerId);
-  if(!b){alert('Select a borrower');return;}
+  if(!b){showModal('Select a borrower');return;}
   const amountRaw=parseFloat(document.getElementById('nlAmount').value.replace(/,/g,''))||0;
-  if(!amountRaw){alert('Enter loan amount');return;}
+  if(!amountRaw){showModal('Enter loan amount');return;}
   const givenDate=document.getElementById('nlGivenDate').value;
   const dueDate=document.getElementById('nlDueDate').value;
-  if(!givenDate){alert('Enter given date');return;}
+  if(!givenDate){showModal('Enter given date');return;}
 
   const notes=document.getElementById('nlNotes').value.trim();
+  const interest_rate=parseFloat(document.getElementById('nlInterestRate').value)||0;
+  const interest_type=document.getElementById('nlInterestType').value;
   const {data:existingLoans}=await sb.from('loans').select('id').order('id',{ascending:false}).limit(1);
   let nextLoanNum=1;
   if(existingLoans&&existingLoans.length){
@@ -1789,9 +1805,9 @@ async function saveNewLoan(){
     const bank=parseFloat(inputs[2].value)||0;
     if(cash||upi||bank)sources.push({partner_id:pid,cash,upi,bank});
   });
-  if(!sources.length){alert('Add at least one funding source');return;}
+  if(!sources.length){showModal('Add at least one funding source');return;}
   const sourceTotal=sources.reduce((s,x)=>s+x.cash+x.upi+x.bank,0);
-  if(sourceTotal!==amountRaw){alert('Source total (₹'+sourceTotal.toLocaleString('en-IN')+') must match loan amount (₹'+amountRaw.toLocaleString('en-IN')+')');return;}
+  if(sourceTotal!==amountRaw){showModal('Source total (₹'+sourceTotal.toLocaleString('en-IN')+') must match loan amount (₹'+amountRaw.toLocaleString('en-IN')+')');return;}
   const {error}=await sb.from('loans').insert({
     id:loanId,
     borrower_id:borrowerId,
@@ -1801,17 +1817,33 @@ async function saveNewLoan(){
     due_date:dueDate||null,
     status:'active',
     sources:sources,
-    notes:notes||null
+    notes:notes||null,
+    interest_rate:interest_rate||null,
+    interest_type:interest_type||null
   });
-  if(error){alert('DB error: '+error.message);return;}
+  if(error){showModal('DB error: '+error.message);return;}
+  // deduct each partner's balance by their contribution
+  for(const s of sources){
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    if(!p)continue;
+    const {error:pe}=await sb.from('partners').update({
+      cash_bal:p.cash_bal-s.cash,
+      upi_bal:p.upi_bal-s.upi,
+      bank_bal:p.bank_bal-s.bank,
+      balance:p.balance-(s.cash+s.upi+s.bank)
+    }).eq('id',p.partnerId);
+    if(pe){showModal('Partner update error: '+pe.message);return;}
+    p.cash_bal-=s.cash;p.upi_bal-=s.upi;p.bank_bal-=s.bank;
+    p.balance-=(s.cash+s.upi+s.bank);
+  }
   showToast('Loan created successfully');
   document.getElementById('newLoanPopup').classList.remove('open');
   await loadLoans();
 }
 
 async function loadLoans(){
-  const {data,error}=await sb.from('loans').select('*').order('given_date',{ascending:false});
-  if(error){alert('DB error: '+error.message);return;}
+  const {data,error}=await sb.from('loans').select('*').neq('status','settled-deleted').order('given_date',{ascending:false});
+  if(error){showModal('DB error: '+error.message);return;}
   loans.length=0;
   (data||[]).forEach(l=>{
     const b=borrowers.find(x=>x.bId===l.borrower_id);
@@ -1826,6 +1858,8 @@ async function loadLoans(){
       due_date:l.due_date,
       settle_date:l.settle_date||null,
       interest_due:Number(l.interest_due||0),
+      interest_rate:Number(l.interest_rate||0),
+      interest_type:l.interest_type||'',
       notes:l.notes||'',
       sources:l.sources||[],
       updated:l.given_date||''
@@ -1846,6 +1880,8 @@ async function loadReceipts(){
   updateRecvList();
   updateList(); // refresh loan card interest after receipts loaded
   updateSummaryCards(); // refresh home interest card
+  renderBorrowers(); // re-render so delete buttons reflect actual transaction state
+  renderPartners();
 }
 function _buildRecvs(){
   recvs.length=0;
@@ -1941,6 +1977,52 @@ function updateSummaryCards(){
   }).join(''):'<div style="text-align:center;padding:24px 0;color:#64748B;font-size:13px">No active loans</div>';
   document.getElementById('homeDueList').innerHTML=dueHtml;
 }
+function openLoanPopup(){
+  const l=loans[lceIdx];
+  if(!l)return;
+  const amtNum=Number(String(l.amount).replace(/[^0-9]/g,''));
+  const outNum=Number(String(l.outstanding).replace(/[^0-9]/g,''));
+  const totalRecv=amtNum-outNum;
+  const loanInterest=l.status==='settled'?l.interest_due:receipts.filter(r=>r.loan_id===l.id).reduce((s,r)=>s+Number(r.interest||0),0);
+  document.getElementById('lpLoanNum').textContent=l.id;
+  document.getElementById('lpStatusBadge').textContent='● '+(l.status==='settled'?'Settled':'Active');
+  document.getElementById('lpMeta').innerHTML='Borrower: '+l.name+'&nbsp;·&nbsp; Given: '+fmtDate(l.given_date);
+  document.getElementById('lpAmount').textContent=l.amount;
+  document.getElementById('lpOutstanding').textContent=l.outstanding;
+  document.getElementById('lpReceived').textContent='₹'+totalRecv.toLocaleString('en-IN');
+  document.getElementById('lpInterest').textContent='₹'+loanInterest.toLocaleString('en-IN');
+  document.getElementById('lpNotes').textContent=l.notes||'—';
+  document.getElementById('lpGivenDate').textContent=fmtDate(l.given_date);
+  document.getElementById('lpDueDate').textContent=l.due_date?fmtDate(l.due_date):'—';
+  document.getElementById('lpSettleDate').textContent=l.settle_date?fmtDate(l.settle_date):'—';
+  // Funding Sources
+  const srcColors2=[{bg:'#EEF4FF',c:'#2563EB'},{bg:'#EFFAF5',c:'#16A34A'},{bg:'#F5F1FF',c:'#7C3AED'},{bg:'#FFF8E8',c:'#D97706'},{bg:'#FFF1F1',c:'#EF4444'}];
+  const cashSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/></svg>';
+  const upiSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#2563EB" stroke-width="1.5"/></svg>';
+  const bankSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg>';
+  document.getElementById('lpSourceList').innerHTML=(l.sources||[]).map((s,i)=>{
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    const name=p?p.name:s.partner_id;
+    const col=srcColors2[i%srcColors2.length];
+    const total=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+    const methods=[
+      s.cash?`<div class="method-row"><div class="method-icon cash">${cashSvg}</div><div class="method-label">Cash</div><div class="method-amount">₹${Number(s.cash).toLocaleString('en-IN')}</div></div>`:null,
+      s.upi?`<div class="method-row"><div class="method-icon upi">${upiSvg}</div><div class="method-label">UPI</div><div class="method-amount">₹${Number(s.upi).toLocaleString('en-IN')}</div></div>`:null,
+      s.bank?`<div class="method-row"><div class="method-icon bank">${bankSvg}</div><div class="method-label">Bank</div><div class="method-amount">₹${Number(s.bank).toLocaleString('en-IN')}</div></div>`:null
+    ].filter(Boolean).join('');
+    return `<div class="source-row"><div class="source-header"><div class="source-avatar" style="background:${col.bg};color:${col.c}">${name[0].toUpperCase()}</div><div class="source-name">${name}</div><div class="source-total">₹${total.toLocaleString('en-IN')}</div></div><div class="source-methods">${methods}</div></div>`;
+  }).join('')||'<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">No sources</div>';
+  // Payment History
+  const loanReceipts=receipts.filter(r=>r.loan_id===l.id);
+  document.getElementById('lpHistoryList').innerHTML=loanReceipts.length?loanReceipts.map(r=>{
+    const principal=Number(r.amount||0)-Number(r.interest||0);
+    const interest=Number(r.interest||0);
+    const methodLabel=r.method||'Cash';
+    const methodColor=methodLabel==='UPI'?'#2563EB':methodLabel==='Bank'?'#7C3AED':'#16A34A';
+    return `<div class="hist-row"><div class="hist-icon" style="background:#EFFAF5;color:#16A34A">↓</div><div class="hist-info"><div class="hist-label">${l.name} · ${r.id}</div><div class="hist-meta">${fmtDate(r.receipt_date)}&nbsp;·&nbsp;<span style="font-size:11px;color:${methodColor};font-weight:600">${methodLabel}</span>${r.remarks?'&nbsp;·&nbsp;<span style="font-size:10px;color:var(--muted)">'+r.remarks+'</span>':''}</div></div><div style="text-align:right;flex-shrink:0"><div class="hist-amount" style="color:#16A34A">+₹${Number(r.amount||0).toLocaleString('en-IN')}</div>${interest?'<div style="font-size:10px;color:#7C3AED;font-weight:600">Int: ₹'+interest.toLocaleString('en-IN')+'</div>':''}</div></div>`;
+  }).join(''):'<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">No payments yet</div>';
+  document.getElementById('loanPopup').classList.add('open');
+}
 function openEditPopup(){
   document.getElementById('loanPopup').classList.remove('open');
   const l=loans[lceIdx];
@@ -1952,6 +2034,8 @@ function openEditPopup(){
   document.getElementById('epGivenDate').value=l.given_date||'';
   document.getElementById('epDueDate').value=l.due_date||'';
   document.getElementById('epNotes').value=l.notes||'';
+  document.getElementById('epInterestRate').value=l.interest_rate||'';
+  document.getElementById('epInterestType').value=l.interest_type||'';
   document.querySelector('#editPopup .edit-sheet-sub').textContent=l.id+' · '+l.name;
   // render sources
   const sl=document.getElementById('sources-list');
@@ -1972,6 +2056,32 @@ function openEditPopup(){
       </div>
     </div>`;
   }).join('');
+  // partner dropdown
+  const epSel=document.getElementById('epPartnerSelect');
+  epSel.innerHTML='<option value="">+ Add Partner</option>'+partners.filter(p=>p.status==='active').map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
+  epSel.onchange=function(){
+    if(!this.value)return;
+    const p=partners.find(x=>x.partnerId===this.value);
+    if(!p)return;
+    if(document.querySelector(`#sources-list [data-pid="${p.partnerId}"]`)){this.value='';return;}
+    const c=avatarColors[document.querySelectorAll('#sources-list .source-entry').length%avatarColors.length];
+    const el=document.createElement('div');
+    el.className='source-entry';
+    el.dataset.pid=p.partnerId;
+    el.innerHTML=`
+      <div class="source-entry-header">
+        <div class="source-entry-avatar" style="background:${c.bg};color:${c.color}">${p.name[0].toUpperCase()}</div>
+        <div class="source-entry-name">${p.name}</div>
+        <button class="src-del-btn" onclick="removeSource(this)" title="Remove">✕</button>
+      </div>
+      <div class="source-method-fields">
+        <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" value="0"></div>
+        <div class="method-field"><div class="method-field-label">UPI (₹)</div><input class="method-field-input" type="number" value="0"></div>
+        <div class="method-field"><div class="method-field-label">Bank (₹)</div><input class="method-field-input" type="number" value="0"></div>
+      </div>`;
+    document.getElementById('sources-list').appendChild(el);
+    this.value='';
+  };
   document.getElementById('editPopup').classList.add('open');
 }
 
@@ -1983,7 +2093,9 @@ async function saveEditLoan(){
   const given_date=document.getElementById('epGivenDate').value;
   const due_date=document.getElementById('epDueDate').value;
   const notes=document.getElementById('epNotes').value.trim();
-  if(!amount||!given_date){alert('Amount and Given Date are required');return;}
+  const interest_rate=parseFloat(document.getElementById('epInterestRate').value)||0;
+  const interest_type=document.getElementById('epInterestType').value;
+  if(!amount||!given_date){showModal('Amount and Given Date are required');return;}
   const sources=[];
   document.querySelectorAll('#sources-list .source-entry').forEach(entry=>{
     const pid=entry.dataset.pid;
@@ -1997,11 +2109,33 @@ async function saveEditLoan(){
     amount,outstanding,given_date,
     due_date:due_date||null,
     notes:notes||null,
+    interest_rate:interest_rate||null,
+    interest_type:interest_type||null,
     sources
   }).eq('id',l.id).select();
-  console.log('update result:',updData,error);
-  if(error){alert('DB error: '+error.message);return;}
-  if(!updData||updData.length===0){alert('Update failed: no rows matched. Check RLS policies on loans table.');return;}
+  if(error){showModal('DB error: '+error.message);return;}
+  if(!updData||updData.length===0){showModal('Update failed: no rows matched. Check RLS policies on loans table.');return;}
+  // reverse old sources, apply new sources
+  const oldSources=l.sources||[];
+  for(const s of oldSources){
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    if(!p)continue;
+    p.cash_bal+=Number(s.cash||0);p.upi_bal+=Number(s.upi||0);p.bank_bal+=Number(s.bank||0);
+    p.balance+=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+  }
+  for(const s of sources){
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    if(!p)continue;
+    p.cash_bal-=s.cash;p.upi_bal-=s.upi;p.bank_bal-=s.bank;
+    p.balance-=(s.cash+s.upi+s.bank);
+  }
+  // persist updated partner balances
+  const affectedIds=[...new Set([...oldSources.map(s=>s.partner_id),...sources.map(s=>s.partner_id)])];
+  for(const pid of affectedIds){
+    const p=partners.find(x=>x.partnerId===pid);
+    if(!p)continue;
+    await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',pid);
+  }
   showToast('Loan updated successfully');
   document.getElementById('editPopup').classList.remove('open');
   await loadLoans();
@@ -2154,7 +2288,8 @@ function _nrSourceEntryHTML(c,name){
 }
 function _nrSetupPartnerSelect(){
   const pSel=document.getElementById('nrPartnerSelect');
-  pSel.innerHTML='<option value="">+ Add Partner</option>'+partners.map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
+  const activePtrs2=partners.filter(p=>p.status==='active');
+  pSel.innerHTML=(activePtrs2.length?'<option value="">— Select Partner —</option>':'<option value="">+ Add Partner</option>')+activePtrs2.map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
   pSel.onchange=function(){
     if(!this.value)return;
     const p=partners.find(x=>x.partnerId===this.value);
@@ -2231,7 +2366,7 @@ function _nrUpdateTotal(){
 function _nrRefreshOutstanding(loanId){
   const loan=loans.find(l=>l.id===loanId);
   const badge=document.getElementById('nrOutstandingBadge');
-  badge.textContent=loan?'Outstanding: '+loan.outstanding:'';
+  badge.textContent=loan?'Balance: '+loan.outstanding:'';
 }
 function onNrBorrowerChange(sel){
   document.getElementById('nrLoanId').value=sel.value||'';
@@ -2239,12 +2374,12 @@ function onNrBorrowerChange(sel){
 }
 async function saveNewRecv(){
   const loanId=document.getElementById('nrLoanId').value;
-  if(!loanId){alert('Select a borrower');return;}
+  if(!loanId){showModal('Select a borrower');return;}
   const date=document.getElementById('nrDate').value;
-  if(!date){alert('Enter date');return;}
+  if(!date){showModal('Enter date');return;}
   const principal=parseFloat(document.getElementById('nrPrincipal').value)||0;
   const interestAmt=parseFloat(document.getElementById('nrInterest').value)||0;
-  if(!principal&&!interestAmt){alert('Enter principal or interest amount');return;}
+  if(!principal&&!interestAmt){showModal('Enter principal or interest amount');return;}
   const totalExpected=principal+interestAmt;
   const notes=document.getElementById('nrNotes').value.trim();
   const returns=[];
@@ -2256,12 +2391,12 @@ async function saveNewRecv(){
     const bank=parseFloat(inputs[2].value)||0;
     if(cash||upi||bank)returns.push({partner_id:pid,cash,upi,bank});
   });
-  if(!returns.length){alert('Add at least one partner return');return;}
+  if(!returns.length){showModal('Add at least one partner return');return;}
   const totalRecv=returns.reduce((s,x)=>s+x.cash+x.upi+x.bank,0);
-  if(totalRecv!==totalExpected){alert('Partner total (₹'+totalRecv.toLocaleString('en-IN')+') must match Principal + Interest (₹'+totalExpected.toLocaleString('en-IN')+')');return;}
+  if(totalRecv!==totalExpected){showModal('Partner total (₹'+totalRecv.toLocaleString('en-IN')+') must match Principal + Interest (₹'+totalExpected.toLocaleString('en-IN')+')');return;}
   const loan=loans.find(l=>l.id===loanId);
   const currentOut=Number(String(loan.outstanding).replace(/[^0-9]/g,''));
-  if(principal>currentOut){alert('Principal (₹'+principal.toLocaleString('en-IN')+') cannot exceed outstanding amount (₹'+currentOut.toLocaleString('en-IN')+')');return;}
+  if(principal>currentOut){showModal('Principal (₹'+principal.toLocaleString('en-IN')+') cannot exceed outstanding amount (₹'+currentOut.toLocaleString('en-IN')+')');return;}
   const newOut=Math.max(0,currentOut-principal);// only principal reduces outstanding
   const {data:existingRecv}=await sb.from('receipts').select('id').order('id',{ascending:false}).limit(1);
   let nextNum=1;
@@ -2279,9 +2414,9 @@ async function saveNewRecv(){
     amount:totalRecv,method,receipt_date:date,
     interest:interestAmt,remarks:notes||null,status:'received',sources:returns
   });
-  if(recvErr){alert('DB error (receipt): '+recvErr.message);return;}
+  if(recvErr){showModal('DB error (receipt): '+recvErr.message);return;}
   const {error}=await sb.from('loans').update({outstanding:newOut}).eq('id',loanId);
-  if(error){alert('DB error: '+error.message);return;}
+  if(error){showModal('DB error: '+error.message);return;}
   showToast('Receive recorded — ₹'+totalRecv.toLocaleString('en-IN')+' received');
   document.getElementById('newRecvPopup').classList.remove('open');
   await loadLoans();
@@ -2301,44 +2436,62 @@ function _isLatestReceipt(recvIdx){
   });
   return sorted[0].id===r.id;
 }
+async function deleteLoan(loanId){
+  const loan=loans.find(l=>l.id===loanId);
+  if(!loan)return;
+  showConfirm('Delete loan '+loanId+' for '+loan.name+'? This cannot be undone.',async()=>{
+    const {error}=await sb.from('loans').delete().eq('id',loanId);
+    if(error){showModal('DB error: '+error.message);return;}
+    // restore partner balances
+    for(const s of (loan.sources||[])){
+      const p=partners.find(x=>x.partnerId===s.partner_id);
+      if(!p)continue;
+      p.cash_bal+=Number(s.cash||0);p.upi_bal+=Number(s.upi||0);p.bank_bal+=Number(s.bank||0);
+      p.balance+=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+      await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',p.partnerId);
+    }
+    showToast('Loan '+loanId+' deleted');
+    await loadLoans();
+  });
+}
 async function settleLoan(loanId){
   const loan=loans.find(l=>l.id===loanId);
   if(!loan)return;
   const outNum=Number(String(loan.outstanding).replace(/[^0-9]/g,''));
-  if(outNum!==0){alert('Cannot settle — outstanding balance exists.');return;}
-  if(!confirm('Settle loan '+loanId+' for '+loan.name+'?\nAll receipts will be deleted and the loan will be moved to Settled.'))return;
-  // capture total interest BEFORE deleting receipts
-  const totalInterest=receipts.filter(r=>r.loan_id===loanId).reduce((s,r)=>s+Number(r.interest||0),0);
-  const {error:rErr}=await sb.from('receipts').delete().eq('loan_id',loanId);
-  if(rErr){alert('DB error deleting receipts: '+rErr.message);return;}
-  const settleDate=new Date().toISOString().split('T')[0];
-  const {error:lErr}=await sb.from('loans').update({status:'settled',settle_date:settleDate,outstanding:0,interest_due:totalInterest}).eq('id',loanId);
-  if(lErr){alert('DB error settling loan: '+lErr.message);return;}
-  showToast('Loan '+loanId+' settled ✓');
-  await loadLoans();
-  const settledBtn=document.querySelector('#page-loans .toggle-group .tgl-btn:nth-child(2)');
-  if(settledBtn)setToggle(settledBtn);
+  if(outNum!==0){showModal('Cannot settle — delete all related receive transactions first, then the loan will move to Settled.');return;}
+  showConfirm('Settle loan '+loanId+' for '+loan.name+'? All receipts will be deleted.',async()=>{
+    const totalInterest=receipts.filter(r=>r.loan_id===loanId).reduce((s,r)=>s+Number(r.interest||0),0);
+    const {error:rErr}=await sb.from('receipts').delete().eq('loan_id',loanId);
+    if(rErr){showModal('DB error deleting receipts: '+rErr.message);return;}
+    const settleDate=new Date().toISOString().split('T')[0];
+    const {error:lErr}=await sb.from('loans').update({status:'settled',settle_date:settleDate,outstanding:0,interest_due:totalInterest}).eq('id',loanId);
+    if(lErr){showModal('DB error settling loan: '+lErr.message);return;}
+    showToast('Loan '+loanId+' settled ✓');
+    await loadLoans();
+    const settledBtn=document.querySelector('#page-loans .toggle-group .tgl-btn:nth-child(2)');
+    if(settledBtn)setToggle(settledBtn);
+  });
 }
 async function deleteRecv(){
   const r=recvs[rceIdx];
   if(!r)return;
-  if(!_isLatestReceipt(rceIdx)){alert('Only the most recent receipt for this loan can be deleted.');return;}
-  if(!confirm('Delete receipt '+r.id+' ('+r.received+') for '+r.name+'?'))return;
-  // restore outstanding on the loan
-  const loan=loans.find(l=>l.id===r.loan);
-  const recvAmt=Number(String(r.received).replace(/[^0-9]/g,''));
-  if(loan){
-    const currentOut=Number(String(loan.outstanding).replace(/[^0-9]/g,''));
-    const loanAmt=Number(String(loan.amount).replace(/[^0-9]/g,''));
-    const restoredOut=Math.min(loanAmt,currentOut+recvAmt);
-    const {error:lErr}=await sb.from('loans').update({outstanding:restoredOut}).eq('id',loan.id);
-    if(lErr){alert('DB error restoring loan: '+lErr.message);return;}
-  }
-  const {error}=await sb.from('receipts').delete().eq('id',r.id);
-  if(error){alert('DB error: '+error.message);return;}
-  document.getElementById('recvPopup').classList.remove('open');
-  showToast('Receipt deleted');
-  await loadLoans();
+  if(!_isLatestReceipt(rceIdx)){showModal('Only the most recent receipt for this loan can be deleted.','info');return;}
+  showConfirm('Delete receipt '+r.id+' ('+r.received+') for '+r.name+'?',async()=>{
+    const loan=loans.find(l=>l.id===r.loan);
+    const recvAmt=Number(String(r.received).replace(/[^0-9]/g,''));
+    if(loan){
+      const currentOut=Number(String(loan.outstanding).replace(/[^0-9]/g,''));
+      const loanAmt=Number(String(loan.amount).replace(/[^0-9]/g,''));
+      const restoredOut=Math.min(loanAmt,currentOut+recvAmt);
+      const {error:lErr}=await sb.from('loans').update({outstanding:restoredOut}).eq('id',loan.id);
+      if(lErr){showModal('DB error restoring loan: '+lErr.message);return;}
+    }
+    const {error}=await sb.from('receipts').delete().eq('id',r.id);
+    if(error){showModal('DB error: '+error.message);return;}
+    document.getElementById('recvPopup').classList.remove('open');
+    showToast('Receipt deleted');
+    await loadLoans();
+  });
 }
 
 function openEditRecvPopup(){
@@ -2372,26 +2525,32 @@ function renderBorrowers(){
   const list=document.getElementById('borrowerList');
   list.innerHTML=borrowers.map((b,i)=>{
     const col=accAvatarColors[i%accAvatarColors.length];
-    const blocked=hasOutstanding(b.name);
-    const delCls='del-sq'+(blocked?' del-disabled del-tooltip':'');
-    const delStyle=blocked?'pointer-events:none':'';
-    return '<div class="acc-card">'
-      +'<div class="acc-avatar" style="background:'+col.bg+';color:'+col.c+'">'+b.name[0]+'</div>'
+    const hasLoan=loans.some(l=>l.borrower_id===b.bId);
+    const hasReceipt=receipts.some(r=>r.borrower_id===b.bId);
+    const blocked=hasLoan||hasReceipt;
+    const isActive=b.status!=='inactive';
+    const delCls='del-sq'+(blocked?' del-disabled':'');
+    const delStyle=blocked?'pointer-events:none;opacity:.4':'';
+    return '<div class="acc-card" style="'+(isActive?'':'opacity:.6;background:#FAFAFA')+'">'
       +'<div class="acc-info">'
-        +'<div class="acc-name">'+b.name+' <span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EEF4FF;color:#2563EB;margin-left:4px">'+b.bId+'</span></div>'
-        +'<div class="acc-sub">'+b.mobile+' &nbsp;&middot;&nbsp; '+b.address+'</div>'
+        +'<div class="acc-name">'+b.name+'</div>'
+        +'<div style="margin-top:2px">'
+          +'<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EEF4FF;color:#2563EB">'+b.bId+'</span>'
+          +' <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:'+(isActive?'#EFFAF5':'#FFF8E8')+';color:'+(isActive?'#16A34A':'#D97706')+'">'
+            +(isActive?'Active':'Inactive')
+          +'</span>'
+        +'</div>'
+        +'<div class="acc-sub" style="margin-top:2px">'+b.mobile+'</div>'
       +'</div>'
       +'<div class="acc-actions">'
-        +'<button class="edit-sq" data-edit="'+i+'" title="Edit">'
-          +'<svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-        +'</button>'
-        +'<button class="'+delCls+'" data-del="'+i+'" style="'+delStyle+'">'
-          +'<svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-        +'</button>'
+        +'<button class="edit-sq" data-edit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-btoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>'
+        +'<button class="'+delCls+'" data-del="'+i+'" style="'+delStyle+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
       +'</div>'
     +'</div>';
   }).join('');
   list.querySelectorAll('[data-edit]').forEach(btn=>btn.addEventListener('click',()=>openBorrowerPopup(+btn.dataset.edit)));
+  list.querySelectorAll('[data-btoggle]').forEach(btn=>btn.addEventListener('click',()=>toggleBorrowerStatus(+btn.dataset.btoggle)));
   list.querySelectorAll('[data-del]').forEach(btn=>btn.addEventListener('click',()=>deleteBorrower(+btn.dataset.del)));
 }
 function openBorrowerPopup(idx){
@@ -2414,21 +2573,32 @@ async function saveBorrower(){
   if(!obj.name)return;
   if(idx===-1){
     const {error}=await sb.from('borrowers').insert({id:obj.bId,name:obj.name,mobile:obj.mobile,address:obj.address});
-    if(error){alert('DB error: '+error.message);return;}
+    if(error){showModal('DB error: '+error.message);return;}
     borrowers.push(obj);
   } else {
     const {error}=await sb.from('borrowers').update({name:obj.name,mobile:obj.mobile,address:obj.address}).eq('id',obj.bId);
-    if(error){alert('DB error: '+error.message);return;}
+    if(error){showModal('DB error: '+error.message);return;}
     borrowers[idx]=obj;
   }
   renderBorrowers();
   document.getElementById('borrowerPopup').classList.remove('open');
 }
-function deleteBorrower(idx){
-  if(!confirm('Delete borrower "'+borrowers[idx].name+'"?'))return;
-  const b=borrowers.splice(idx,1)[0];
-  sb.from('borrowers').delete().eq('id',b.bId);
+async function toggleBorrowerStatus(idx){
+  const b=borrowers[idx];
+  const newStatus=b.status==='active'?'inactive':'active';
+  const {error}=await sb.from('borrowers').update({status:newStatus}).eq('id',b.bId);
+  if(error){showModal('DB error: '+error.message);return;}
+  borrowers[idx].status=newStatus;
   renderBorrowers();
+  showToast('Borrower '+newStatus);
+}
+function deleteBorrower(idx){
+  const b=borrowers[idx];
+  showConfirm('Delete borrower "'+b.name+'"?',()=>{
+    borrowers.splice(idx,1);
+    sb.from('borrowers').delete().eq('id',b.bId);
+    renderBorrowers();
+  });
 }
 
 // ── PARTNER ──
@@ -2436,18 +2606,31 @@ function renderPartners(){
   const list=document.getElementById('partnerList');
   list.innerHTML=partners.map((p,i)=>{
     const col=accAvatarColors[i%accAvatarColors.length];
-    return '<div class="partner-card">'
+    const isActive=p.status!=='inactive';
+    return '<div class="partner-card" style="'+(isActive?'':'opacity:.6;background:#FAFAFA')+'">'
       +'<div class="partner-header">'
-        +'<div class="acc-avatar" style="background:'+col.bg+';color:'+col.c+'">'+p.name[0]+'</div>'
-        +'<div class="acc-info"><div class="acc-name">'+p.name+' <span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EFFAF5;color:#16A34A;margin-left:4px">'+p.partnerId+'</span></div><div class="acc-sub">'+p.phone+'</div></div>'
+        
+        +'<div class="acc-info">'
+          +'<div class="acc-name">'+p.name+'</div>'
+          +'<div style="margin-top:2px">'
+            +'<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EFFAF5;color:#16A34A">'+p.partnerId+'</span>'
+            +' <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:'+(isActive?'#EFFAF5':'#FFF8E8')+';color:'+(isActive?'#16A34A':'#D97706')+'">'
+              +(isActive?'Active':'Inactive')
+            +'</span>'
+          +'</div>'
+          +'<div class="acc-sub" style="margin-top:2px">'+p.phone+'</div>'
+        +'</div>'
         +'<button class="edit-sq" data-pedit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-        +'<button class="del-sq" data-pdel="'+i+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-ptoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>'
+        +(()=>{const hL=loans.some(l=>(l.sources||[]).some(s=>s.partner_id===p.partnerId));const hR=receipts.some(r=>(r.sources||[]).some(s=>s.partner_id===p.partnerId));const bl=hL||hR;return '<button class="del-sq'+(bl?' del-disabled':'')+'" data-pdel="'+i+'" style="'+(bl?'pointer-events:none;opacity:.4':'')+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';})()
       +'</div>'
-      +'<div class="partner-stats">'
+      +(()=>{const avMap=_calcAvailableMap();const f=avMap[p.partnerId]||{cash:0,upi:0,bank:0};const avail=Math.max(0,f.cash)+Math.max(0,f.upi)+Math.max(0,f.bank);return '<div class="partner-stats" style="grid-template-columns:1fr 1fr 1fr 1fr">'
         +'<div class="pstat" style="background:#EEF4FF"><div class="pstat-val" style="color:#2563EB">₹'+p.invested.toLocaleString('en-IN')+'</div><div class="pstat-lbl">Invested</div></div>'
-        +(()=>{const avMap=_calcAvailableMap();const f=avMap[p.partnerId]||{cash:0,upi:0,bank:0};const avail=Math.max(0,f.cash)+Math.max(0,f.upi)+Math.max(0,f.bank);return '<div class="pstat" style="background:#EFFAF5"><div class="pstat-val" style="color:#16A34A">₹'+avail.toLocaleString('en-IN')+'</div><div class="pstat-lbl">Available</div></div>';})()
-        +'<div class="pstat" style="background:#F5F1FF"><div class="pstat-val" style="color:#7C3AED">'+p.transactions.length+'</div><div class="pstat-lbl">Txns</div></div>'
-      +'</div>'
+        +'<div class="pstat" style="background:#EFFAF5"><div class="pstat-val" style="color:#16A34A">₹'+Math.max(0,f.cash).toLocaleString('en-IN')+'</div><div class="pstat-lbl">Cash</div></div>'
+        +'<div class="pstat" style="background:#EEF4FF"><div class="pstat-val" style="color:#2563EB">₹'+Math.max(0,f.upi).toLocaleString('en-IN')+'</div><div class="pstat-lbl">UPI</div></div>'
+        +'<div class="pstat" style="background:#F5F1FF"><div class="pstat-val" style="color:#7C3AED">₹'+Math.max(0,f.bank).toLocaleString('en-IN')+'</div><div class="pstat-lbl">Bank</div></div>'
+        +'</div>';})()
+      
       +'<div class="partner-actions">'
         +'<button class="pact-btn add" data-pfund="'+i+'" data-pmode="add">+ Add</button>'
         +'<button class="pact-btn ret" data-pfund="'+i+'" data-pmode="return">Return</button>'
@@ -2455,7 +2638,7 @@ function renderPartners(){
       +'</div>'
       +(p.transactions.filter(t=>t.type==='transfer-in'||t.type==='transfer-out').length?'<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">'
         +'<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Transfer History</div>'
-        +p.transactions.filter(t=>t.type==='transfer-in'||t.type==='transfer-out').slice(-5).reverse().map(t=>{
+        +p.transactions.filter(t=>t.type==='transfer-in'||t.type==='transfer-out').slice().reverse().map(t=>{
           const isIn=t.type==='transfer-in';
           const avMap=_calcAvailableMap();
           return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #F8FAFC">'
@@ -2468,9 +2651,19 @@ function renderPartners(){
     +'</div>';
   }).join('');
   list.querySelectorAll('[data-pedit]').forEach(btn=>btn.addEventListener('click',()=>openPartnerPopup(+btn.dataset.pedit)));
+  list.querySelectorAll('[data-ptoggle]').forEach(btn=>btn.addEventListener('click',()=>togglePartnerStatus(+btn.dataset.ptoggle)));
   list.querySelectorAll('[data-pdel]').forEach(btn=>btn.addEventListener('click',()=>deletePartner(+btn.dataset.pdel)));
   list.querySelectorAll('[data-pfund]').forEach(btn=>btn.addEventListener('click',()=>openPartnerFund(+btn.dataset.pfund,btn.dataset.pmode)));
   list.querySelectorAll('[data-pxfer]').forEach(btn=>btn.addEventListener('click',()=>openPartnerXfer(+btn.dataset.pxfer)));
+}
+async function togglePartnerStatus(idx){
+  const p=partners[idx];
+  const newStatus=p.status==='active'?'inactive':'active';
+  const {error}=await sb.from('partners').update({status:newStatus}).eq('id',p.partnerId);
+  if(error){showModal('DB error: '+error.message);return;}
+  partners[idx].status=newStatus;
+  renderPartners();
+  showToast('Partner '+newStatus);
 }
 function _pUpdateTotal(){
   const c=parseFloat(document.getElementById('pCash').value)||0;
@@ -2518,12 +2711,12 @@ async function savePartner(){
   obj.partnerId=idx===-1?'PRT'+String(partners.length+1).padStart(3,'0'):partners[idx].partnerId;
   if(idx===-1){
     const {error}=await sb.from('partners').insert({id:obj.partnerId,user_id:uid,phone:obj.phone,invested:obj.invested,balance:obj.balance,cash_bal:cash,upi_bal:upi,bank_bal:bank});
-    if(error){alert('DB error: '+error.message);return;}
+    if(error){showModal('DB error: '+error.message);return;}
     partners.push(obj);
   } else {
     obj.balance=partners[idx].balance;obj.transactions=partners[idx].transactions;
     const {error}=await sb.from('partners').update({phone:obj.phone,invested:obj.invested,cash_bal:cash,upi_bal:upi,bank_bal:bank}).eq('id',obj.partnerId);
-    if(error){alert('DB error: '+error.message);return;}
+    if(error){showModal('DB error: '+error.message);return;}
     partners[idx]=obj;
   }
   renderPartners();
@@ -2532,10 +2725,12 @@ async function savePartner(){
   showToast('Partner saved');
 }
 function deletePartner(idx){
-  if(!confirm('Delete partner "'+partners[idx].name+'"?'))return;
-  const p=partners.splice(idx,1)[0];
-  sb.from('partners').delete().eq('id',p.partnerId);
-  renderPartners();
+  const p=partners[idx];
+  showConfirm('Delete partner "'+p.name+'"?',()=>{
+    partners.splice(idx,1);
+    sb.from('partners').delete().eq('id',p.partnerId);
+    renderPartners();
+  });
 }
 function _pfUpdateTotal(){
   const c=parseFloat(document.getElementById('pfCash').value)||0;
@@ -2573,7 +2768,7 @@ async function savePartnerFund(){
   const newUpi=p.upi_bal+(sign*upi);
   const newBank=p.bank_bal+(sign*bank);
   const {error}=await sb.from('partners').update({invested:newInvested,balance:newBalance,cash_bal:newCash,upi_bal:newUpi,bank_bal:newBank}).eq('id',p.partnerId);
-  if(error){alert('DB error: '+error.message);return;}
+  if(error){showModal('DB error: '+error.message);return;}
   p.invested=newInvested;p.balance=newBalance;
   p.cash_bal=newCash;p.upi_bal=newUpi;p.bank_bal=newBank;
   p.transactions.push({type:mode,amount:amt,cash,upi,bank,date:document.getElementById('pfDate').value,notes:document.getElementById('pfNotes').value});
@@ -2613,9 +2808,9 @@ async function saveXfer(){
   const updFrom={balance:pFrom.balance-amt,cash_bal:pFrom.cash_bal-cash,upi_bal:pFrom.upi_bal-upi,bank_bal:pFrom.bank_bal-bank};
   const updTo={balance:pTo.balance+amt,cash_bal:pTo.cash_bal+cash,upi_bal:pTo.upi_bal+upi,bank_bal:pTo.bank_bal+bank};
   const {error:e1}=await sb.from('partners').update(updFrom).eq('id',pFrom.partnerId);
-  if(e1){alert('DB error: '+e1.message);return;}
+  if(e1){showModal('DB error: '+e1.message);return;}
   const {error:e2}=await sb.from('partners').update(updTo).eq('id',pTo.partnerId);
-  if(e2){alert('DB error: '+e2.message);return;}
+  if(e2){showModal('DB error: '+e2.message);return;}
   await sb.from('transfers').insert({from_id:pFrom.partnerId,to_id:pTo.partnerId,cash,upi,bank,amount:amt,date});
   Object.assign(pFrom,updFrom);
   pFrom.transactions.push({type:'transfer-out',amount:amt,cash,upi,bank,date,notes:'To '+pTo.name});
@@ -2630,22 +2825,33 @@ async function saveXfer(){
 // ── USER ──
 function renderUsers(){
   const typeColor={Admin:{bg:'#EEF4FF',c:'#2563EB'},Partner:{bg:'#EFFAF5',c:'#16A34A'},Viewer:{bg:'#FFF8E8',c:'#D97706'}};
+  const statusCfg={active:{bg:'#EFFAF5',c:'#16A34A',lbl:'Active'},inactive:{bg:'#FFF8E8',c:'#D97706',lbl:'Inactive'}};
+  const loggedIn=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
   const list=document.getElementById('userList');
   list.innerHTML=users.map((u,i)=>{
     const tc=typeColor[u.type]||{bg:'#F1F5F9',c:'#64748B'};
-    return '<div class="acc-card">'
+    const sc=statusCfg[u.status||'active']||statusCfg.active;
+    const isActive=u.status==='active';
+    const isSelf=u.id===loggedIn.id;
+    return '<div class="acc-card" style="'+(isActive?'':'opacity:.7')+'">'
       +'<div class="acc-avatar" style="background:'+tc.bg+';color:'+tc.c+'">'+u.name[0]+'</div>'
       +'<div class="acc-info">'
-        +'<div class="acc-name">'+u.name+' <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;background:'+tc.bg+';color:'+tc.c+';margin-left:4px">'+u.type+'</span></div>'
-        +'<div class="acc-sub">'+u.id+' &nbsp;&middot;&nbsp; @'+u.username+' &nbsp;&middot;&nbsp; '+(u.password?'<span style="letter-spacing:2px">••••••</span>':'<span style="color:#EF4444;font-weight:700">⚠ No password</span>')+'</div>'
+        +'<div class="acc-name">'+u.name
+          +' <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;background:'+tc.bg+';color:'+tc.c+';margin-left:4px">'+u.type+'</span>'
+          +' <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;background:'+sc.bg+';color:'+sc.c+';margin-left:2px">'+sc.lbl+'</span>'
+          +(isSelf?' <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;background:#F1F5F9;color:#64748B;margin-left:2px">You</span>':'')
+        +'</div>'
+        +'<div class="acc-sub">'+u.id+' &nbsp;&middot;&nbsp; @'+u.username+'</div>'
       +'</div>'
       +'<div class="acc-actions">'
         +'<button class="edit-sq" data-uedit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-        +'<button class="del-sq" data-udel="'+i+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +(!isSelf?'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-utoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>':'')
+        +(!isSelf?'<button class="del-sq" data-udel="'+i+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':'')
       +'</div>'
     +'</div>';
   }).join('');
   list.querySelectorAll('[data-uedit]').forEach(btn=>btn.addEventListener('click',()=>openUserPopup(+btn.dataset.uedit)));
+  list.querySelectorAll('[data-utoggle]').forEach(btn=>btn.addEventListener('click',()=>toggleUserStatus(+btn.dataset.utoggle)));
   list.querySelectorAll('[data-udel]').forEach(btn=>btn.addEventListener('click',()=>deleteUser(+btn.dataset.udel)));
 }
 function openUserPopup(idx){
@@ -2679,33 +2885,46 @@ async function saveUser(){
   const obj={id:document.getElementById('uUserId').value.trim(),
     username:document.getElementById('uUsername').value.trim(),
     name:document.getElementById('uName').value.trim(),
-    type:document.getElementById('uType').value};
+    type:document.getElementById('uType').value,
+    status:idx===-1?'active':(users[idx].status||'active')};
   if(!obj.name||!obj.id||!obj.username)return;
   const pwd=document.getElementById('uPassword').value;
   if(idx===-1){
     if(!pwd)return;
     obj.password=pwd;
     userSeq++;
-    const {error:insertErr}=await sb.from('users').insert({id:obj.id,username:obj.username,name:obj.name,type:obj.type,password:pwd});
-    if(insertErr){alert('DB error: '+insertErr.message);return;}
+    const {error:insertErr}=await sb.from('users').insert({id:obj.id,username:obj.username,name:obj.name,type:obj.type,password:pwd,status:'active'});
+    if(insertErr){showModal('DB error: '+insertErr.message);return;}
     users.push(obj);
   } else {
     obj.password=pwd||users[idx].password;
     const updateData={username:obj.username,name:obj.name,type:obj.type};
     if(pwd)updateData.password=pwd;
     const {error:updateErr}=await sb.from('users').update(updateData).eq('id',obj.id);
-    if(updateErr){alert('DB error: '+updateErr.message);return;}
+    if(updateErr){showModal('DB error: '+updateErr.message);return;}
     users[idx]=obj;
   }
   renderUsers();
   document.getElementById('userPopup').classList.remove('open');
   showToast('User saved successfully');
 }
-function deleteUser(idx){
-  if(!confirm('Delete user "'+users[idx].name+'"?'))return;
-  const u=users.splice(idx,1)[0];
-  sb.from('users').delete().eq('id',u.id);
+async function toggleUserStatus(idx){
+  const u=users[idx];
+  const loggedIn=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
+  if(u.id===loggedIn.id){showToast('Cannot deactivate your own account');return;}
+  const newStatus=u.status==='active'?'inactive':'active';
+  const {error}=await sb.from('users').update({status:newStatus}).eq('id',u.id);
+  if(error){showModal('DB error: '+error.message);return;}
+  users[idx].status=newStatus;
   renderUsers();
+  showToast('User '+newStatus);
+}
+function deleteUser(idx){
+  showConfirm('Delete user "'+users[idx].name+'"?',()=>{
+    const u=users.splice(idx,1)[0];
+    sb.from('users').delete().eq('id',u.id);
+    renderUsers();
+  });
 }
 
 // ── AVAILABLE POPUP ──
@@ -2854,7 +3073,7 @@ document.addEventListener('click',e=>{
   if(wrap&&!wrap.contains(e.target))document.getElementById('avatarMenu').classList.remove('open');
 });
 checkAutoLogin();
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+if('serviceWorker' in navigator && location.protocol !== 'null:' && location.hostname !== '')navigator.serviceWorker.register('sw.js');
 </script>
 </body>
 </html>
