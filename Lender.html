@@ -432,11 +432,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       <div class="header-top">
         <img src="Logo.jpeg" style="width:36px;height:36px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1.5px solid rgba(255,255,255,.3)">
         <div class="header-titles">
-          <div class="page-subtitle" style="color:rgba(255,255,255,.65);font-size:13px">Welcome </div>
+          <div class="page-subtitle" style="color:rgba(255,255,255,.65);font-size:13px">Welcome 👋</div>
           <div class="page-title">Savi Fino</div>
         </div>
         <div class="header-right">
-          <button class="notif-btn" onclick="document.getElementById('notifPanel').classList.add('open')">🔔<span class="notif-badge">5</span></button>
+          <button class="notif-btn" onclick="document.getElementById('notifPanel').classList.add('open')">🔔<span class="notif-badge">1</span></button>
           <div class="avatar-wrap">
             <div class="avatar" onclick="toggleAvatarMenu()">A</div>
             <div class="avatar-menu" id="avatarMenu">
@@ -775,6 +775,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     <div class="acc-tab-content" id="acc-partner">
       <button class="acc-add-btn" onclick="openPartnerPopup(null)">+ Add Partner</button>
       <div id="partnerList"></div>
+      <!-- Transfer History Section -->
+      <div id="transferHistorySection" style="display:none;margin-top:4px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Transfer History</div>
+        <div id="transferHistoryList"></div>
+      </div>
     </div>
 
     <!-- USER TAB -->
@@ -894,6 +899,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Total Received</div></div><div class="ir-val green" id="lpReceived">—</div></div>
           <div class="info-row"><div class="ir-left"><div class="ir-dot purple"></div><div class="ir-label">Interest Due</div></div><div class="ir-val" id="lpInterest">—</div></div>
           <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Notes</div></div><div class="ir-val" id="lpNotes">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot orange"></div><div class="ir-label">Created by</div></div><div class="ir-val" id="lpCreatedBy">—</div></div>
         </div>
 
         <!-- Dates -->
@@ -1286,6 +1292,38 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     </div>
   </div>
 
+  <!-- TRANSFER HISTORY DETAIL POPUP -->
+  <div class="popup-overlay" id="xferHistPopup" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="popup-sheet" style="padding-bottom:28px">
+      <div class="popup-handle"></div>
+      <div class="popup-top">
+        <div class="popup-top-row">
+          <div class="popup-title">Transfer Details</div>
+          <button class="popup-close" onclick="document.getElementById('xferHistPopup').classList.remove('open')">✕</button>
+        </div>
+        <div class="popup-id-row"><div class="popup-loan-num" id="xhTotal">₹0</div></div>
+        <div class="popup-meta" id="xhDate"></div>
+      </div>
+      <div class="popup-body">
+        <div class="popup-section">
+          <div class="popup-section-title">↔ Transfer</div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot red"></div><div class="ir-label">From</div></div><div class="ir-val" id="xhFromName">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">To</div></div><div class="ir-val" id="xhToName">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot orange"></div><div class="ir-label">Performed by</div></div><div class="ir-val" id="xhUser">—</div></div>
+        </div>
+        <div class="popup-section">
+          <div class="popup-section-title">💳 Breakdown</div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Cash</div></div><div class="ir-val" id="xhCash">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">UPI</div></div><div class="ir-val" id="xhUpi">—</div></div>
+          <div class="info-row"><div class="ir-left"><div class="ir-dot purple"></div><div class="ir-label">Bank</div></div><div class="ir-val" id="xhBank">—</div></div>
+        </div>
+        <div class="popup-actions">
+          <button class="pa-close" onclick="document.getElementById('xferHistPopup').classList.remove('open')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- USER POPUP -->
   <div class="edit-popup-overlay" id="userPopup" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="edit-sheet">
@@ -1550,8 +1588,8 @@ async function applyLogin(user){
     dbXfers.forEach(x=>{
       const pFrom=partners.find(p=>p.partnerId===x.from_id);
       const pTo=partners.find(p=>p.partnerId===x.to_id);
-      if(pFrom)pFrom.transactions.push({type:'transfer-out',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,notes:'To '+(pTo?pTo.name:x.to_id)});
-      if(pTo)pTo.transactions.push({type:'transfer-in',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,notes:'From '+(pFrom?pFrom.name:x.from_id)});
+      if(pFrom)pFrom.transactions.push({type:'transfer-out',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,created_at:x.created_at||null,created_by:x.created_by||null,notes:'To '+(pTo?pTo.name:x.to_id)});
+      if(pTo)pTo.transactions.push({type:'transfer-in',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,created_at:x.created_at||null,created_by:x.created_by||null,notes:'From '+(pFrom?pFrom.name:x.from_id)});
     });
     renderPartners();
   }
@@ -1808,6 +1846,7 @@ async function saveNewLoan(){
   if(!sources.length){showModal('Add at least one funding source');return;}
   const sourceTotal=sources.reduce((s,x)=>s+x.cash+x.upi+x.bank,0);
   if(sourceTotal!==amountRaw){showModal('Source total (₹'+sourceTotal.toLocaleString('en-IN')+') must match loan amount (₹'+amountRaw.toLocaleString('en-IN')+')');return;}
+  const _lu=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
   const {error}=await sb.from('loans').insert({
     id:loanId,
     borrower_id:borrowerId,
@@ -1819,7 +1858,9 @@ async function saveNewLoan(){
     sources:sources,
     notes:notes||null,
     interest_rate:interest_rate||null,
-    interest_type:interest_type||null
+    interest_type:interest_type||null,
+    created_by:_lu.id||null,
+    created_at:new Date().toISOString()
   });
   if(error){showModal('DB error: '+error.message);return;}
   // deduct each partner's balance by their contribution
@@ -1862,7 +1903,9 @@ async function loadLoans(){
       interest_type:l.interest_type||'',
       notes:l.notes||'',
       sources:l.sources||[],
-      updated:l.given_date||''
+      updated:l.given_date||'',
+      created_by:l.created_by||null,
+      created_at:l.created_at||null
     });
   });
   lceIdx=0;
@@ -1872,7 +1915,7 @@ async function loadLoans(){
 }
 const receipts=[];
 async function loadReceipts(){
-  const {data}=await sb.from('receipts').select('id,loan_id,borrower_id,amount,method,receipt_date,interest,remarks,status,sources').order('receipt_date',{ascending:false});
+  const {data}=await sb.from('receipts').select('id,loan_id,borrower_id,amount,method,receipt_date,interest,remarks,status,sources,created_by,created_at').order('receipt_date',{ascending:false});
   receipts.length=0;
   (data||[]).forEach(r=>receipts.push(r));
   updateRecvSummaryCards();
@@ -1925,27 +1968,10 @@ function updateRecvSummaryCards(){
 }
 function _calcAvailableMap(){
   const map={};
-  // start with each partner's own cash/upi/bank pool (funds added but not yet loaned)
+  // partner balances already reflect deductions for active loans (done at loan creation)
+  // just use stored balances directly
   partners.forEach(p=>{
     map[p.partnerId]={cash:Number(p.cash_bal||0),upi:Number(p.upi_bal||0),bank:Number(p.bank_bal||0)};
-  });
-  // add what's currently deployed in active loans
-  loans.filter(l=>l.status==='active').forEach(l=>{
-    (l.sources||[]).forEach(s=>{
-      if(!map[s.partner_id])map[s.partner_id]={cash:0,upi:0,bank:0};
-      map[s.partner_id].cash+=Number(s.cash||0);
-      map[s.partner_id].upi+=Number(s.upi||0);
-      map[s.partner_id].bank+=Number(s.bank||0);
-    });
-  });
-  // subtract what's been returned via receipts
-  receipts.forEach(r=>{
-    (r.sources||[]).forEach(s=>{
-      if(!map[s.partner_id])return;
-      map[s.partner_id].cash-=Number(s.cash||0);
-      map[s.partner_id].upi-=Number(s.upi||0);
-      map[s.partner_id].bank-=Number(s.bank||0);
-    });
   });
   return map;
 }
@@ -1992,6 +2018,10 @@ function openLoanPopup(){
   document.getElementById('lpReceived').textContent='₹'+totalRecv.toLocaleString('en-IN');
   document.getElementById('lpInterest').textContent='₹'+loanInterest.toLocaleString('en-IN');
   document.getElementById('lpNotes').textContent=l.notes||'—';
+  const lCreator=users.find(x=>x.id===l.created_by);
+  let lCreatedStr=lCreator?lCreator.name+' ('+lCreator.type+')':'—';
+  if(l.created_at){const d=new Date(l.created_at);lCreatedStr+=' · '+fmtDate(l.given_date)+', '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});}
+  document.getElementById('lpCreatedBy').textContent=lCreatedStr;
   document.getElementById('lpGivenDate').textContent=fmtDate(l.given_date);
   document.getElementById('lpDueDate').textContent=l.due_date?fmtDate(l.due_date):'—';
   document.getElementById('lpSettleDate').textContent=l.settle_date?fmtDate(l.settle_date):'—';
@@ -2019,7 +2049,7 @@ function openLoanPopup(){
     const interest=Number(r.interest||0);
     const methodLabel=r.method||'Cash';
     const methodColor=methodLabel==='UPI'?'#2563EB':methodLabel==='Bank'?'#7C3AED':'#16A34A';
-    return `<div class="hist-row"><div class="hist-icon" style="background:#EFFAF5;color:#16A34A">↓</div><div class="hist-info"><div class="hist-label">${l.name} · ${r.id}</div><div class="hist-meta">${fmtDate(r.receipt_date)}&nbsp;·&nbsp;<span style="font-size:11px;color:${methodColor};font-weight:600">${methodLabel}</span>${r.remarks?'&nbsp;·&nbsp;<span style="font-size:10px;color:var(--muted)">'+r.remarks+'</span>':''}</div></div><div style="text-align:right;flex-shrink:0"><div class="hist-amount" style="color:#16A34A">+₹${Number(r.amount||0).toLocaleString('en-IN')}</div>${interest?'<div style="font-size:10px;color:#7C3AED;font-weight:600">Int: ₹'+interest.toLocaleString('en-IN')+'</div>':''}</div></div>`;
+    return `<div class="hist-row"><div class="hist-icon" style="background:#EFFAF5;color:#16A34A">↓</div><div class="hist-info"><div class="hist-label">${l.name} · ${r.id}</div><div class="hist-meta">${fmtDate(r.receipt_date)}&nbsp;·&nbsp;<span style="font-size:11px;color:${methodColor};font-weight:600">${methodLabel}</span>${r.remarks?'&nbsp;·&nbsp;<span style="font-size:10px;color:var(--muted)">'+r.remarks+'</span>':''}${(()=>{const ru=users.find(x=>x.id===r.created_by);return ru?'&nbsp;·&nbsp;<span style="font-size:10px;color:var(--muted)">by '+ru.name+'</span>':''})()}</div></div><div style="text-align:right;flex-shrink:0"><div class="hist-amount" style="color:#16A34A">+₹${Number(r.amount||0).toLocaleString('en-IN')}</div>${interest?'<div style="font-size:10px;color:#7C3AED;font-weight:600">Int: ₹'+interest.toLocaleString('en-IN')+'</div>':''}</div></div>`;
   }).join(''):'<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">No payments yet</div>';
   document.getElementById('loanPopup').classList.add('open');
 }
@@ -2409,10 +2439,13 @@ async function saveNewRecv(){
   const borrowerId=loan?loan.borrower_id||loanId:loanId;
   const usedMethods=[...new Set(returns.flatMap(r=>[r.cash?'Cash':'',r.upi?'UPI':'',r.bank?'Bank':''].filter(Boolean)))];
   const method=usedMethods[0]||'Cash';
+  const _ru=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
   const {error:recvErr}=await sb.from('receipts').insert({
     id:recvId,loan_id:loanId,borrower_id:borrowerId,
     amount:totalRecv,method,receipt_date:date,
-    interest:interestAmt,remarks:notes||null,status:'received',sources:returns
+    interest:interestAmt,remarks:notes||null,status:'received',sources:returns,
+    created_by:_ru.id||null,
+    created_at:new Date().toISOString()
   });
   if(recvErr){showModal('DB error (receipt): '+recvErr.message);return;}
   const {error}=await sb.from('loans').update({outstanding:newOut}).eq('id',loanId);
@@ -2604,50 +2637,46 @@ function deleteBorrower(idx){
 // ── PARTNER ──
 function renderPartners(){
   const list=document.getElementById('partnerList');
+  const avMap=_calcAvailableMap();
   list.innerHTML=partners.map((p,i)=>{
     const col=accAvatarColors[i%accAvatarColors.length];
     const isActive=p.status!=='inactive';
+    const f=avMap[p.partnerId]||{cash:0,upi:0,bank:0};
+    const cash=Math.max(0,f.cash),upi=Math.max(0,f.upi),bank=Math.max(0,f.bank);
+    const total=cash+upi+bank;
+    const hL=loans.some(l=>(l.sources||[]).some(s=>s.partner_id===p.partnerId));
+    const hR=receipts.some(r=>(r.sources||[]).some(s=>s.partner_id===p.partnerId));
+    const bl=hL||hR;
     return '<div class="partner-card" style="'+(isActive?'':'opacity:.6;background:#FAFAFA')+'">'
-      +'<div class="partner-header">'
-        
-        +'<div class="acc-info">'
-          +'<div class="acc-name">'+p.name+'</div>'
-          +'<div style="margin-top:2px">'
-            +'<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EFFAF5;color:#16A34A">'+p.partnerId+'</span>'
-            +' <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:'+(isActive?'#EFFAF5':'#FFF8E8')+';color:'+(isActive?'#16A34A':'#D97706')+'">'
-              +(isActive?'Active':'Inactive')
-            +'</span>'
-          +'</div>'
-          +'<div class="acc-sub" style="margin-top:2px">'+p.phone+'</div>'
-        +'</div>'
-        +'<button class="edit-sq" data-pedit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-        +'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-ptoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>'
-        +(()=>{const hL=loans.some(l=>(l.sources||[]).some(s=>s.partner_id===p.partnerId));const hR=receipts.some(r=>(r.sources||[]).some(s=>s.partner_id===p.partnerId));const bl=hL||hR;return '<button class="del-sq'+(bl?' del-disabled':'')+'" data-pdel="'+i+'" style="'+(bl?'pointer-events:none;opacity:.4':'')+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';})()
+      // ── Row 1: name left, total right ──
+      +'<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">'
+        +'<div style="font-size:15px;font-weight:700;color:var(--dark-text)">'+p.name+'</div>'
+        +'<div style="font-size:17px;font-weight:800;color:#0F4C81">₹'+total.toLocaleString('en-IN')+'</div>'
       +'</div>'
-      +(()=>{const avMap=_calcAvailableMap();const f=avMap[p.partnerId]||{cash:0,upi:0,bank:0};const avail=Math.max(0,f.cash)+Math.max(0,f.upi)+Math.max(0,f.bank);return '<div class="partner-stats" style="grid-template-columns:1fr 1fr 1fr 1fr">'
-        +'<div class="pstat" style="background:#EEF4FF"><div class="pstat-val" style="color:#2563EB">₹'+p.invested.toLocaleString('en-IN')+'</div><div class="pstat-lbl">Invested</div></div>'
-        +'<div class="pstat" style="background:#EFFAF5"><div class="pstat-val" style="color:#16A34A">₹'+Math.max(0,f.cash).toLocaleString('en-IN')+'</div><div class="pstat-lbl">Cash</div></div>'
-        +'<div class="pstat" style="background:#EEF4FF"><div class="pstat-val" style="color:#2563EB">₹'+Math.max(0,f.upi).toLocaleString('en-IN')+'</div><div class="pstat-lbl">UPI</div></div>'
-        +'<div class="pstat" style="background:#F5F1FF"><div class="pstat-val" style="color:#7C3AED">₹'+Math.max(0,f.bank).toLocaleString('en-IN')+'</div><div class="pstat-lbl">Bank</div></div>'
-        +'</div>';})()
-      
+      // ── Row 2: badges ──
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+        +'<div>'
+          +'<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EEF4FF;color:#2563EB">'+p.partnerId+'</span>'
+          +' <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:'+(isActive?'#EEF4FF':'#FFF8E8')+';color:'+(isActive?'#2563EB':'#D97706')+'">'
+            +(isActive?'Active':'Inactive')
+          +'</span>'
+        +'</div>'
+
+      +'</div>'
+      // ── Row 2: Cash / UPI / Bank / Invested stats ──
+      +'<div class="partner-stats" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:10px">'
+        +'<div class="pstat" style="background:#EFFAF5"><div class="pstat-val" style="color:#16A34A">₹'+cash.toLocaleString('en-IN')+'</div><div class="pstat-lbl">Cash</div></div>'
+        +'<div class="pstat" style="background:#EEF4FF"><div class="pstat-val" style="color:#2563EB">₹'+upi.toLocaleString('en-IN')+'</div><div class="pstat-lbl">UPI</div></div>'
+        +'<div class="pstat" style="background:#F5F1FF"><div class="pstat-val" style="color:#7C3AED">₹'+bank.toLocaleString('en-IN')+'</div><div class="pstat-lbl">Bank</div></div>'
+      +'</div>'
       +'<div class="partner-actions">'
-        +'<button class="pact-btn add" data-pfund="'+i+'" data-pmode="add">+ Add</button>'
+        +'<button class="pact-btn add" data-pfund="'+i+'" data-pmode="add" style="background:#EEF4FF;color:#2563EB">+ Add</button>'
         +'<button class="pact-btn ret" data-pfund="'+i+'" data-pmode="return">Return</button>'
         +'<button class="pact-btn xfer" data-pxfer="'+i+'">Transfer</button>'
+        +'<button class="edit-sq" data-pedit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-ptoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>'
+        +'<button class="del-sq'+(bl?' del-disabled':'')+'" data-pdel="'+i+'" style="'+(bl?'pointer-events:none;opacity:.4':'')+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
       +'</div>'
-      +(p.transactions.filter(t=>t.type==='transfer-in'||t.type==='transfer-out').length?'<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">'
-        +'<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Transfer History</div>'
-        +p.transactions.filter(t=>t.type==='transfer-in'||t.type==='transfer-out').slice().reverse().map(t=>{
-          const isIn=t.type==='transfer-in';
-          const avMap=_calcAvailableMap();
-          return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #F8FAFC">'
-            +'<div style="width:24px;height:24px;border-radius:50%;background:'+(isIn?'#EFFAF5':'#FFF1F1')+';display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">'+(isIn?'↓':'↑')+'</div>'
-            +'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--dark-text)">'+t.notes+'</div><div style="font-size:10px;color:var(--muted)">'+fmtDate(t.date)+(t.cash?' · C:₹'+t.cash.toLocaleString('en-IN'):'')+(t.upi?' · U:₹'+t.upi.toLocaleString('en-IN'):'')+(t.bank?' · B:₹'+t.bank.toLocaleString('en-IN'):'')+'</div></div>'
-            +'<div style="font-size:12px;font-weight:700;color:'+(isIn?'#16A34A':'#EF4444')+'">'+(isIn?'+':'-')+'₹'+t.amount.toLocaleString('en-IN')+'</div>'
-            +'</div>';
-        }).join('')
-        +'</div>':'')      
     +'</div>';
   }).join('');
   list.querySelectorAll('[data-pedit]').forEach(btn=>btn.addEventListener('click',()=>openPartnerPopup(+btn.dataset.pedit)));
@@ -2655,6 +2684,55 @@ function renderPartners(){
   list.querySelectorAll('[data-pdel]').forEach(btn=>btn.addEventListener('click',()=>deletePartner(+btn.dataset.pdel)));
   list.querySelectorAll('[data-pfund]').forEach(btn=>btn.addEventListener('click',()=>openPartnerFund(+btn.dataset.pfund,btn.dataset.pmode)));
   list.querySelectorAll('[data-pxfer]').forEach(btn=>btn.addEventListener('click',()=>openPartnerXfer(+btn.dataset.pxfer)));
+  renderTransferHistory();
+}
+function renderTransferHistory(){
+  // collect all transfer txns across all partners (transfer-out only to avoid duplicates)
+  const allXfers=[];
+  partners.forEach(p=>{
+    p.transactions.filter(t=>t.type==='transfer-out').forEach(t=>{
+      allXfers.push({...t,fromName:p.name,fromId:p.partnerId});
+    });
+  });
+  // sort newest first
+  allXfers.sort((a,b)=>b.date>a.date?1:b.date<a.date?-1:0);
+  const sec=document.getElementById('transferHistorySection');
+  const listEl=document.getElementById('transferHistoryList');
+  if(!allXfers.length){sec.style.display='none';return;}
+  sec.style.display='';
+  listEl.innerHTML=allXfers.map((t,i)=>{
+    // resolve toName from notes "To X"
+    const toName=t.notes.replace(/^To /,'');
+    return '<div style="background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #EEF1F5;cursor:pointer" data-xhist="'+i+'">'
+      +'<div style="width:36px;height:36px;border-radius:50%;background:#FFF1F1;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">↔</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:13px;font-weight:700;color:var(--dark-text)">'+t.fromName+' → '+toName+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+fmtDate(t.date)+'</div>'
+      +'</div>'
+      +'<div style="font-size:14px;font-weight:800;color:#2563EB">₹'+t.amount.toLocaleString('en-IN')+'</div>'
+    +'</div>';
+  }).join('');
+  listEl.querySelectorAll('[data-xhist]').forEach(row=>row.addEventListener('click',()=>openXferHistPopup(allXfers[+row.dataset.xhist])));
+}
+function openXferHistPopup(t){
+  const toName=t.notes.replace(/^To /,'');
+  document.getElementById('xhFromName').textContent=t.fromName;
+  document.getElementById('xhToName').textContent=toName;
+  // date + time
+  let dateStr=fmtDate(t.date);
+  if(t.created_at){
+    const d=new Date(t.created_at);
+    dateStr+=', '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+  }
+  document.getElementById('xhDate').textContent=dateStr;
+  document.getElementById('xhTotal').textContent='₹'+t.amount.toLocaleString('en-IN');
+  document.getElementById('xhCash').textContent=t.cash?'₹'+Number(t.cash).toLocaleString('en-IN'):'—';
+  document.getElementById('xhUpi').textContent=t.upi?'₹'+Number(t.upi).toLocaleString('en-IN'):'—';
+  document.getElementById('xhBank').textContent=t.bank?'₹'+Number(t.bank).toLocaleString('en-IN'):'—';
+  // user who performed the transfer
+  const u=users.find(x=>x.id===t.created_by);
+  document.getElementById('xhUser').textContent=u?(u.name+' ('+u.type+')'):'—';
+  document.getElementById('xferHistPopup').classList.add('open');
 }
 async function togglePartnerStatus(idx){
   const p=partners[idx];
@@ -2811,12 +2889,15 @@ async function saveXfer(){
   if(e1){showModal('DB error: '+e1.message);return;}
   const {error:e2}=await sb.from('partners').update(updTo).eq('id',pTo.partnerId);
   if(e2){showModal('DB error: '+e2.message);return;}
-  await sb.from('transfers').insert({from_id:pFrom.partnerId,to_id:pTo.partnerId,cash,upi,bank,amount:amt,date});
+  const loggedUser=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
+  const createdAt=new Date().toISOString();
+  await sb.from('transfers').insert({from_id:pFrom.partnerId,to_id:pTo.partnerId,cash,upi,bank,amount:amt,date,created_at:createdAt,created_by:loggedUser.id||null});
   Object.assign(pFrom,updFrom);
-  pFrom.transactions.push({type:'transfer-out',amount:amt,cash,upi,bank,date,notes:'To '+pTo.name});
+  pFrom.transactions.push({type:'transfer-out',amount:amt,cash,upi,bank,date,created_at:createdAt,created_by:loggedUser.id||null,notes:'To '+pTo.name});
   Object.assign(pTo,updTo);
-  pTo.transactions.push({type:'transfer-in',amount:amt,cash,upi,bank,date,notes:'From '+pFrom.name});
+  pTo.transactions.push({type:'transfer-in',amount:amt,cash,upi,bank,date,created_at:createdAt,created_by:loggedUser.id||null,notes:'From '+pFrom.name});
   renderPartners();
+  renderTransferHistory();
   updateSummaryCards();
   document.getElementById('partnerXferPopup').classList.remove('open');
   showToast('Transfer saved');
