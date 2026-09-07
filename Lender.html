@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Savi</title>
 <link rel="manifest" href="manifest.json">
@@ -121,7 +124,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .popup-top{background:linear-gradient(135deg,#0F4C81 0%,#0e7490 100%);padding:16px 20px 20px;margin-bottom:0}
 .popup-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .popup-title{font-size:17px;font-weight:700;color:#fff}
-.popup-close{width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:none;color:#fff}
+.popup-close{width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:none;color:#fff;margin-left:auto;flex-shrink:0}
 .popup-id-row{display:flex;align-items:center;gap:10px}
 .popup-loan-num{font-size:22px;font-weight:800;color:#fff}
 .popup-status-badge{padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.35)}
@@ -436,13 +439,13 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <div class="page-title">Savi Fino</div>
         </div>
         <div class="header-right">
-          <button class="notif-btn" onclick="document.getElementById('notifPanel').classList.add('open')">🔔<span class="notif-badge">1</span></button>
+          <button class="notif-btn" onclick="document.getElementById('notifPanel').classList.add('open');renderNotifPanel()">🔔<span class="notif-badge" id="notifBadge" style="display:none">0</span></button>
           <div class="avatar-wrap">
             <div class="avatar" onclick="toggleAvatarMenu()">A</div>
             <div class="avatar-menu" id="avatarMenu">
               <div class="am-user">
-                <div class="am-avatar">A</div>
-                <div><div class="am-name">Aravinthraj</div><div class="am-role">Admin</div></div>
+                <div class="am-avatar" id="amAvatar">A</div>
+                <div><div class="am-name" id="amName">—</div><div class="am-role" id="amRole">—</div></div>
               </div>
               <div class="am-logout" onclick="doLogout()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -707,8 +710,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <div class="lce-left">
             <div class="lce-doc" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5)">💸</div>
             <div>
-              <div class="active-badge" id="rceBadge">Aravinthraj</div>
-              <div class="lce-id" id="rceId">RV0003</div>
+              <div class="active-badge" id="rceBadge"></div>
+              <div class="lce-id" id="rceId"></div>
             </div>
           </div>
           <div class="lce-right">
@@ -878,13 +881,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
       <!-- Colored header -->
       <div class="popup-top">
-        <div class="popup-top-row">
-          <div class="popup-title">Loan Details</div>
-          <button class="popup-close" onclick="document.getElementById('loanPopup').classList.remove('open')">✕</button>
-        </div>
         <div class="popup-id-row">
-          <div class="popup-loan-num" id="lpLoanNum">—</div>
-          <span class="popup-status-badge" id="lpStatusBadge">● Active</span>
+        <div class="popup-loan-num" id="lpLoanNum">—</div>
+        <span class="popup-status-badge" id="lpStatusBadge">● Active</span>
+        <button class="popup-close" onclick="document.getElementById('loanPopup').classList.remove('open')">✕</button> 
+
         </div>
         <div class="popup-meta" id="lpMeta"></div>
       </div>
@@ -893,7 +894,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
         <!-- Financials -->
         <div class="popup-section">
-          <div class="popup-section-title">💰 Financials</div>
           <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Loan Amount</div></div><div class="ir-val" id="lpAmount">—</div></div>
           <div class="info-row"><div class="ir-left"><div class="ir-dot red"></div><div class="ir-label">Outstanding</div></div><div class="ir-val red" id="lpOutstanding">—</div></div>
           <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">Total Received</div></div><div class="ir-val green" id="lpReceived">—</div></div>
@@ -924,7 +924,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
         <div class="popup-actions">
           <button class="pa-edit" onclick="openEditPopup()">Edit</button>
-          <button class="pa-del del-tooltip del-disabled">Delete</button>
+          <button class="pa-del" id="lpDelBtn">Delete</button>
           <button class="pa-close" onclick="document.getElementById('loanPopup').classList.remove('open')">Close</button>
         </div>
 
@@ -1105,10 +1105,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       <div class="popup-handle"></div>
       <div class="edit-sheet-top">
         <div class="edit-sheet-top-row"><div class="edit-sheet-title">Edit Receive</div><button class="popup-close" onclick="document.getElementById('editRecvPopup').classList.remove('open')">✕</button></div>
-        <div class="edit-sheet-sub">RV0003 · Aravinthraj</div>
+        <div class="edit-sheet-sub" id="erSub">—</div>
       </div>
       <div class="edit-body">
-        <div class="field-group"><div class="field-label">Borrower Name</div><input class="field-input" type="text" value="Aravinthraj" disabled style="opacity:.55;cursor:not-allowed;background:#F1F5F9"></div>
+        <div class="field-group"><div class="field-label">Borrower Name</div><input class="field-input" id="erBorrowerName" type="text" disabled style="opacity:.55;cursor:not-allowed;background:#F1F5F9"></div>
         <!--
         <div class="field-group"><div class="field-label">Linked Loan</div><input class="field-input" type="text" value="LN0003" disabled style="opacity:.55;cursor:not-allowed;background:#F1F5F9"></div>
       -->
@@ -1366,7 +1366,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         <div class="notif-title">🔔 Recent Transactions</div>
         <button class="popup-close" style="background:#F1F5F9;color:var(--muted);border:none" onclick="document.getElementById('notifPanel').classList.remove('open')">✕</button>
       </div>
-      <div style="text-align:center;padding:32px 20px;color:var(--muted);font-size:13px">No recent transactions</div>
+      <div id="notifList"><div style="text-align:center;padding:32px 20px;color:var(--muted);font-size:13px">No recent transactions</div></div>
     </div>
   </div>
 
@@ -1553,9 +1553,9 @@ async function applyLogin(user){
   currentUserType=role;
   document.getElementById('loginPage').classList.add('hidden');
   document.querySelector('.avatar').textContent=name[0].toUpperCase();
-  document.querySelector('.am-avatar').textContent=name[0].toUpperCase();
-  document.querySelector('.am-name').textContent=name;
-  document.querySelector('.am-role').textContent=role;
+  document.getElementById('amAvatar').textContent=name[0].toUpperCase();
+  document.getElementById('amName').textContent=name;
+  document.getElementById('amRole').textContent=role;
   // load all users from DB
   const {data:dbUsers}=await sb.from('users').select('id,username,name,type,password,status');
   if(dbUsers){
@@ -1925,6 +1925,7 @@ async function loadReceipts(){
   updateSummaryCards(); // refresh home interest card
   renderBorrowers(); // re-render so delete buttons reflect actual transaction state
   renderPartners();
+  renderNotifPanel();
 }
 function _buildRecvs(){
   recvs.length=0;
@@ -2051,6 +2052,26 @@ function openLoanPopup(){
     const methodColor=methodLabel==='UPI'?'#2563EB':methodLabel==='Bank'?'#7C3AED':'#16A34A';
     return `<div class="hist-row"><div class="hist-icon" style="background:#EFFAF5;color:#16A34A">↓</div><div class="hist-info"><div class="hist-label">${l.name} · ${r.id}</div><div class="hist-meta">${fmtDate(r.receipt_date)}&nbsp;·&nbsp;<span style="font-size:11px;color:${methodColor};font-weight:600">${methodLabel}</span>${r.remarks?'&nbsp;·&nbsp;<span style="font-size:10px;color:var(--muted)">'+r.remarks+'</span>':''}${(()=>{const ru=users.find(x=>x.id===r.created_by);return ru?'&nbsp;·&nbsp;<span style="font-size:10px;color:var(--muted)">by '+ru.name+'</span>':''})()}</div></div><div style="text-align:right;flex-shrink:0"><div class="hist-amount" style="color:#16A34A">+₹${Number(r.amount||0).toLocaleString('en-IN')}</div>${interest?'<div style="font-size:10px;color:#7C3AED;font-weight:600">Int: ₹'+interest.toLocaleString('en-IN')+'</div>':''}</div></div>`;
   }).join(''):'<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">No payments yet</div>';
+  // sync delete button state with lceDelBtn logic
+  const lpDelBtn=document.getElementById('lpDelBtn');
+  if(lpDelBtn){
+    const loanReceipts=receipts.filter(r=>r.loan_id===l.id);
+    const amtNum2=Number(String(l.amount).replace(/[^0-9]/g,''));
+    lpDelBtn.classList.remove('del-disabled','del-tooltip');
+    lpDelBtn.style.pointerEvents='';
+    lpDelBtn.onclick=null;
+    if(l.status==='settled'){
+      lpDelBtn.classList.add('del-disabled');
+      lpDelBtn.style.pointerEvents='none';
+    } else if(!loanReceipts.length && outNum===amtNum2){
+      lpDelBtn.onclick=()=>{document.getElementById('loanPopup').classList.remove('open');deleteLoan(l.id);};
+    } else if(outNum===0){
+      lpDelBtn.onclick=()=>{document.getElementById('loanPopup').classList.remove('open');settleLoan(l.id);};
+    } else {
+      lpDelBtn.classList.add('del-disabled','del-tooltip');
+      lpDelBtn.style.pointerEvents='none';
+    }
+  }
   document.getElementById('loanPopup').classList.add('open');
 }
 function openEditPopup(){
@@ -2529,6 +2550,11 @@ async function deleteRecv(){
 
 function openEditRecvPopup(){
   document.getElementById('recvPopup').classList.remove('open');
+  const r=recvs[rceIdx];
+  if(r){
+    document.getElementById('erSub').textContent=r.id+' · '+r.name;
+    document.getElementById('erBorrowerName').value=r.name;
+  }
   document.getElementById('editRecvPopup').classList.add('open');
 }
 function selectMethod(btn){
@@ -3132,6 +3158,30 @@ function setRptPeriod(period,el){
   renderReports();
 }
 
+function renderNotifPanel(){
+  const items=[];
+  receipts.forEach(r=>{
+    const b=borrowers.find(x=>x.bId===r.borrower_id);
+    items.push({type:'receipt',id:r.id,name:b?b.name:r.borrower_id,amount:Number(r.amount||0),date:r.receipt_date||'',created_at:r.created_at||r.receipt_date||''});
+  });
+  loans.forEach(l=>{
+    items.push({type:'loan',id:l.id,name:l.name,amount:Number(String(l.amount).replace(/[^0-9]/g,'')),date:l.given_date||'',created_at:l.created_at||l.given_date||''});
+  });
+  items.sort((a,b)=>(b.created_at||b.date)>(a.created_at||a.date)?1:(b.created_at||b.date)<(a.created_at||a.date)?-1:0);
+  const recent=items.slice(0,20);
+  const badge=document.getElementById('notifBadge');
+  if(badge){badge.textContent=recent.length;badge.style.display=recent.length?'':'none';}
+  const listEl=document.getElementById('notifList');
+  if(!listEl)return;
+  if(!recent.length){listEl.innerHTML='<div style="text-align:center;padding:32px 20px;color:var(--muted);font-size:13px">No recent transactions</div>';return;}
+  listEl.innerHTML=recent.map(item=>{
+    const isRecv=item.type==='receipt';
+    const color=isRecv?'#16A34A':'#2563EB';
+    const label=isRecv?'Received':'Loan given';
+    const dateStr=item.date?fmtDate(item.date.split('T')[0]):'—';
+    return `<div class="notif-item"><div class="notif-dot"></div><div class="notif-info"><div class="notif-name">${item.name}</div><div class="notif-desc">${label} · ${item.id}</div><div class="notif-time">${dateStr}</div></div><div class="notif-amt" style="color:${color}">₹${item.amount.toLocaleString('en-IN')}</div></div>`;
+  }).join('');
+}
 function switchPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
