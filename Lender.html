@@ -1534,7 +1534,7 @@ function showToast(msg){
 }
 
 async function checkAutoLogin(){
-  const saved=sessionStorage.getItem('sf_user');
+  const saved=localStorage.getItem('sf_user')||sessionStorage.getItem('sf_user');
   if(saved){await applyLogin(JSON.parse(saved));return;}
   document.getElementById('loginPage').classList.remove('hidden');
 }
@@ -1544,7 +1544,9 @@ async function doLogin(){
   document.getElementById('loginErr').textContent='';
   const {data,error}=await sb.from('users').select('*').eq('username',username).eq('password',pwd).eq('status','active').single();
   if(error||!data){document.getElementById('loginErr').textContent='Invalid username or password';return;}
-  sessionStorage.setItem('sf_user',JSON.stringify(data));
+  const remember=document.getElementById('loginRemember').checked;
+  if(remember)localStorage.setItem('sf_user',JSON.stringify(data));
+  else sessionStorage.setItem('sf_user',JSON.stringify(data));
   await applyLogin(data);
 }
 async function applyLogin(user){
@@ -1598,6 +1600,7 @@ async function applyLogin(user){
 }
 async function doLogout(){
   sessionStorage.removeItem('sf_user');
+  localStorage.removeItem('sf_user');
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
   document.getElementById('loginRemember').checked=false;
