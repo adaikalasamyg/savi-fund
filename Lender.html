@@ -26,8 +26,9 @@
   --radius-sm:12px;--radius-md:16px;--radius-lg:20px;--radius-xl:24px;--radius-pill:999px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#e8edf2;display:flex;justify-content:center;align-items:center;min-height:100vh}
-.phone{width:100vw;max-width:430px;height:100vh;background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
+html,body{height:100%;overscroll-behavior:none}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#e8edf2;display:flex;justify-content:center;align-items:center;height:calc(var(--vh,1vh)*100)}
+.phone{width:100vw;max-width:430px;height:calc(var(--vh,1vh)*100);background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
 .screen{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
 .screen::-webkit-scrollbar{display:none}
 
@@ -776,7 +777,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
     <!-- PARTNER TAB -->
     <div class="acc-tab-content" id="acc-partner">
-      <button class="acc-add-btn" onclick="openPartnerPopup(null)">+ Add Partner</button>
+      <div style="display:flex;gap:8px;margin-bottom:0">
+        <button class="acc-add-btn" style="margin-bottom:0;flex:1" onclick="openPartnerPopup(null)">+ Add Partner</button>
+        <button onclick="recalcPartnerBalances()" style="padding:12px 14px;background:#FFF8E8;border:1.5px dashed #F59E0B;border-radius:12px;color:#D97706;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">⟳ Recalc</button>
+      </div>
       <div id="partnerList"></div>
       <!-- Transfer History Section -->
       <div id="transferHistorySection" style="display:none;margin-top:4px">
@@ -1477,6 +1481,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+(function(){
+  function setVh(){document.documentElement.style.setProperty('--vh',(window.innerHeight*0.01)+'px');}
+  setVh();
+  window.addEventListener('resize',setVh);
+})();
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return day+' '+months[+m-1];}
 
 function showModal(msg,type='error'){
@@ -1695,7 +1704,12 @@ function updateList(){
     document.getElementById('lceInterest').textContent='₹'+loanInterest.toLocaleString('en-IN');
     const rateLabel=l.interest_rate?(l.interest_rate+'% '+(l.interest_type?l.interest_type.charAt(0).toUpperCase()+l.interest_type.slice(1):'')):'—';
     document.getElementById('lceRate').textContent=rateLabel;
-    document.getElementById('lceSource').textContent=(l.sources&&l.sources.length)?(()=>{const p=partners.find(x=>x.partnerId===l.sources[0].partner_id);return p?p.name:l.sources[0].partner_id;})():'—';
+    document.getElementById('lceSource').innerHTML=(l.sources&&l.sources.length)?(()=>{
+      const p=partners.find(x=>x.partnerId===l.sources[0].partner_id);
+      const first=p?p.name:l.sources[0].partner_id;
+      const extra=l.sources.length-1;
+      return first+(extra>0?` <span style="background:#E0E7FF;color:#3730A3;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px">+${extra}</span>`:'');
+    })():'—';
     document.getElementById('lceUpdated').textContent=fmtDate(l.given_date);
   }
   const list=document.getElementById('loanList');
@@ -1849,6 +1863,14 @@ async function saveNewLoan(){
   if(!sources.length){showModal('Add at least one funding source');return;}
   const sourceTotal=sources.reduce((s,x)=>s+x.cash+x.upi+x.bank,0);
   if(sourceTotal!==amountRaw){showModal('Source total (₹'+sourceTotal.toLocaleString('en-IN')+') must match loan amount (₹'+amountRaw.toLocaleString('en-IN')+')');return;}
+  // validate each partner's method balance
+  for(const s of sources){
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    if(!p)continue;
+    if(s.cash>p.cash_bal){showModal(p.name+': insufficient Cash balance (available ₹'+p.cash_bal.toLocaleString('en-IN')+', requested ₹'+s.cash.toLocaleString('en-IN')+')');return;}
+    if(s.upi>p.upi_bal){showModal(p.name+': insufficient UPI balance (available ₹'+p.upi_bal.toLocaleString('en-IN')+', requested ₹'+s.upi.toLocaleString('en-IN')+')');return;}
+    if(s.bank>p.bank_bal){showModal(p.name+': insufficient Bank balance (available ₹'+p.bank_bal.toLocaleString('en-IN')+', requested ₹'+s.bank.toLocaleString('en-IN')+')');return;}
+  }
   const _lu=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
   const {error}=await sb.from('loans').insert({
     id:loanId,
@@ -1870,15 +1892,15 @@ async function saveNewLoan(){
   for(const s of sources){
     const p=partners.find(x=>x.partnerId===s.partner_id);
     if(!p)continue;
+    const nc=Number(p.cash_bal||0)-s.cash;
+    const nu=Number(p.upi_bal||0)-s.upi;
+    const nb=Number(p.bank_bal||0)-s.bank;
+    const nbal=Number(p.balance||0)-(s.cash+s.upi+s.bank);
     const {error:pe}=await sb.from('partners').update({
-      cash_bal:p.cash_bal-s.cash,
-      upi_bal:p.upi_bal-s.upi,
-      bank_bal:p.bank_bal-s.bank,
-      balance:p.balance-(s.cash+s.upi+s.bank)
+      cash_bal:nc,upi_bal:nu,bank_bal:nb,balance:nbal
     }).eq('id',p.partnerId);
-    if(pe){showModal('Partner update error: '+pe.message);return;}
-    p.cash_bal-=s.cash;p.upi_bal-=s.upi;p.bank_bal-=s.bank;
-    p.balance-=(s.cash+s.upi+s.bank);
+    if(pe){showModal('Partner update error ('+p.name+'): '+pe.message);return;}
+    p.cash_bal=nc;p.upi_bal=nu;p.bank_bal=nb;p.balance=nbal;
   }
   showToast('Loan created successfully');
   document.getElementById('newLoanPopup').classList.remove('open');
@@ -2159,6 +2181,19 @@ async function saveEditLoan(){
     const bank=parseFloat(inputs[2].value)||0;
     if(cash||upi||bank)sources.push({partner_id:pid,cash,upi,bank});
   });
+  // validate each partner's method balance (restore old sources first for edit context)
+  const oldSources=l.sources||[];
+  const tempBal={};
+  partners.forEach(p=>{tempBal[p.partnerId]={cash:p.cash_bal,upi:p.upi_bal,bank:p.bank_bal};});
+  oldSources.forEach(s=>{if(tempBal[s.partner_id]){tempBal[s.partner_id].cash+=Number(s.cash||0);tempBal[s.partner_id].upi+=Number(s.upi||0);tempBal[s.partner_id].bank+=Number(s.bank||0);}});
+  for(const s of sources){
+    const bal=tempBal[s.partner_id];
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    if(!bal||!p)continue;
+    if(s.cash>bal.cash){showModal(p.name+': insufficient Cash balance (available ₹'+bal.cash.toLocaleString('en-IN')+', requested ₹'+s.cash.toLocaleString('en-IN')+')');return;}
+    if(s.upi>bal.upi){showModal(p.name+': insufficient UPI balance (available ₹'+bal.upi.toLocaleString('en-IN')+', requested ₹'+s.upi.toLocaleString('en-IN')+')');return;}
+    if(s.bank>bal.bank){showModal(p.name+': insufficient Bank balance (available ₹'+bal.bank.toLocaleString('en-IN')+', requested ₹'+s.bank.toLocaleString('en-IN')+')');return;}
+  }
   const {data:updData,error}=await sb.from('loans').update({
     amount,outstanding,given_date,
     due_date:due_date||null,
@@ -2170,7 +2205,6 @@ async function saveEditLoan(){
   if(error){showModal('DB error: '+error.message);return;}
   if(!updData||updData.length===0){showModal('Update failed: no rows matched. Check RLS policies on loans table.');return;}
   // reverse old sources, apply new sources
-  const oldSources=l.sources||[];
   for(const s of oldSources){
     const p=partners.find(x=>x.partnerId===s.partner_id);
     if(!p)continue;
@@ -2358,13 +2392,17 @@ function _nrSetupPartnerSelect(){
     document.getElementById('nr-sources-list').appendChild(el);
     this.value='';
   };
-  document.getElementById('nr-sources-list').addEventListener('input',e=>{
+  // use a named handler stored on the element to avoid duplicate listeners
+  const srcList=document.getElementById('nr-sources-list');
+  if(srcList._nrInputHandler)srcList.removeEventListener('input',srcList._nrInputHandler);
+  srcList._nrInputHandler=e=>{
     if(!e.target.classList.contains('method-field-input'))return;
     const entry=e.target.closest('.source-entry');
     const inputs=entry.querySelectorAll('.method-field-input');
     const total=(parseFloat(inputs[0].value)||0)+(parseFloat(inputs[1].value)||0)+(parseFloat(inputs[2].value)||0);
     entry.querySelector('.nr-src-total').textContent='₹'+total.toLocaleString('en-IN');
-  });
+  };
+  srcList.addEventListener('input',srcList._nrInputHandler);
 }
 function openNewRecvPopup(){
   populateNrBorrower(null);
@@ -2474,6 +2512,18 @@ async function saveNewRecv(){
   if(recvErr){showModal('DB error (receipt): '+recvErr.message);return;}
   const {error}=await sb.from('loans').update({outstanding:newOut}).eq('id',loanId);
   if(error){showModal('DB error: '+error.message);return;}
+  // credit received amounts back to each partner's balance
+  for(const s of returns){
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    if(!p){showModal('Partner not found: '+s.partner_id);return;}
+    const newCash=p.cash_bal+Number(s.cash||0);
+    const newUpi=p.upi_bal+Number(s.upi||0);
+    const newBank=p.bank_bal+Number(s.bank||0);
+    const newBal=p.balance+(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+    const {error:pe}=await sb.from('partners').update({cash_bal:newCash,upi_bal:newUpi,bank_bal:newBank,balance:newBal}).eq('id',p.partnerId);
+    if(pe){showModal('Partner update error ('+p.name+'): '+pe.message);return;}
+    p.cash_bal=newCash;p.upi_bal=newUpi;p.bank_bal=newBank;p.balance=newBal;
+  }
   showToast('Receive recorded — ₹'+totalRecv.toLocaleString('en-IN')+' received');
   document.getElementById('newRecvPopup').classList.remove('open');
   await loadLoans();
@@ -2545,6 +2595,20 @@ async function deleteRecv(){
     }
     const {error}=await sb.from('receipts').delete().eq('id',r.id);
     if(error){showModal('DB error: '+error.message);return;}
+    // reverse partner balance credits for this receipt
+    const recvRaw=receipts.find(x=>x.id===r.id);
+    if(recvRaw){
+      for(const s of (recvRaw.sources||[])){
+        const p=partners.find(x=>x.partnerId===s.partner_id);
+        if(!p)continue;
+        const newCash=p.cash_bal-Number(s.cash||0);
+        const newUpi=p.upi_bal-Number(s.upi||0);
+        const newBank=p.bank_bal-Number(s.bank||0);
+        const newBal=p.balance-(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+        await sb.from('partners').update({cash_bal:newCash,upi_bal:newUpi,bank_bal:newBank,balance:newBal}).eq('id',p.partnerId);
+        p.cash_bal=newCash;p.upi_bal=newUpi;p.bank_bal=newBank;p.balance=newBal;
+      }
+    }
     document.getElementById('recvPopup').classList.remove('open');
     showToast('Receipt deleted');
     await loadLoans();
@@ -2822,7 +2886,7 @@ async function savePartner(){
     partners.push(obj);
   } else {
     obj.balance=partners[idx].balance;obj.transactions=partners[idx].transactions;
-    const {error}=await sb.from('partners').update({phone:obj.phone,invested:obj.invested,cash_bal:cash,upi_bal:upi,bank_bal:bank}).eq('id',obj.partnerId);
+    const {error}=await sb.from('partners').update({phone:obj.phone,invested:obj.invested,balance:obj.balance,cash_bal:cash,upi_bal:upi,bank_bal:bank}).eq('id',obj.partnerId);
     if(error){showModal('DB error: '+error.message);return;}
     partners[idx]=obj;
   }
@@ -2912,6 +2976,10 @@ async function saveXfer(){
   if(!amt||isNaN(to))return;
   const date=document.getElementById('xferDate').value;
   const pFrom=partners[from],pTo=partners[to];
+  // validate method balances for transfer
+  if(cash>pFrom.cash_bal){showModal(pFrom.name+': insufficient Cash balance (available ₹'+pFrom.cash_bal.toLocaleString('en-IN')+', requested ₹'+cash.toLocaleString('en-IN')+')');return;}
+  if(upi>pFrom.upi_bal){showModal(pFrom.name+': insufficient UPI balance (available ₹'+pFrom.upi_bal.toLocaleString('en-IN')+', requested ₹'+upi.toLocaleString('en-IN')+')');return;}
+  if(bank>pFrom.bank_bal){showModal(pFrom.name+': insufficient Bank balance (available ₹'+pFrom.bank_bal.toLocaleString('en-IN')+', requested ₹'+bank.toLocaleString('en-IN')+')');return;}
   const updFrom={balance:pFrom.balance-amt,cash_bal:pFrom.cash_bal-cash,upi_bal:pFrom.upi_bal-upi,bank_bal:pFrom.bank_bal-bank};
   const updTo={balance:pTo.balance+amt,cash_bal:pTo.cash_bal+cash,upi_bal:pTo.upi_bal+upi,bank_bal:pTo.bank_bal+bank};
   const {error:e1}=await sb.from('partners').update(updFrom).eq('id',pFrom.partnerId);
@@ -3206,6 +3274,51 @@ document.addEventListener('click',e=>{
   const wrap=document.querySelector('.avatar-wrap');
   if(wrap&&!wrap.contains(e.target))document.getElementById('avatarMenu').classList.remove('open');
 });
+async function recalcPartnerBalances(){
+  const [{data:allLoans},{data:allReceipts},{data:allPartners},{data:allTransfers}]=await Promise.all([
+    sb.from('loans').select('id,sources,status').neq('status','settled-deleted'),
+    sb.from('receipts').select('sources'),
+    sb.from('partners').select('id,invested,cash_bal,upi_bal,bank_bal'),
+    sb.from('transfers').select('from_id,to_id,cash,upi,bank')
+  ]);
+  if(!allPartners)return;
+  // net flow per partner: -active_loans +receipts +transfers_in -transfers_out
+  const flow={};
+  // Derive invested-by-method = current_bal + active_loan_deductions - receipt_credits +/- transfers
+  // Then recalc: new_bal = invested_by_method - active_loans + receipts +/- transfers
+  // Which simplifies to: new_bal = current_bal (already correct). Just persist it.
+  allPartners.forEach(p=>{
+    const loanCash=(allLoans||[]).filter(l=>l.status==='active').reduce((s,l)=>{const src=(l.sources||[]).find(x=>x.partner_id===p.id);return src?s+Number(src.cash||0):s;},0);
+    const loanUpi=(allLoans||[]).filter(l=>l.status==='active').reduce((s,l)=>{const src=(l.sources||[]).find(x=>x.partner_id===p.id);return src?s+Number(src.upi||0):s;},0);
+    const loanBank=(allLoans||[]).filter(l=>l.status==='active').reduce((s,l)=>{const src=(l.sources||[]).find(x=>x.partner_id===p.id);return src?s+Number(src.bank||0):s;},0);
+    const recvCash=(allReceipts||[]).reduce((s,r)=>{const src=(r.sources||[]).find(x=>x.partner_id===p.id);return src?s+Number(src.cash||0):s;},0);
+    const recvUpi=(allReceipts||[]).reduce((s,r)=>{const src=(r.sources||[]).find(x=>x.partner_id===p.id);return src?s+Number(src.upi||0):s;},0);
+    const recvBank=(allReceipts||[]).reduce((s,r)=>{const src=(r.sources||[]).find(x=>x.partner_id===p.id);return src?s+Number(src.bank||0):s;},0);
+    const xfOutC=(allTransfers||[]).filter(t=>t.from_id===p.id).reduce((s,t)=>s+Number(t.cash||0),0);
+    const xfOutU=(allTransfers||[]).filter(t=>t.from_id===p.id).reduce((s,t)=>s+Number(t.upi||0),0);
+    const xfOutB=(allTransfers||[]).filter(t=>t.from_id===p.id).reduce((s,t)=>s+Number(t.bank||0),0);
+    const xfInC=(allTransfers||[]).filter(t=>t.to_id===p.id).reduce((s,t)=>s+Number(t.cash||0),0);
+    const xfInU=(allTransfers||[]).filter(t=>t.to_id===p.id).reduce((s,t)=>s+Number(t.upi||0),0);
+    const xfInB=(allTransfers||[]).filter(t=>t.to_id===p.id).reduce((s,t)=>s+Number(t.bank||0),0);
+    // invested_by_method = current_bal + loanOut - recvIn + xferOut - xferIn
+    const invC=Number(p.cash_bal||0)+loanCash-recvCash+xfOutC-xfInC;
+    const invU=Number(p.upi_bal||0)+loanUpi-recvUpi+xfOutU-xfInU;
+    const invB=Number(p.bank_bal||0)+loanBank-recvBank+xfOutB-xfInB;
+    flow[p.id]={cash:invC-loanCash+recvCash-xfOutC+xfInC,upi:invU-loanUpi+recvUpi-xfOutU+xfInU,bank:invB-loanBank+recvBank-xfOutB+xfInB};
+  });
+  if(false){const _unused=null;// placeholder
+  }
+  for(const p of allPartners){
+    const f=flow[p.id];
+    const bal=f.cash+f.upi+f.bank;
+    await sb.from('partners').update({cash_bal:f.cash,upi_bal:f.upi,bank_bal:f.bank,balance:bal}).eq('id',p.id);
+    const lp=partners.find(x=>x.partnerId===p.id);
+    if(lp){lp.cash_bal=f.cash;lp.upi_bal=f.upi;lp.bank_bal=f.bank;lp.balance=bal;}
+  }
+  renderPartners();
+  updateSummaryCards();
+  showToast('Balances recalculated');
+}
 checkAutoLogin();
 if('serviceWorker' in navigator && location.protocol !== 'null:' && location.hostname !== '')navigator.serviceWorker.register('sw.js');
 </script>
