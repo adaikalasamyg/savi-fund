@@ -83,7 +83,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .section-title{font-size:13px;font-weight:700;color:var(--dark-text)}
 .see-all{font-size:11px;color:var(--primary-blue);font-weight:600}
-.loan-card-exp{background:#FFFFFF;border-radius:18px;padding:14px;box-shadow:0 5px 25px rgba(30,50,80,.06);border:1px solid #EEF1F5}
+.loan-card-exp{background:#FFFFFF;border-radius:18px;padding:14px;box-shadow:0 5px 25px rgba(30,50,80,.06);border:1px solid #EEF1F5;touch-action:pan-y}
+.loan-card-exp.dragging{transition:none!important}
 .lce-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .lce-left{display:flex;align-items:center;gap:10px}
 .lce-doc{width:38px;height:38px;background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -236,8 +237,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .add-partner-btn{width:100%;padding:11px;background:#F8FAFF;border:1.5px dashed #93C5FD;border-radius:12px;color:#2563EB;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 .add-partner-btn:hover{background:#EEF4FF}
 /* BOTTOM NAV */
-.bottom-nav{position:sticky;bottom:0;z-index:20;padding:8px 12px calc(14px + env(safe-area-inset-bottom));flex-shrink:0;background:linear-gradient(to bottom,rgba(250,251,253,0) 0%,rgba(250,251,253,.95) 20%,#FAFBFD 100%)}
-.nav-dock{background:linear-gradient(135deg,#0F4C81 0%,#1a6b5a 55%,#0e7490 100%);border-radius:24px;border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 32px rgba(15,76,129,.35),0 2px 8px rgba(0,0,0,.12);height:66px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;position:relative}
+.bottom-nav{position:sticky;bottom:0;z-index:20;padding:8px 4px calc(14px + env(safe-area-inset-bottom));flex-shrink:0;background:linear-gradient(to bottom,rgba(250,251,253,0) 0%,rgba(250,251,253,.95) 20%,#FAFBFD 100%)}
+.nav-dock{background:linear-gradient(135deg,#0F4C81 0%,#1a6b5a 55%,#0e7490 100%);border-radius:24px;border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 32px rgba(15,76,129,.35),0 2px 8px rgba(0,0,0,.12);height:66px;display:flex;align-items:center;justify-content:space-around;padding:0 2px;position:relative}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 6px;border-radius:16px;flex:1;position:relative;transition:transform .15s}
 .nav-item:active{transform:scale(.92)}
 .nav-icon-wrap{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;transition:background .2s,box-shadow .2s}
@@ -257,13 +258,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .nav-item[data-nav="account"].active .nav-icon-wrap{background:rgba(167,139,250,.18);box-shadow:0 0 0 1.5px rgba(167,139,250,.35),0 3px 12px rgba(167,139,250,.2)}
 .nav-item[data-nav="account"].active .nav-icon-wrap svg{stroke:#A78BFA}
 .nav-item[data-nav="account"].active .nav-label{color:#A78BFA}
+.nav-item[data-nav="borrower"].active .nav-icon-wrap{background:rgba(245,158,11,.18);box-shadow:0 0 0 1.5px rgba(245,158,11,.35),0 3px 12px rgba(245,158,11,.2)}
+.nav-item[data-nav="borrower"].active .nav-icon-wrap svg{stroke:#F59E0B}
+.nav-item[data-nav="borrower"].active .nav-label{color:#F59E0B}
 .nav-item[data-nav="reports"].active .nav-icon-wrap{background:rgba(251,113,133,.18);box-shadow:0 0 0 1.5px rgba(251,113,133,.35),0 3px 12px rgba(251,113,133,.2)}
 .nav-item[data-nav="reports"].active .nav-icon-wrap svg{stroke:#FB7185}
 .nav-item[data-nav="reports"].active .nav-label{color:#FB7185}
+
 .nav-item.active::after{content:'';position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.6}
 /* PAGE SWITCHING */
 .page{display:none}
-.page.active{display:block}
+.page.active{display:block;animation:pageSlideIn .36s cubic-bezier(.22,.61,.36,1) both}
+@keyframes pageSlideIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.page.active{animation:none}}
 /* RECEIVE PAGE */
 .sum-card.orange{background:#FFF7ED}
 .sum-card.orange .sum-number{color:#EA580C}
@@ -315,6 +322,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .pstat-val{font-size:13px;font-weight:700}
 .pstat-lbl{font-size:9px;color:var(--muted);font-weight:500;margin-top:2px}
 .partner-actions{display:flex;gap:6px}
+.partner-actions .edit-sq,.partner-actions [data-ptoggle],.partner-actions [data-pdel]{flex:1;width:auto;border-radius:10px}
 .pact-btn{flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 .pact-btn.add{background:#EFFAF5;color:#16A34A}
 .pact-btn.ret{background:#FFF1F1;color:#EF4444}
@@ -424,6 +432,67 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .modal-btn.primary{color:#2563EB}
 .modal-btn.danger{color:#EF4444}
 .modal-btn+.modal-btn{border-left:1px solid var(--border)}
+
+/* ── CARD SLIDE-MOVE ANIMATION (swipe / select on loan & receive detail cards) ── */
+@keyframes cardSlideInL{from{opacity:0;transform:translateX(28px) scale(.98)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes cardSlideInR{from{opacity:0;transform:translateX(-28px) scale(.98)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes cardSlideInF{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card-slide-l{animation:cardSlideInL .32s cubic-bezier(.22,.61,.36,1)}
+.card-slide-r{animation:cardSlideInR .32s cubic-bezier(.22,.61,.36,1)}
+.card-slide-f{animation:cardSlideInF .28s cubic-bezier(.22,.61,.36,1)}
+@media(prefers-reduced-motion:reduce){.card-slide-l,.card-slide-r,.card-slide-f{animation:none}}
+
+/* ── BUTTON DESIGN / PRESS-FEEDBACK ENHANCEMENTS (visual only, no logic changed) ── */
+.recv-now-btn,.view-loan-btn,.view-btn,.edit-save-btn,.login-btn,.acc-add-btn,
+.pact-btn,.rpt-period-btn,.modal-btn,.src-del-btn,.tgl-btn,.pay-now-btn,
+.notif-btn,.avatar,.add-partner-btn,.method-chip{
+  transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease,filter .2s ease,background .2s ease,opacity .2s ease;
+}
+.recv-now-btn:active,.view-loan-btn:active,.view-btn:active,.acc-add-btn:active,
+.pact-btn:active,.rpt-period-btn:active,.modal-btn:active,.src-del-btn:active,
+.tgl-btn:active,.pay-now-btn:active,.notif-btn:active,.avatar:active,
+.add-partner-btn:active,.method-chip:active{transform:scale(.94)}
+.edit-save-btn:active,.login-btn:active{transform:scale(.97)}
+.lr-arrow:active{transform:scale(.9)}
+.loan-item.open .lr-arrow:active{transform:rotate(180deg) scale(.9)}
+.recv-now-btn,.pay-now-btn{box-shadow:0 3px 10px rgba(21,154,114,.25)}
+.recv-now-btn:active,.pay-now-btn:active{box-shadow:0 1px 4px rgba(21,154,114,.2)}
+.login-btn:active,.edit-save-btn:active{box-shadow:0 3px 10px rgba(15,76,129,.3)}
+.rpt-period-btn.active{transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease,background .3s ease}
+@media(hover:hover){
+  .login-btn:hover,.edit-save-btn:hover{filter:brightness(1.06);box-shadow:0 8px 24px rgba(15,76,129,.38)}
+  .recv-now-btn:hover,.pay-now-btn:hover{filter:brightness(1.05)}
+  .view-loan-btn:hover,.view-btn:hover{filter:brightness(.97)}
+  .add-loan-btn:hover{background:rgba(255,255,255,.26)}
+}
+@media(prefers-reduced-motion:reduce){
+  .recv-now-btn,.view-loan-btn,.view-btn,.edit-save-btn,.login-btn,.acc-add-btn,
+  .pact-btn,.rpt-period-btn,.modal-btn,.src-del-btn,.tgl-btn,.pay-now-btn,
+  .notif-btn,.avatar,.add-partner-btn,.method-chip,.lr-arrow{transition:none}
+}
+
+/* ── REPORT DOWNLOAD BUTTONS ── */
+.rpt-download-row{display:flex;gap:8px;padding:10px 20px 0}
+.rpt-dl-btn{flex:1;padding:10px 0;border:none;border-radius:12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(135deg,#0F4C81,#0e7490);color:#fff;box-shadow:0 3px 10px rgba(15,76,129,.25);transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease,filter .2s ease}
+.rpt-dl-btn.outline{background:#fff;color:#0F4C81;border:1.5px solid var(--border);box-shadow:none}
+.rpt-dl-btn:active{transform:scale(.95)}
+@media(hover:hover){.rpt-dl-btn:hover{filter:brightness(1.06)}.rpt-dl-btn.outline:hover{background:#F8FAFC}}
+
+/* ── TREND CHART ── */
+.rpt-trend-legend{display:flex;gap:16px;margin-top:8px;justify-content:center}
+#trendSvg .rpt-trend-dot{transition:r .2s ease}
+
+/* ── PRINT / SAVE AS PDF ── */
+@media print{
+  body{background:#fff}
+  .phone{width:100%!important;max-width:100%!important;height:auto!important;box-shadow:none!important;border-radius:0!important}
+  .screen{overflow:visible!important;height:auto!important}
+  .bottom-nav,.rpt-download-row,.rpt-period-row{display:none!important}
+  .page{display:none!important}
+  .page.active{display:block!important;animation:none!important}
+  .rpt-chart-card{box-shadow:none!important;border:1px solid #E2E8F0!important;break-inside:avoid}
+  .header,.rpt-kpi{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}
 </style>
 </head>
 <body>
@@ -751,6 +820,28 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
   </div><!-- end page-receive -->
 
+  <!-- PAGE: BORROWER -->
+  <div class="page" id="page-borrower">
+    <div class="header">
+      <div class="header-top">
+        <div class="header-titles">
+          <div class="page-title">Borrowers</div>
+          <div class="page-subtitle">Manage borrowers</div>
+        </div>
+        <div class="header-right">
+          <button class="add-loan-btn" onclick="openBorrowerPopup(null)">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 20px 0">
+      <div id="borrowerListPage"></div>
+    </div>
+    <div class="spacer"></div>
+  </div><!-- end page-borrower -->
+
   <!-- PAGE: ACCOUNT -->
   <div class="page" id="page-account">
     <div class="header">
@@ -764,27 +855,17 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
     <!-- TABS -->
     <div class="acc-tabs">
-      <button class="acc-tab active" onclick="switchAccTab('borrower',this)">Borrower</button>
-      <button class="acc-tab" onclick="switchAccTab('partner',this)">Partner</button>
+      <button class="acc-tab active" onclick="switchAccTab('partner',this)">Partner</button>
       <button class="acc-tab" onclick="switchAccTab('user',this)">User</button>
     </div>
 
-    <!-- BORROWER TAB -->
-    <div class="acc-tab-content active" id="acc-borrower">
-      <button class="acc-add-btn" onclick="openBorrowerPopup(null)">+ Add Borrower</button>
-      <div id="borrowerList"></div>
-    </div>
-
     <!-- PARTNER TAB -->
-    <div class="acc-tab-content" id="acc-partner">
-      <div style="display:flex;gap:8px;margin-bottom:0">
-        <button class="acc-add-btn" style="margin-bottom:0;flex:1" onclick="openPartnerPopup(null)">+ Add Partner</button>
-        <button onclick="recalcPartnerBalances()" style="padding:12px 14px;background:#FFF8E8;border:1.5px dashed #F59E0B;border-radius:12px;color:#D97706;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">⟳ Recalc</button>
-      </div>
+    <div class="acc-tab-content active" id="acc-partner">
+      <button class="acc-add-btn" onclick="openPartnerPopup(null)">+ Add Partner</button>
       <div id="partnerList"></div>
-      <!-- Transfer History Section -->
+      <!-- Transaction History Section -->
       <div id="transferHistorySection" style="display:none;margin-top:4px">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Transfer History</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Transaction History</div>
         <div id="transferHistoryList"></div>
       </div>
     </div>
@@ -816,6 +897,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       <button class="rpt-period-btn" onclick="setRptPeriod('all',this)">All Time</button>
     </div>
 
+    <!-- DOWNLOAD OPTIONS -->
+    <div class="rpt-download-row">
+      <button class="rpt-dl-btn" onclick="exportReportCSV()">⬇ Export CSV</button>
+      <button class="rpt-dl-btn outline" onclick="printReport()">🖨 Save as PDF</button>
+    </div>
+
     <!-- KPI CARDS -->
     <div class="rpt-section">
       <div class="rpt-kpi-row">
@@ -845,16 +932,28 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     <!-- OUTSTANDING vs AVAILABLE DONUT -->
     <div class="rpt-section">
       <div class="rpt-chart-card">
-        <div class="rpt-chart-title">📊 Outstanding vs Available</div>
+        <div class="rpt-chart-title">📊 Outstanding vs Received</div>
         <div class="rpt-chart-row">
           <div class="rpt-donut-wrap">
             <svg viewBox="0 0 36 36" id="donutSvg"></svg>
             <div class="rpt-donut-center">
               <div class="rpt-donut-val" id="donutCenter">₹48k</div>
-              <div class="rpt-donut-lbl">Total</div>
+              <div class="rpt-donut-lbl">Invested</div>
             </div>
           </div>
           <div class="rpt-legend" id="donutLegend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTHLY TREND -->
+    <div class="rpt-section">
+      <div class="rpt-chart-card">
+        <div class="rpt-chart-title">📈 Monthly Trend <span style="font-weight:500;color:var(--muted);font-size:10px">(Last 6 Months)</span></div>
+        <svg viewBox="0 0 300 130" id="trendSvg" style="width:100%;height:auto;overflow:visible"></svg>
+        <div class="rpt-trend-legend">
+          <div class="rpt-legend-item"><div class="rpt-legend-dot" style="background:#2563EB"></div><div class="rpt-legend-name">Given</div></div>
+          <div class="rpt-legend-item"><div class="rpt-legend-dot" style="background:#10B981"></div><div class="rpt-legend-name">Received</div></div>
         </div>
       </div>
     </div>
@@ -879,6 +978,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   </div><!-- end page-reports -->
 
   </div><!-- end screen -->
+
+
+
   <div class="popup-overlay" id="loanPopup" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="popup-sheet">
       <div class="popup-handle"></div>
@@ -932,6 +1034,54 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <button class="pa-close" onclick="document.getElementById('loanPopup').classList.remove('open')">Close</button>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD INTEREST POPUP (settled loans) -->
+  <div class="edit-popup-overlay" id="addInterestPopup" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="edit-sheet">
+      <div class="popup-handle"></div>
+      <div class="edit-sheet-top">
+        <div class="edit-sheet-top-row">
+          <div class="edit-sheet-title">Add Interest</div>
+          <button class="popup-close" onclick="document.getElementById('addInterestPopup').classList.remove('open')">✕</button>
+        </div>
+        <div class="edit-sheet-sub" id="aiSub">—</div>
+      </div>
+      <div class="edit-body">
+        <input type="hidden" id="aiLoanId">
+        <div class="field-row-2">
+          <div class="field-group">
+            <div class="field-label">Interest Amount (₹)</div>
+            <input id="aiAmount" class="field-input" type="number" placeholder="0">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Interest Type</div>
+            <select id="aiType" class="field-input">
+              <option value="">-- None --</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="fixed">Fixed</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Date</div>
+          <input id="aiDate" class="field-input" type="date" style="font-size:12px;padding:10px 8px">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Notes (optional)</div>
+          <input id="aiNotes" class="field-input" type="text" placeholder="e.g. monthly interest">
+        </div>
+        <div class="edit-section-label">Received By Partner</div>
+        <div id="ai-sources-list"></div>
+        <select id="aiPartnerSelect" class="field-input" style="margin-bottom:8px"><option value="">+ Add Partner</option></select>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="edit-save-btn" style="flex:1" onclick="saveAddInterest()">Save</button>
+          <button class="edit-save-btn" style="flex:1;background:#e2e8f0;color:var(--muted);box-shadow:none" onclick="document.getElementById('addInterestPopup').classList.remove('open')">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1276,18 +1426,27 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       <div class="edit-body">
         <input type="hidden" id="xferFromIdx">
         <div class="field-group"><div class="field-label">Transfer To</div>
-          <select id="xferToId" class="field-input"></select>
+          <select id="xferToId" class="field-input" onchange="_xferOnToChange()"></select>
         </div>
-        <div class="edit-section-label">Amount by Method (₹)</div>
+        <!-- current balances hint -->
+        <div id="xferBalHint" style="display:none;background:#F1F5F9;border-radius:10px;padding:8px 12px;font-size:11px;color:var(--muted);margin-top:-6px">
+          <span id="xferBalHintText"></span>
+        </div>
+        <div class="edit-section-label" id="xferAmtLabel">New Distribution (₹)</div>
         <div class="source-method-fields" style="margin-top:4px">
           <div class="method-field"><div class="method-field-label">Cash (₹)</div><input id="xferCash" class="method-field-input" type="number" placeholder="0" oninput="_xferUpdateTotal()"></div>
           <div class="method-field"><div class="method-field-label">UPI (₹)</div><input id="xferUpi" class="method-field-input" type="number" placeholder="0" oninput="_xferUpdateTotal()"></div>
           <div class="method-field"><div class="method-field-label">Bank (₹)</div><input id="xferBank" class="method-field-input" type="number" placeholder="0" oninput="_xferUpdateTotal()"></div>
         </div>
+        <!-- self-transfer: new distribution hint -->
+        <div id="xferSelfToRow" style="display:none;background:#EEF4FF;border-radius:10px;padding:8px 12px;font-size:11px;color:#2563EB;margin-top:-6px">
+          Redistribute your balance across methods. Total must equal your current balance.
+        </div>
         <div style="background:#F1F5F9;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between">
-          <span>Total</span><span id="xferTotalDisplay" style="font-weight:700;color:var(--dark-text)">₹0</span>
+          <span id="xferTotalLabel">Total</span><span id="xferTotalDisplay" style="font-weight:700;color:var(--dark-text)">₹0</span>
         </div>
         <div class="field-group"><div class="field-label">Date</div><input id="xferDate" class="field-input" type="date" style="font-size:12px;padding:10px 8px"></div>
+        <div class="field-group"><div class="field-label">Notes (optional)</div><input id="xferNotes" class="field-input" type="text" placeholder="e.g. cash to UPI conversion"></div>
         <div style="display:flex;gap:10px">
           <button class="edit-save-btn" style="flex:1" onclick="saveXfer()">Transfer</button>
           <button class="edit-save-btn" style="flex:1;background:#e2e8f0;color:var(--muted);box-shadow:none" onclick="document.getElementById('partnerXferPopup').classList.remove('open')">Cancel</button>
@@ -1314,6 +1473,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <div class="info-row"><div class="ir-left"><div class="ir-dot red"></div><div class="ir-label">From</div></div><div class="ir-val" id="xhFromName">—</div></div>
           <div class="info-row"><div class="ir-left"><div class="ir-dot green"></div><div class="ir-label">To</div></div><div class="ir-val" id="xhToName">—</div></div>
           <div class="info-row"><div class="ir-left"><div class="ir-dot orange"></div><div class="ir-label">Performed by</div></div><div class="ir-val" id="xhUser">—</div></div>
+          <div class="info-row" id="xhNotesRow"><div class="ir-left"><div class="ir-dot blue"></div><div class="ir-label">Notes</div></div><div class="ir-val" id="xhNotes">—</div></div>
         </div>
         <div class="popup-section">
           <div class="popup-section-title">💳 Breakdown</div>
@@ -1402,6 +1562,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         <div class="nav-label">Receive</div>
       </div>
 
+      <!-- Borrower -->
+      <div class="nav-item" data-nav="borrower">
+        <div class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M2 21c0-4 3.1-7 7-7"/><path d="M19 11v6M16 14h6"/></svg>
+        </div>
+        <div class="nav-label">Borrower</div>
+      </div>
+
       <!-- Account -->
       <div class="nav-item" data-nav="account">
         <div class="nav-icon-wrap">
@@ -1410,12 +1578,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         <div class="nav-label">Account</div>
       </div>
 
-      <!-- Reports -->
-      <div class="nav-item" data-nav="reports">
+      <!-- More -->
+      <div class="nav-item" data-nav="more">
         <div class="nav-icon-wrap">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="rgba(255,255,255,.45)"/><circle cx="12" cy="12" r="1.5" fill="rgba(255,255,255,.45)"/><circle cx="19" cy="12" r="1.5" fill="rgba(255,255,255,.45)"/></svg>
         </div>
-        <div class="nav-label">Reports</div>
+        <div class="nav-label">More</div>
       </div>
 
     </div>
@@ -1487,6 +1655,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   window.addEventListener('resize',setVh);
 })();
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return day+' '+months[+m-1];}
+function fmtRate(rate,type){if(!rate)return'—';const sym=type==='fixed'?'₹':'%';return rate+sym+(type?' '+type.charAt(0).toUpperCase()+type.slice(1):'');}
 
 function showModal(msg,type='error'){
   const cfg={error:{icon:'⚠️',bg:'#FFF1F1',title:'Error'},info:{icon:'ℹ️',bg:'#EEF4FF',title:'Info'}};
@@ -1599,8 +1768,8 @@ async function applyLogin(user){
     dbXfers.forEach(x=>{
       const pFrom=partners.find(p=>p.partnerId===x.from_id);
       const pTo=partners.find(p=>p.partnerId===x.to_id);
-      if(pFrom)pFrom.transactions.push({type:'transfer-out',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,created_at:x.created_at||null,created_by:x.created_by||null,notes:'To '+(pTo?pTo.name:x.to_id)});
-      if(pTo)pTo.transactions.push({type:'transfer-in',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,created_at:x.created_at||null,created_by:x.created_by||null,notes:'From '+(pFrom?pFrom.name:x.from_id)});
+      if(pFrom)pFrom.transactions.push({type:'transfer-out',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,created_at:x.created_at||null,created_by:x.created_by||null,notes_raw:x.notes||null,notes:'To '+(pTo?pTo.name:x.to_id)});
+      if(pTo)pTo.transactions.push({type:'transfer-in',amount:Number(x.amount),cash:Number(x.cash||0),upi:Number(x.upi||0),bank:Number(x.bank||0),date:x.date,created_at:x.created_at||null,created_by:x.created_by||null,notes_raw:x.notes||null,notes:'From '+(pFrom?pFrom.name:x.from_id)});
     });
     renderPartners();
   }
@@ -1631,6 +1800,13 @@ let userSeq=1;
 const partners=[];
 let _savingUser=false;
 
+function slideCard(elId,dir){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  el.classList.remove('card-slide-l','card-slide-r','card-slide-f');
+  void el.offsetWidth;
+  el.classList.add(dir>0?'card-slide-l':dir<0?'card-slide-r':'card-slide-f');
+}
 function lceRender(dir){
   const filtered=loans.map((l,i)=>({l,i})).filter(({l})=>l.status===activeFilter);
   if(!filtered.length)return;
@@ -1638,16 +1814,61 @@ function lceRender(dir){
   const next=(pos+dir+filtered.length)%filtered.length;
   lceIdx=filtered[next].i;
   updateList();
+  slideCard('lceCard',dir);
 }
-// swipe support
+// swipe support (WhatsApp-style: live drag-follow + elastic snap)
 (function(){
-  let sx=0;
   const card=document.getElementById('lceCard');
-  card.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
-  card.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-sx;
-    if(Math.abs(dx)>40)lceRender(dx<0?1:-1);
+  let sx=0,sy=0,dx=0,dragging=false,horizontal=false,startTime=0;
+  function currentLen(){
+    return loans.filter(l=>l.status===activeFilter).length;
+  }
+  function reset(){
+    card.classList.remove('dragging');
+    card.style.transition='';
+    card.style.transform='';
+    card.style.opacity='';
+  }
+  card.addEventListener('touchstart',e=>{
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0;dragging=true;horizontal=false;startTime=Date.now();
   },{passive:true});
+  card.addEventListener('touchmove',e=>{
+    if(!dragging)return;
+    const t=e.touches[0],mx=t.clientX-sx,my=t.clientY-sy;
+    if(!horizontal){
+      if(Math.abs(mx)>8&&Math.abs(mx)>Math.abs(my)){horizontal=true;card.classList.add('dragging');}
+      else if(Math.abs(my)>8){dragging=false;return;}
+    }
+    if(!horizontal)return;
+    dx=mx;
+    const w=card.offsetWidth||300,half=w*0.5;
+    const follow=Math.abs(dx)>half?Math.sign(dx)*(half+(Math.abs(dx)-half)*0.35):dx;
+    card.style.transform='translateX('+follow.toFixed(1)+'px)';
+    card.style.opacity=String(1-Math.min(Math.abs(follow)/w,1)*0.4);
+  },{passive:true});
+  function finish(){
+    if(!dragging)return;
+    dragging=false;
+    if(!horizontal){reset();return;}
+    const w=card.offsetWidth||300;
+    const velocity=Math.abs(dx)/Math.max(Date.now()-startTime,1);
+    const commit=(Math.abs(dx)>Math.max(60,w*0.22)||velocity>0.55)&&currentLen()>1;
+    card.classList.remove('dragging');
+    if(commit){
+      const dir=dx<0?1:-1;
+      card.style.transition='transform .22s cubic-bezier(.22,.61,.36,1),opacity .22s ease';
+      card.style.transform='translateX('+(dir>0?-w:w)+'px)';
+      card.style.opacity='0';
+      setTimeout(()=>{reset();lceRender(dir);},200);
+    }else{
+      card.style.transition='transform .32s cubic-bezier(.34,1.56,.64,1),opacity .25s ease';
+      card.style.transform='translateX(0)';
+      card.style.opacity='1';
+      setTimeout(reset,320);
+    }
+  }
+  card.addEventListener('touchend',finish,{passive:true});
+  card.addEventListener('touchcancel',finish,{passive:true});
 })();
 if(loans.length)lceRender(0);
 updateList();
@@ -1702,7 +1923,7 @@ function updateList(){
     // sum interest: use saved total_interest for settled loans, live receipts for active
     const loanInterest=l.status==='settled'?l.interest_due:receipts.filter(r=>r.loan_id===l.id).reduce((s,r)=>s+Number(r.interest||0),0);
     document.getElementById('lceInterest').textContent='₹'+loanInterest.toLocaleString('en-IN');
-    const rateLabel=l.interest_rate?(l.interest_rate+'% '+(l.interest_type?l.interest_type.charAt(0).toUpperCase()+l.interest_type.slice(1):'')):'—';
+    const rateLabel=fmtRate(l.interest_rate,l.interest_type);
     document.getElementById('lceRate').textContent=rateLabel;
     document.getElementById('lceSource').innerHTML=(l.sources&&l.sources.length)?(()=>{
       const p=partners.find(x=>x.partnerId===l.sources[0].partner_id);
@@ -2044,7 +2265,7 @@ function openLoanPopup(){
   document.getElementById('lpReceived').textContent='₹'+totalRecv.toLocaleString('en-IN');
   document.getElementById('lpInterest').textContent='₹'+loanInterest.toLocaleString('en-IN');
   document.getElementById('lpNotes').textContent=l.notes||'—';
-  const lCreator=users.find(x=>x.id===l.created_by);
+  const lCreator=users.find(x=>String(x.id)===String(l.created_by));
   let lCreatedStr=lCreator?lCreator.name+' ('+lCreator.type+')':'—';
   if(l.created_at){const d=new Date(l.created_at);lCreatedStr+=' · '+fmtDate(l.given_date)+', '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});}
   document.getElementById('lpCreatedBy').textContent=lCreatedStr;
@@ -2079,22 +2300,42 @@ function openLoanPopup(){
   }).join(''):'<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">No payments yet</div>';
   // sync delete button state with lceDelBtn logic
   const lpDelBtn=document.getElementById('lpDelBtn');
+  const _lu2=JSON.parse(sessionStorage.getItem('sf_user')||localStorage.getItem('sf_user')||'{}');
+  const isAdminUser=(_lu2.username||'').toLowerCase()==='admin';
   if(lpDelBtn){
-    const loanReceipts=receipts.filter(r=>r.loan_id===l.id);
+    const loanReceipts2=receipts.filter(r=>r.loan_id===l.id);
     const amtNum2=Number(String(l.amount).replace(/[^0-9]/g,''));
     lpDelBtn.classList.remove('del-disabled','del-tooltip');
     lpDelBtn.style.pointerEvents='';
     lpDelBtn.onclick=null;
     if(l.status==='settled'){
-      lpDelBtn.classList.add('del-disabled');
-      lpDelBtn.style.pointerEvents='none';
-    } else if(!loanReceipts.length && outNum===amtNum2){
+      // only username 'admin' can delete settled loans
+      if(isAdminUser){
+        lpDelBtn.classList.remove('del-disabled');
+        lpDelBtn.style.pointerEvents='';
+        lpDelBtn.onclick=()=>{document.getElementById('loanPopup').classList.remove('open');deleteLoan(l.id);};
+      } else {
+        lpDelBtn.classList.add('del-disabled');
+        lpDelBtn.style.pointerEvents='none';
+      }
+    } else if(!loanReceipts2.length && outNum===amtNum2){
       lpDelBtn.onclick=()=>{document.getElementById('loanPopup').classList.remove('open');deleteLoan(l.id);};
     } else if(outNum===0){
       lpDelBtn.onclick=()=>{document.getElementById('loanPopup').classList.remove('open');settleLoan(l.id);};
     } else {
       lpDelBtn.classList.add('del-disabled','del-tooltip');
       lpDelBtn.style.pointerEvents='none';
+    }
+  }
+  // Edit button: for settled loans show 'Add Interest', for active show 'Edit'
+  const paEdit=document.querySelector('#loanPopup .pa-edit');
+  if(paEdit){
+    if(l.status==='settled'){
+      paEdit.textContent='+ Interest';
+      paEdit.onclick=()=>{document.getElementById('loanPopup').classList.remove('open');openAddInterestPopup(l.id);};
+    } else {
+      paEdit.textContent='Edit';
+      paEdit.onclick=()=>openEditPopup();
     }
   }
   document.getElementById('loanPopup').classList.add('open');
@@ -2229,6 +2470,111 @@ async function saveEditLoan(){
   await loadLoans();
 }
 
+// ── ADD INTEREST (settled loans) ──
+let _aiPartnerCount=0;
+function openAddInterestPopup(loanId){
+  const l=loans.find(x=>x.id===loanId);
+  if(!l)return;
+  document.getElementById('aiLoanId').value=loanId;
+  const existingInterest=l.interest_due||0;
+  document.getElementById('aiSub').textContent=loanId+' · '+l.name+(existingInterest?' · Existing Interest: ₹'+Number(existingInterest).toLocaleString('en-IN'):'');
+  document.getElementById('aiAmount').value='';
+  document.getElementById('aiType').value='';
+  document.getElementById('aiDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('aiNotes').value='';
+  document.getElementById('ai-sources-list').innerHTML='';
+  _aiPartnerCount=0;
+  // setup partner select
+  const pSel=document.getElementById('aiPartnerSelect');
+  const activePtrs=partners.filter(p=>p.status==='active');
+  pSel.innerHTML='<option value="">+ Add Partner</option>'+activePtrs.map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
+  pSel.onchange=function(){
+    if(!this.value)return;
+    const p=partners.find(x=>x.partnerId===this.value);
+    if(!p)return;
+    if(document.querySelector(`#ai-sources-list [data-pid="${p.partnerId}"]`)){this.value='';return;}
+    const c=avatarColors[_aiPartnerCount%avatarColors.length];
+    _aiPartnerCount++;
+    const el=document.createElement('div');
+    el.className='source-entry';
+    el.dataset.pid=p.partnerId;
+    el.innerHTML=`
+      <div class="source-entry-header">
+        <div class="source-entry-avatar" style="background:${c.bg};color:${c.color}">${p.name[0].toUpperCase()}</div>
+        <div class="source-entry-name">${p.name}</div>
+        <button class="src-del-btn" onclick="this.closest('.source-entry').remove()">&#x2715;</button>
+      </div>
+      <div class="source-method-fields">
+        <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">UPI (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">Bank (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+      </div>`;
+    document.getElementById('ai-sources-list').appendChild(el);
+    this.value='';
+  };
+  document.getElementById('addInterestPopup').classList.add('open');
+}
+async function saveAddInterest(){
+  const loanId=document.getElementById('aiLoanId').value;
+  const interestAmt=parseFloat(document.getElementById('aiAmount').value)||0;
+  if(!interestAmt||interestAmt<=0){showModal('Enter a valid interest amount');return;}
+  const interestType=document.getElementById('aiType').value;
+  const date=document.getElementById('aiDate').value;
+  if(!date){showModal('Enter date');return;}
+  const notes=document.getElementById('aiNotes').value.trim();
+  const sources=[];
+  document.querySelectorAll('#ai-sources-list .source-entry').forEach(entry=>{
+    const pid=entry.dataset.pid;
+    const inputs=entry.querySelectorAll('.method-field-input');
+    const cash=parseFloat(inputs[0].value)||0;
+    const upi=parseFloat(inputs[1].value)||0;
+    const bank=parseFloat(inputs[2].value)||0;
+    if(cash||upi||bank)sources.push({partner_id:pid,cash,upi,bank});
+  });
+  if(!sources.length){showModal('Add at least one partner');return;}
+  const sourceTotal=sources.reduce((s,x)=>s+x.cash+x.upi+x.bank,0);
+  if(sourceTotal<=0){showModal('Enter payment amounts for at least one partner');return;}
+  if(sourceTotal!==interestAmt){showModal('Partner total (₹'+sourceTotal.toLocaleString('en-IN')+') must match interest amount (₹'+interestAmt.toLocaleString('en-IN')+')');return;}
+  const loan=loans.find(l=>l.id===loanId);
+  const {data:existingRecv}=await sb.from('receipts').select('id').order('id',{ascending:false}).limit(1);
+  let nextNum=1;
+  if(existingRecv&&existingRecv.length){nextNum=(parseInt(existingRecv[0].id.replace('RV',''))||0)+1;}
+  const recvId='RV'+String(nextNum).padStart(4,'0');
+  const borrowerId=loan?loan.borrower_id:loanId;
+  const usedMethods=[...new Set(sources.flatMap(r=>[r.cash?'Cash':'',r.upi?'UPI':'',r.bank?'Bank':''].filter(Boolean)))];
+  const _ru=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
+  const {error:recvErr}=await sb.from('receipts').insert({
+    id:recvId,loan_id:loanId,borrower_id:borrowerId,
+    amount:interestAmt,method:usedMethods[0]||'Cash',
+    receipt_date:date,interest:interestAmt,
+    remarks:notes||null,status:'received',
+    sources,created_by:_ru.id||null,
+    created_at:new Date().toISOString()
+  });
+  if(recvErr){showModal('DB error: '+recvErr.message);return;}
+  // update loan interest_due by adding to existing amount
+  const existingDue=loan?Number(loan.interest_due||0):0;
+  const newInterestDue=existingDue+interestAmt;
+  const loanUpdate={interest_due:newInterestDue};
+  if(interestType)loanUpdate.interest_type=interestType;
+  await sb.from('loans').update(loanUpdate).eq('id',loanId);
+  // credit partner balances
+  for(const s of sources){
+    const p=partners.find(x=>x.partnerId===s.partner_id);
+    if(!p)continue;
+    const nc=p.cash_bal+Number(s.cash||0);
+    const nu=p.upi_bal+Number(s.upi||0);
+    const nb=p.bank_bal+Number(s.bank||0);
+    const nbal=p.balance+(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+    await sb.from('partners').update({cash_bal:nc,upi_bal:nu,bank_bal:nb,balance:nbal}).eq('id',p.partnerId);
+    p.cash_bal=nc;p.upi_bal=nu;p.bank_bal=nb;p.balance=nbal;
+  }
+  if(loan)loan.interest_due=newInterestDue;
+  showToast('Interest recorded — ₹'+interestAmt.toLocaleString('en-IN')+' (Total: ₹'+newInterestDue.toLocaleString('en-IN')+')');
+  document.getElementById('addInterestPopup').classList.remove('open');
+  await loadLoans();
+}
+
 // RECEIVE PAGE
 const recvs=[];
 let recvFilter='pending',rceIdx=0;
@@ -2299,6 +2645,7 @@ function rceRender(){
       </div>
     </div>`;
   }).join('');
+  slideCard('rceCard',0);
 }
 function loadRecv(idx){
   rceIdx=idx;rceRender();
@@ -2344,6 +2691,7 @@ function setRecvToggle(el){
       const pos=filtered.findIndex(({i})=>i===rceIdx);
       rceIdx=filtered[(pos+(dx<0?1:-1)+filtered.length)%filtered.length].i;
       rceRender();updateRecvList();
+      slideCard('rceCard',dx<0?1:-1);
     }
   },{passive:true});
 })();
@@ -2636,6 +2984,7 @@ const accAvatarColors=[
   {bg:'#F5F1FF',c:'#7C3AED'},{bg:'#FFF8E8',c:'#D97706'},{bg:'#FFF1F1',c:'#EF4444'}
 ];
 
+
 function switchAccTab(tab,el){
   document.querySelectorAll('.acc-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.acc-tab-content').forEach(c=>c.classList.remove('active'));
@@ -2648,7 +2997,12 @@ function hasOutstanding(name){
   return loans.some(l=>l.name===name&&l.status==='active'&&l.outstanding!=='₹0');
 }
 function renderBorrowers(){
-  const list=document.getElementById('borrowerList');
+  _renderBorrowerList('borrowerList');
+  _renderBorrowerList('borrowerListPage');
+}
+function _renderBorrowerList(listId){
+  const list=document.getElementById(listId);
+  if(!list)return;
   list.innerHTML=borrowers.map((b,i)=>{
     const col=accAvatarColors[i%accAvatarColors.length];
     const hasLoan=loans.some(l=>l.borrower_id===b.bId);
@@ -2707,6 +3061,10 @@ async function saveBorrower(){
     borrowers[idx]=obj;
   }
   renderBorrowers();
+  // refresh borrower dropdowns in New Loan and New Receive popups
+  const activeBrw=borrowers.filter(b=>b.status==='active');
+  const bOpts='<option value="">-- Select borrower --</option>'+activeBrw.map(b=>`<option value="${b.bId}">${b.name}</option>`).join('');
+  document.getElementById('nlBorrower').innerHTML=bOpts;
   document.getElementById('borrowerPopup').classList.remove('open');
 }
 async function toggleBorrowerStatus(idx){
@@ -2763,9 +3121,9 @@ function renderPartners(){
         +'<div class="pstat" style="background:#F5F1FF"><div class="pstat-val" style="color:#7C3AED">₹'+bank.toLocaleString('en-IN')+'</div><div class="pstat-lbl">Bank</div></div>'
       +'</div>'
       +'<div class="partner-actions">'
-        +'<button class="pact-btn add" data-pfund="'+i+'" data-pmode="add" style="background:#EEF4FF;color:#2563EB">+ Add</button>'
-        +'<button class="pact-btn ret" data-pfund="'+i+'" data-pmode="return">Return</button>'
-        +'<button class="pact-btn xfer" data-pxfer="'+i+'">Transfer</button>'
+        +'<button class="edit-sq" data-pfund="'+i+'" data-pmode="add" title="Add Funds" style="background:#EFFAF5;border-color:#16A34A"><svg viewBox="0 0 24 24" fill="none" width="16" height="16"><circle cx="12" cy="12" r="9" stroke="#16A34A" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/></svg></button>'
+        +'<button class="edit-sq" data-pfund="'+i+'" data-pmode="return" title="Return Funds" style="background:#FFF1F1;border-color:#EF4444"><svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 14l-4-4 4-4" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10h8a6 6 0 0 1 0 12H9" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/></svg></button>'
+        +'<button class="edit-sq" data-pxfer="'+i+'" title="Transfer" style="background:#EEF4FF;border-color:#2563EB"><svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M7 16l-4-4 4-4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 8l4 4-4 4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h18" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/></svg></button>'
         +'<button class="edit-sq" data-pedit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
         +'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-ptoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>'
         +'<button class="del-sq'+(bl?' del-disabled':'')+'" data-pdel="'+i+'" style="'+(bl?'pointer-events:none;opacity:.4':'')+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
@@ -2780,32 +3138,131 @@ function renderPartners(){
   renderTransferHistory();
 }
 function renderTransferHistory(){
-  // collect all transfer txns across all partners (transfer-out only to avoid duplicates)
-  const allXfers=[];
-  partners.forEach(p=>{
-    p.transactions.filter(t=>t.type==='transfer-out').forEach(t=>{
-      allXfers.push({...t,fromName:p.name,fromId:p.partnerId});
+  // Build unified transaction list: loans + receipts + transfers
+  const allTxns=[];
+
+  // Loans given (debit)
+  loans.forEach(l=>{
+    allTxns.push({
+      _type:'loan',
+      date:l.given_date||'',
+      created_at:l.created_at||null,
+      label:l.name,
+      sub:l.id+(l.notes?' · '+l.notes:''),
+      amount:Number(String(l.amount).replace(/[^0-9]/g,'')),
+      sign:-1,
+      color:'#EF4444',
+      bg:'#FFF1F1',
+      icon:'📤',
+      loanId:l.id
     });
   });
-  // sort newest first
-  allXfers.sort((a,b)=>b.date>a.date?1:b.date<a.date?-1:0);
+
+  // Receipts received (credit)
+  receipts.forEach(r=>{
+    const loan=loans.find(l=>l.id===r.loan_id);
+    const b=borrowers.find(x=>x.bId===r.borrower_id);
+    const name=b?b.name:(loan?loan.name:r.borrower_id);
+    allTxns.push({
+      _type:'receipt',
+      date:r.receipt_date||'',
+      created_at:r.created_at||null,
+      label:name,
+      sub:r.loan_id+(r.remarks?' · '+r.remarks:''),
+      amount:Number(r.amount||0),
+      interest:Number(r.interest||0),
+      sign:1,
+      color:'#16A34A',
+      bg:'#EFFAF5',
+      icon:'📥',
+      receiptId:r.id
+    });
+  });
+
+  // Transfers (transfer-out only to avoid duplicates)
+  const xferList=[];
+  partners.forEach(p=>{
+    p.transactions.filter(t=>t.type==='transfer-out').forEach(t=>{
+      xferList.push({...t,fromName:p.name,fromId:p.partnerId});
+    });
+  });
+  xferList.forEach(t=>{
+    const toName=t.notes.replace(/^To /,'');
+    allTxns.push({
+      _type:'transfer',
+      date:t.date||'',
+      created_at:t.created_at||null,
+      label:t.fromName+' → '+toName,
+      sub:t.notes_raw||'',
+      amount:t.amount,
+      sign:0,
+      color:'#2563EB',
+      bg:'#EEF4FF',
+      icon:'↔',
+      _xfer:t
+    });
+  });
+
+  // Sort newest first (by date, then created_at)
+  allTxns.sort((a,b)=>{
+    if(b.date!==a.date)return b.date>a.date?1:-1;
+    if(a.created_at&&b.created_at)return new Date(b.created_at)-new Date(a.created_at);
+    return 0;
+  });
+
   const sec=document.getElementById('transferHistorySection');
   const listEl=document.getElementById('transferHistoryList');
-  if(!allXfers.length){sec.style.display='none';return;}
+  if(!allTxns.length){sec.style.display='none';return;}
   sec.style.display='';
-  listEl.innerHTML=allXfers.map((t,i)=>{
-    // resolve toName from notes "To X"
-    const toName=t.notes.replace(/^To /,'');
-    return '<div style="background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #EEF1F5;cursor:pointer" data-xhist="'+i+'">'
-      +'<div style="width:36px;height:36px;border-radius:50%;background:#FFF1F1;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">↔</div>'
+
+  let xferIdx=0;
+  listEl.innerHTML=allTxns.map((t,i)=>{
+    const amtStr='₹'+t.amount.toLocaleString('en-IN');
+    const amtColor=t.sign===1?'#16A34A':t.sign===-1?'#EF4444':'#2563EB';
+    const amtPrefix=t.sign===1?'+':t.sign===-1?'−':'';
+    const interestBadge=(t._type==='receipt'&&t.interest)?
+      '<span style="font-size:10px;font-weight:600;color:#7C3AED;background:#F5F0FF;padding:1px 6px;border-radius:999px;margin-left:4px">Int ₹'+t.interest.toLocaleString('en-IN')+'</span>':''
+    ;
+    const xDataAttr=t._type==='transfer'?(' data-xhist="'+xferIdx+'"'):
+      t._type==='loan'?(' data-txloan="'+t.loanId+'"'):
+      (' data-txrecv="'+t.receiptId+'"');
+    if(t._type==='transfer')xferIdx++;
+    return '<div style="background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #EEF1F5;cursor:pointer"'+xDataAttr+'>'
+      +'<div style="width:36px;height:36px;border-radius:50%;background:'+t.bg+';display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">'+t.icon+'</div>'
       +'<div style="flex:1;min-width:0">'
-        +'<div style="font-size:13px;font-weight:700;color:var(--dark-text)">'+t.fromName+' → '+toName+'</div>'
-        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+fmtDate(t.date)+'</div>'
+        +'<div style="font-size:13px;font-weight:700;color:var(--dark-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+t.label+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+fmtDate(t.date)+(t.sub?' · '+t.sub:'')+'</div>'
       +'</div>'
-      +'<div style="font-size:14px;font-weight:800;color:#2563EB">₹'+t.amount.toLocaleString('en-IN')+'</div>'
+      +'<div style="text-align:right;flex-shrink:0">'
+        +'<div style="font-size:14px;font-weight:800;color:'+amtColor+'">'+amtPrefix+amtStr+'</div>'
+        +interestBadge
+      +'</div>'
     +'</div>';
   }).join('');
-  listEl.querySelectorAll('[data-xhist]').forEach(row=>row.addEventListener('click',()=>openXferHistPopup(allXfers[+row.dataset.xhist])));
+
+  // Re-build xferList reference for click handlers
+  const xferListFinal=[];
+  partners.forEach(p=>p.transactions.filter(t=>t.type==='transfer-out').forEach(t=>xferListFinal.push({...t,fromName:p.name,fromId:p.partnerId})));
+  xferListFinal.sort((a,b)=>b.date>a.date?1:b.date<a.date?-1:0);
+
+  listEl.querySelectorAll('[data-xhist]').forEach(row=>row.addEventListener('click',()=>openXferHistPopup(xferListFinal[+row.dataset.xhist])));
+  listEl.querySelectorAll('[data-txloan]').forEach(row=>row.addEventListener('click',()=>{
+    const l=loans.find(x=>x.id===row.dataset.txloan);
+    if(!l)return;
+    lceIdx=loans.indexOf(l);
+    switchPage('loans');
+    setTimeout(()=>openLoanPopup(),100);
+  }));
+  listEl.querySelectorAll('[data-txrecv]').forEach(row=>row.addEventListener('click',()=>{
+    const idx=recvs.findIndex(x=>x.id===row.dataset.txrecv);
+    if(idx===-1)return;
+    rceIdx=idx;
+    switchPage('receive');
+    setTimeout(()=>{
+      rceRender();
+      document.getElementById('recvPopup').classList.add('open');
+    },100);
+  }));
 }
 function openXferHistPopup(t){
   const toName=t.notes.replace(/^To /,'');
@@ -2825,6 +3282,10 @@ function openXferHistPopup(t){
   // user who performed the transfer
   const u=users.find(x=>x.id===t.created_by);
   document.getElementById('xhUser').textContent=u?(u.name+' ('+u.type+')'):'—';
+  const xhNotesEl=document.getElementById('xhNotes');
+  const xhNotesRow=document.getElementById('xhNotesRow');
+  if(t.notes_raw){xhNotesEl.textContent=t.notes_raw;xhNotesRow.style.display='';}
+  else{xhNotesRow.style.display='none';}
   document.getElementById('xferHistPopup').classList.add('open');
 }
 async function togglePartnerStatus(idx){
@@ -2942,11 +3403,31 @@ async function savePartnerFund(){
   if(error){showModal('DB error: '+error.message);return;}
   p.invested=newInvested;p.balance=newBalance;
   p.cash_bal=newCash;p.upi_bal=newUpi;p.bank_bal=newBank;
-  p.transactions.push({type:mode,amount:amt,cash,upi,bank,date:document.getElementById('pfDate').value,notes:document.getElementById('pfNotes').value});
+  p.transactions.push({type:mode,amount:amt,cash,upi,bank,date:document.getElementById('pfDate').value,notes:document.getElementById('pfNotes').value.trim()||null});
   renderPartners();
   updateSummaryCards();
   document.getElementById('partnerFundPopup').classList.remove('open');
   showToast(mode==='add'?'Funds added':'Funds returned');
+}
+function _xferIsSelf(){
+  const from=parseInt(document.getElementById('xferFromIdx').value);
+  const toVal=document.getElementById('xferToId').value;
+  return toVal==='self'||parseInt(toVal)===from;
+}
+function _xferOnToChange(){
+  const isSelf=_xferIsSelf();
+  document.getElementById('xferSelfToRow').style.display=isSelf?'':'none';
+  document.getElementById('xferAmtLabel').textContent=isSelf?'New Distribution (₹)':'Amount by Method (₹)';
+  document.getElementById('xferTotalLabel').textContent='Total';
+  if(isSelf){
+    // pre-fill with current balances
+    const from=parseInt(document.getElementById('xferFromIdx').value);
+    const p=partners[from];
+    document.getElementById('xferCash').value=p.cash_bal||0;
+    document.getElementById('xferUpi').value=p.upi_bal||0;
+    document.getElementById('xferBank').value=p.bank_bal||0;
+  }
+  _xferUpdateTotal();
 }
 function _xferUpdateTotal(){
   const c=parseFloat(document.getElementById('xferCash').value)||0;
@@ -2955,31 +3436,69 @@ function _xferUpdateTotal(){
   document.getElementById('xferTotalDisplay').textContent='₹'+(c+u+b).toLocaleString('en-IN');
 }
 function openPartnerXfer(fromIdx){
+  const p=partners[fromIdx];
   document.getElementById('xferFromIdx').value=fromIdx;
-  document.getElementById('xferSub').textContent='From: '+partners[fromIdx].name;
+  document.getElementById('xferSub').textContent='From: '+p.name;
+  // balance hint
+  const hint=document.getElementById('xferBalHint');
+  hint.style.display='';
+  document.getElementById('xferBalHintText').textContent=
+    'Cash ₹'+p.cash_bal.toLocaleString('en-IN')+
+    '  ·  UPI ₹'+p.upi_bal.toLocaleString('en-IN')+
+    '  ·  Bank ₹'+p.bank_bal.toLocaleString('en-IN');
   const sel=document.getElementById('xferToId');
-  sel.innerHTML=partners.map((p,i)=>i===fromIdx?'':` <option value="${i}">${p.name}</option>`).join('');
+  sel.innerHTML='<option value="self">'+p.name+' (Self)</option>'
+    +partners.map((pt,i)=>i===fromIdx?'':'<option value="'+i+'">'+pt.name+'</option>').join('');
   document.getElementById('xferCash').value='';
   document.getElementById('xferUpi').value='';
   document.getElementById('xferBank').value='';
   document.getElementById('xferTotalDisplay').textContent='₹0';
   document.getElementById('xferDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('xferNotes').value='';
+  _xferOnToChange(); // set initial state (self selected by default)
   document.getElementById('partnerXferPopup').classList.add('open');
 }
 async function saveXfer(){
   const from=parseInt(document.getElementById('xferFromIdx').value);
-  const to=parseInt(document.getElementById('xferToId').value);
+  const toVal=document.getElementById('xferToId').value;
+  const isSelf=toVal==='self'||parseInt(toVal)===from;
   const cash=parseFloat(document.getElementById('xferCash').value)||0;
   const upi=parseFloat(document.getElementById('xferUpi').value)||0;
   const bank=parseFloat(document.getElementById('xferBank').value)||0;
   const amt=cash+upi+bank;
-  if(!amt||isNaN(to))return;
+  if(!amt)return;
   const date=document.getElementById('xferDate').value;
-  const pFrom=partners[from],pTo=partners[to];
+  const pFrom=partners[from];
+  if(isSelf){
+    // self-transfer: set new method distribution, total must equal current total balance
+    const currentTotal=pFrom.cash_bal+pFrom.upi_bal+pFrom.bank_bal;
+    if(amt!==currentTotal){showModal('Total (₹'+amt.toLocaleString('en-IN')+') must equal your current balance (₹'+currentTotal.toLocaleString('en-IN')+')');return;}
+    const newCash=cash;
+    const newUpi=upi;
+    const newBank=bank;
+    const {error}=await sb.from('partners').update({cash_bal:newCash,upi_bal:newUpi,bank_bal:newBank}).eq('id',pFrom.partnerId);
+    if(error){showModal('DB error: '+error.message);return;}
+    const loggedUser=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
+    const createdAt=new Date().toISOString();
+    const xferNotesSelf=document.getElementById('xferNotes').value.trim();
+    await sb.from('transfers').insert({from_id:pFrom.partnerId,to_id:pFrom.partnerId,cash:pFrom.cash_bal,upi:pFrom.upi_bal,bank:pFrom.bank_bal,amount:amt,date,created_at:createdAt,created_by:loggedUser.id||null,notes:xferNotesSelf||null});
+    pFrom.cash_bal=newCash;pFrom.upi_bal=newUpi;pFrom.bank_bal=newBank;
+    pFrom.transactions.push({type:'transfer-out',amount:amt,cash:newCash,upi:newUpi,bank:newBank,date,created_at:createdAt,created_by:loggedUser.id||null,notes_raw:xferNotesSelf||null,notes:'To '+pFrom.name+' (Self)'+(xferNotesSelf?' · '+xferNotesSelf:'')});
+    pFrom.transactions.push({type:'transfer-in',amount:amt,cash:newCash,upi:newUpi,bank:newBank,date,created_at:createdAt,created_by:loggedUser.id||null,notes_raw:xferNotesSelf||null,notes:'From '+pFrom.name+' (Self)'+(xferNotesSelf?' · '+xferNotesSelf:'')});
+    renderPartners();
+    renderTransferHistory();
+    updateSummaryCards();
+    document.getElementById('partnerXferPopup').classList.remove('open');
+    showToast('Self-transfer saved');
+    return;
+  }
+  const to=parseInt(toVal);
+  if(isNaN(to))return;
+  const pTo=partners[to];
   // validate method balances for transfer
-  if(cash>pFrom.cash_bal){showModal(pFrom.name+': insufficient Cash balance (available ₹'+pFrom.cash_bal.toLocaleString('en-IN')+', requested ₹'+cash.toLocaleString('en-IN')+')');return;}
-  if(upi>pFrom.upi_bal){showModal(pFrom.name+': insufficient UPI balance (available ₹'+pFrom.upi_bal.toLocaleString('en-IN')+', requested ₹'+upi.toLocaleString('en-IN')+')');return;}
-  if(bank>pFrom.bank_bal){showModal(pFrom.name+': insufficient Bank balance (available ₹'+pFrom.bank_bal.toLocaleString('en-IN')+', requested ₹'+bank.toLocaleString('en-IN')+')');return;}
+  if(cash>pFrom.cash_bal){showModal(pFrom.name+': insufficient Cash (available ₹'+pFrom.cash_bal.toLocaleString('en-IN')+')');return;}
+  if(upi>pFrom.upi_bal){showModal(pFrom.name+': insufficient UPI (available ₹'+pFrom.upi_bal.toLocaleString('en-IN')+')');return;}
+  if(bank>pFrom.bank_bal){showModal(pFrom.name+': insufficient Bank (available ₹'+pFrom.bank_bal.toLocaleString('en-IN')+')');return;}
   const updFrom={balance:pFrom.balance-amt,cash_bal:pFrom.cash_bal-cash,upi_bal:pFrom.upi_bal-upi,bank_bal:pFrom.bank_bal-bank};
   const updTo={balance:pTo.balance+amt,cash_bal:pTo.cash_bal+cash,upi_bal:pTo.upi_bal+upi,bank_bal:pTo.bank_bal+bank};
   const {error:e1}=await sb.from('partners').update(updFrom).eq('id',pFrom.partnerId);
@@ -2988,11 +3507,12 @@ async function saveXfer(){
   if(e2){showModal('DB error: '+e2.message);return;}
   const loggedUser=JSON.parse(sessionStorage.getItem('sf_user')||'{}');
   const createdAt=new Date().toISOString();
-  await sb.from('transfers').insert({from_id:pFrom.partnerId,to_id:pTo.partnerId,cash,upi,bank,amount:amt,date,created_at:createdAt,created_by:loggedUser.id||null});
+  const xferNotes=document.getElementById('xferNotes').value.trim();
+  await sb.from('transfers').insert({from_id:pFrom.partnerId,to_id:pTo.partnerId,cash,upi,bank,amount:amt,date,created_at:createdAt,created_by:loggedUser.id||null,notes:xferNotes||null});
   Object.assign(pFrom,updFrom);
-  pFrom.transactions.push({type:'transfer-out',amount:amt,cash,upi,bank,date,created_at:createdAt,created_by:loggedUser.id||null,notes:'To '+pTo.name});
+  pFrom.transactions.push({type:'transfer-out',amount:amt,cash,upi,bank,date,created_at:createdAt,created_by:loggedUser.id||null,notes_raw:xferNotes||null,notes:'To '+pTo.name+(xferNotes?' · '+xferNotes:'')});
   Object.assign(pTo,updTo);
-  pTo.transactions.push({type:'transfer-in',amount:amt,cash,upi,bank,date,created_at:createdAt,created_by:loggedUser.id||null,notes:'From '+pFrom.name});
+  pTo.transactions.push({type:'transfer-in',amount:amt,cash,upi,bank,date,created_at:createdAt,created_by:loggedUser.id||null,notes_raw:xferNotes||null,notes:'From '+pFrom.name+(xferNotes?' · '+xferNotes:'')});
   renderPartners();
   renderTransferHistory();
   updateSummaryCards();
@@ -3204,6 +3724,83 @@ function drawLoanList(borrowers){
     return `<div class="rpt-loan-row"><div class="rpt-loan-avatar" style="background:${s.bg};color:${s.c}">${b.name[0]}</div><div class="rpt-loan-info"><div class="rpt-loan-name">${b.name}</div><div class="rpt-loan-id">${b.loans.join(', ')} &middot; Due ${b.due}</div></div><div class="rpt-loan-right"><div class="rpt-loan-amt" style="color:${s.c}">${rptFmt(b.outstanding)}</div><div class="rpt-loan-badge" style="background:${s.bg};color:${s.c}">${s.lbl}</div></div></div>`;
   }).join('');
 }
+function _rptTrendData(){
+  const now=new Date();
+  const months=[];
+  for(let i=5;i>=0;i--)months.push(new Date(now.getFullYear(),now.getMonth()-i,1));
+  const given=months.map(d=>{
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    return loans.filter(l=>(l.given_date||'').startsWith(key)).reduce((s,l)=>s+Number(String(l.amount).replace(/[^0-9]/g,'')),0);
+  });
+  const received=months.map(d=>{
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    return receipts.filter(r=>(r.receipt_date||'').startsWith(key)).reduce((s,r)=>s+Number(r.amount||0),0);
+  });
+  return{labels:months.map(d=>rptMonths[d.getMonth()]),given,received};
+}
+function drawTrend(){
+  const t=_rptTrendData();
+  const svg=document.getElementById('trendSvg');
+  if(!svg)return;
+  const W=300,H=130,padL=8,padR=8,padT=10,padB=20;
+  const maxVal=Math.max(...t.given,...t.received,1);
+  const n=t.labels.length;
+  const x=i=>padL+(i*(W-padL-padR)/(n-1));
+  const y=v=>padT+(H-padT-padB)*(1-v/maxVal);
+  const pathFor=arr=>arr.map((v,i)=>(i===0?'M':'L')+x(i).toFixed(1)+','+y(v).toFixed(1)).join(' ');
+  const areaFor=arr=>pathFor(arr)+` L${x(n-1).toFixed(1)},${(H-padB).toFixed(1)} L${x(0).toFixed(1)},${(H-padB).toFixed(1)} Z`;
+  let grid='';
+  for(let g=0;g<=2;g++){const gy=padT+(H-padT-padB)*g/2;grid+=`<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${W-padR}" y2="${gy.toFixed(1)}" stroke="#F1F5F9" stroke-width="1"/>`;}
+  let labels='';
+  t.labels.forEach((l,i)=>{labels+=`<text x="${x(i).toFixed(1)}" y="${H-4}" font-size="8" fill="#94A3B8" text-anchor="middle">${l}</text>`;});
+  const dotsFor=(arr,color)=>arr.map((v,i)=>`<circle class="rpt-trend-dot" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${i===n-1?3.5:2.2}" fill="${color}" stroke="#fff" stroke-width="1"/>`).join('');
+  svg.innerHTML=`
+    <defs>
+      <linearGradient id="trendFillGiven" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#2563EB" stop-opacity=".28"/>
+        <stop offset="100%" stop-color="#2563EB" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="trendFillRecv" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#10B981" stop-opacity=".28"/>
+        <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${grid}
+    <path d="${areaFor(t.given)}" fill="url(#trendFillGiven)" stroke="none"/>
+    <path d="${areaFor(t.received)}" fill="url(#trendFillRecv)" stroke="none"/>
+    <path d="${pathFor(t.given)}" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${pathFor(t.received)}" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dotsFor(t.given,'#2563EB')}
+    ${dotsFor(t.received,'#10B981')}
+    ${labels}
+  `;
+}
+function exportReportCSV(){
+  const d=_rptBuildData(rptPeriod);
+  const now=new Date();
+  const lbl=rptPeriod==='current'?rptMonths[now.getMonth()]+' '+now.getFullYear():rptPeriod==='prev'?rptMonths[(now.getMonth()+11)%12]+' '+(now.getMonth()===0?now.getFullYear()-1:now.getFullYear()):'All Time';
+  let csv='Report Period,'+lbl+'\n\n';
+  csv+='Metric,Value\n';
+  csv+='Outstanding,'+d.outstanding+'\n';
+  csv+='Received,'+d.received+'\n';
+  csv+='Interest,'+d.interest+'\n';
+  csv+='Received (Recovered),'+d.available+'\n\n';
+  csv+='Borrower,Loan IDs,Outstanding,Received,Due Date,Status\n';
+  d.borrowers.forEach(b=>{
+    csv+='"'+b.name+'","'+b.loans.join(' ')+'",'+b.outstanding+','+b.received+',"'+b.due+'","'+b.status+'"\n';
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='SaVi-Report-'+rptPeriod+'-'+now.toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Report exported');
+}
+function printReport(){
+  window.print();
+}
 function renderReports(){
   const d=_rptBuildData(rptPeriod);
   const now=new Date();
@@ -3216,11 +3813,11 @@ function renderReports(){
   document.getElementById('rptDueCount').textContent=d.borrowers.filter(b=>b.status==='overdue'||b.status==='upcoming').length;
   drawDonut([
     {val:d.outstanding,color:'#EF4444',label:'Outstanding'},
-    {val:d.received,color:'#10B981',label:'Received'},
-    {val:Math.max(0,d.available),color:'#2563EB',label:'Available'}
+    {val:Math.max(0,d.available),color:'#10B981',label:'Received'}
   ]);
   drawBars(d.borrowers);
   drawLoanList(d.borrowers);
+  drawTrend();
 }
 function setRptPeriod(period,el){
   document.querySelectorAll('.rpt-period-btn').forEach(b=>b.classList.remove('active'));
@@ -3256,13 +3853,15 @@ function renderNotifPanel(){
 function switchPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const pageMap={home:'page-home',loans:'page-loans',receive:'page-receive',account:'page-account',reports:'page-reports'};
+  const pageMap={home:'page-home',loans:'page-loans',receive:'page-receive',borrower:'page-borrower',account:'page-account',reports:'page-reports',more:'page-reports'};
   const pid=pageMap[name];
   if(pid){const pg=document.getElementById(pid);if(pg)pg.classList.add('active');}
-  const ni=document.querySelector(`.nav-item[data-nav="${name}"]`);
+  const navName=name==='reports'?'more':name;
+  const ni=document.querySelector(`.nav-item[data-nav="${navName}"]`);
   if(ni)ni.classList.add('active');
+  if(name==='reports'||name==='more')renderReports();
+  if(name==='borrower')_renderBorrowerList('borrowerListPage');
   document.querySelector('.screen').scrollTop=0;
-  if(name==='reports')renderReports();
 }
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click',()=>switchPage(item.dataset.nav));
