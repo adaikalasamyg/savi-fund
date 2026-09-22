@@ -216,6 +216,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .field-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .field-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;color:var(--dark-text);background:#FAFBFD;outline:none;transition:border-color .2s}
 .field-input:focus{border-color:#2563EB;background:#fff}
+.field-input option[value=""]{color:var(--muted)}
+select.field-input:invalid,select.field-input:has(option[value=""]:checked){color:var(--muted)}
 .field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .edit-section-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
 .source-entry{background:#FAFBFD;border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
@@ -1168,7 +1170,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         
         <div class="field-group">
           <div class="field-label">Borrower Name</div>
-          <select id="nlBorrower" class="field-input"><option value="">-- Select borrower --</option></select>
+          <select id="nlBorrower" class="field-input" required><option value="">-- Select borrower --</option></select>
         </div>
         <div class="field-group">
           <div class="field-label">Loan Amount (₹)</div>
@@ -1191,7 +1193,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           </div>
           <div class="field-group">
             <div class="field-label">Interest Type</div>
-            <select id="nlInterestType" class="field-input">
+            <select id="nlInterestType" class="field-input" required>
               <option value="">-- None --</option>
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -1334,8 +1336,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       <div class="edit-body">
         <input type="hidden" id="bPopIdx" value="-1">
         <input type="hidden" id="bId">
-        <div class="field-group"><div class="field-label">Full Name</div><input id="bName" class="field-input" type="text" placeholder="Enter name"></div>
-        <div class="field-group"><div class="field-label">Mobile Number</div><input id="bMobile" class="field-input" type="tel" inputmode="numeric" placeholder="10-digit number" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+        <div class="field-group"><div class="field-label">Full Name</div><input id="bName" class="field-input" type="text" placeholder="Enter name" oninput="this.value=this.value.replace(/[^A-Za-z .]/g,'')"></div>
+        <div class="field-group"><div class="field-label">Mobile Number</div><input id="bMobile" class="field-input" type="tel" inputmode="numeric" placeholder="10-digit number" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"></div>
         <div class="field-group"><div class="field-label">Address</div><textarea id="bAddress" class="field-input" rows="2" placeholder="Enter address" style="resize:none"></textarea></div>
         <div style="display:flex;gap:10px">
           <button class="edit-save-btn" style="flex:1" onclick="saveBorrower()">Save</button>
@@ -1482,6 +1484,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           <div class="info-row"><div class="ir-left"><div class="ir-dot purple"></div><div class="ir-label">Bank</div></div><div class="ir-val" id="xhBank">—</div></div>
         </div>
         <div class="popup-actions">
+          <button class="pa-del" id="xhDelBtn" onclick="deleteAccTxn()">Delete</button>
           <button class="pa-close" onclick="document.getElementById('xferHistPopup').classList.remove('open')">Close</button>
         </div>
       </div>
@@ -1655,6 +1658,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   window.addEventListener('resize',setVh);
 })();
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return day+' '+months[+m-1];}
+function fmtK(n){if(n>=10000000)return(n/10000000).toFixed(1).replace(/\.0$/,'')+'Cr';if(n>=100000)return(n/100000).toFixed(1).replace(/\.0$/,'')+'L';if(n>=1000)return(n/1000).toFixed(1).replace(/\.0$/,'')+'K';return n.toLocaleString('en-IN');}
 function fmtRate(rate,type){if(!rate)return'—';const sym=type==='fixed'?'₹':'%';return rate+sym+(type?' '+type.charAt(0).toUpperCase()+type.slice(1):'');}
 
 function showModal(msg,type='error'){
@@ -1749,7 +1753,8 @@ async function applyLogin(user){
   if(dbBorrowers){
     borrowers.length=0;
     dbBorrowers.forEach(b=>borrowers.push({id:b.id,bId:b.id,name:b.name,mobile:b.mobile||'',address:b.address||'',status:b.status||'active'}));
-    borrowerSeq=borrowers.length+1;
+    const maxBrwNum=borrowers.reduce((m,b)=>{const n=parseInt((b.bId||'').replace(/[^0-9]/g,''))||0;return Math.max(m,n);},0);
+    borrowerSeq=maxBrwNum+1;
     renderBorrowers();
   }
   // load partners from DB
@@ -1994,14 +1999,14 @@ function openNewLoanPopup(){
   bSel.innerHTML='<option value="">-- Select borrower --</option>'+borrowers.filter(b=>b.status==='active').map(b=>`<option value="${b.bId}">${b.name}</option>`).join('');
   const pSel=document.getElementById('nlPartnerSelect');
   const activePtrs=partners.filter(p=>p.status==='active');
-  pSel.innerHTML=(activePtrs.length?'<option value="">— Select Partner —</option>':'<option value="">+ Add Partner</option>')+activePtrs.map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
+  function _nlRefreshSelect(){
+    const used=new Set([...document.querySelectorAll('#new-sources-list [data-pid]')].map(e=>e.dataset.pid));
+    pSel.innerHTML='<option value="">+ Add Partner</option>'+activePtrs.filter(p=>!used.has(p.partnerId)).map(p=>`<option value="${p.partnerId}">${p.name}</option>`).join('');
+  }
   pSel.onchange=function(){
     if(!this.value)return;
     const p=partners.find(x=>x.partnerId===this.value);
     if(!p)return;
-    if(document.querySelector(`#new-sources-list [data-pid="${p.partnerId}"]`)){
-      this.value='';return;
-    }
     const c=avatarColors[newPartnerCount%avatarColors.length];
     newPartnerCount++;
     const el=document.createElement('div');
@@ -2011,7 +2016,8 @@ function openNewLoanPopup(){
       <div class="source-entry-header">
         <div class="source-entry-avatar" style="background:${c.bg};color:${c.color}">${p.name[0].toUpperCase()}</div>
         <div class="source-entry-name">${p.name}</div>
-        <button class="src-del-btn" onclick="this.closest('.source-entry').remove()" title="Remove">✕</button>
+        <span class="nl-src-total" style="font-size:12px;font-weight:700;color:#0F4C81;margin-left:auto;margin-right:6px">₹0</span>
+        <button class="src-del-btn" onclick="this.closest('.source-entry').remove();_nlRefreshSelect()" title="Remove">✕</button>
       </div>
       <div class="source-method-fields">
         <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
@@ -2020,9 +2026,21 @@ function openNewLoanPopup(){
       </div>`;
     document.getElementById('new-sources-list').appendChild(el);
     this.value='';
+    _nlRefreshSelect();
   };
-  document.getElementById('new-sources-list').innerHTML='';
+  const nlSrcList=document.getElementById('new-sources-list');
+  nlSrcList.innerHTML='';
+  if(nlSrcList._nlInputHandler)nlSrcList.removeEventListener('input',nlSrcList._nlInputHandler);
+  nlSrcList._nlInputHandler=e=>{
+    if(!e.target.classList.contains('method-field-input'))return;
+    const entry=e.target.closest('.source-entry');
+    const inputs=entry.querySelectorAll('.method-field-input');
+    const total=(parseFloat(inputs[0].value)||0)+(parseFloat(inputs[1].value)||0)+(parseFloat(inputs[2].value)||0);
+    entry.querySelector('.nl-src-total').textContent='₹'+total.toLocaleString('en-IN');
+  };
+  nlSrcList.addEventListener('input',nlSrcList._nlInputHandler);
   newPartnerCount=0;
+  _nlRefreshSelect();
   const today=new Date().toISOString().split('T')[0];
   document.getElementById('nlInterestRate').value='';
   document.getElementById('nlInterestType').value='';
@@ -2231,13 +2249,13 @@ function updateSummaryCards(){
   const totalAvailable=Object.values(avMap).reduce((s,f)=>s+Math.max(0,f.cash)+Math.max(0,f.upi)+Math.max(0,f.bank),0);
   // loans page summary cards
   document.querySelector('.sum-card.blue .sum-number').textContent=active.length;
-  document.querySelector('.sum-card.green .sum-number').textContent='₹'+totalGiven.toLocaleString('en-IN');
-  document.querySelector('.sum-card.red .sum-number').textContent='₹'+totalOut.toLocaleString('en-IN');
+  document.querySelector('.sum-card.green .sum-number').textContent='₹'+fmtK(totalGiven);
+  document.querySelector('.sum-card.red .sum-number').textContent='₹'+fmtK(totalOut);
   document.querySelector('.sum-card.purple .sum-number').textContent=settled.length;
   // home page stat cards
-  document.getElementById('homeOutstanding').textContent='₹'+totalOut.toLocaleString('en-IN');
+  document.getElementById('homeOutstanding').textContent='₹'+fmtK(totalOut);
   document.getElementById('homeOutSub').textContent='Across '+active.length+' active loan'+(active.length!==1?'s':'');
-  document.getElementById('homeAvailable').textContent='₹'+totalAvailable.toLocaleString('en-IN');
+  document.getElementById('homeAvailable').textContent='₹'+fmtK(totalAvailable);
   const totalInterestCollected=receipts.reduce((s,r)=>s+Number(r.interest||0),0);
   document.getElementById('homeSettled').textContent='₹'+totalInterestCollected.toLocaleString('en-IN');
   // upcoming & due list
@@ -2266,7 +2284,7 @@ function openLoanPopup(){
   document.getElementById('lpInterest').textContent='₹'+loanInterest.toLocaleString('en-IN');
   document.getElementById('lpNotes').textContent=l.notes||'—';
   const lCreator=users.find(x=>String(x.id)===String(l.created_by));
-  let lCreatedStr=lCreator?lCreator.name+' ('+lCreator.type+')':'—';
+  let lCreatedStr=lCreator?lCreator.name:'—';
   if(l.created_at){const d=new Date(l.created_at);lCreatedStr+=' · '+fmtDate(l.given_date)+', '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});}
   document.getElementById('lpCreatedBy').textContent=lCreatedStr;
   document.getElementById('lpGivenDate').textContent=fmtDate(l.given_date);
@@ -3036,7 +3054,9 @@ function _renderBorrowerList(listId){
 function openBorrowerPopup(idx){
   document.getElementById('bPopIdx').value=idx===null?-1:idx;
   document.getElementById('bPopTitle').textContent=idx===null?'Add Borrower':'Edit Borrower';
-  const b=idx===null?{bId:'BRW00'+borrowerSeq,name:'',mobile:'',address:''}:borrowers[idx];
+  const maxBrwNum2=borrowers.reduce((m,b)=>{const n=parseInt((b.bId||'').replace(/[^0-9]/g,''))||0;return Math.max(m,n);},0);
+  const nextBrwId='BRW'+String(maxBrwNum2+1).padStart(3,'0');
+  const b=idx===null?{bId:nextBrwId,name:'',mobile:'',address:''}:borrowers[idx];
   document.getElementById('bId').value=b.bId;
   document.getElementById('bName').value=b.name;
   document.getElementById('bMobile').value=b.mobile;
@@ -3051,20 +3071,35 @@ async function saveBorrower(){
     mobile:document.getElementById('bMobile').value.trim(),
     address:document.getElementById('bAddress').value.trim()};
   if(!obj.name)return;
+  if(obj.mobile.length!==10){showModal('Mobile number must be exactly 10 digits');return;}
   if(idx===-1){
+    // get true max ID from DB (includes deleted rows) to avoid PK collision
+    const {data:allBrw}=await sb.from('borrowers').select('id').order('id',{ascending:false}).limit(1);
+    if(allBrw&&allBrw.length){
+      const dbMax=parseInt((allBrw[0].id||'').replace(/[^0-9]/g,''))||0;
+      const localMax=borrowers.reduce((m,b)=>{const n=parseInt((b.bId||'').replace(/[^0-9]/g,''))||0;return Math.max(m,n);},0);
+      const safeNext=Math.max(dbMax,localMax)+1;
+      obj.bId='BRW'+String(safeNext).padStart(3,'0');
+      document.getElementById('bId').value=obj.bId;
+    }
     const {error}=await sb.from('borrowers').insert({id:obj.bId,name:obj.name,mobile:obj.mobile,address:obj.address});
     if(error){showModal('DB error: '+error.message);return;}
+    obj.status='active';
     borrowers.push(obj);
+    showToast('Borrower '+obj.name+' added ('+obj.bId+')');
   } else {
     const {error}=await sb.from('borrowers').update({name:obj.name,mobile:obj.mobile,address:obj.address}).eq('id',obj.bId);
     if(error){showModal('DB error: '+error.message);return;}
     borrowers[idx]=obj;
+    showToast('Borrower '+obj.name+' updated');
   }
   renderBorrowers();
   // refresh borrower dropdowns in New Loan and New Receive popups
-  const activeBrw=borrowers.filter(b=>b.status==='active');
+  const activeBrw=borrowers.filter(b=>!b.status||b.status==='active');
   const bOpts='<option value="">-- Select borrower --</option>'+activeBrw.map(b=>`<option value="${b.bId}">${b.name}</option>`).join('');
   document.getElementById('nlBorrower').innerHTML=bOpts;
+  const activeLoans=loans.filter(l=>l.status==='active'&&Number(String(l.outstanding).replace(/[^0-9]/g,''))>0);
+  document.getElementById('nrBorrower').innerHTML='<option value="">-- Select borrower --</option>'+activeLoans.map(l=>`<option value="${l.id}">${l.name} (${l.id})</option>`).join('');
   document.getElementById('borrowerPopup').classList.remove('open');
 }
 async function toggleBorrowerStatus(idx){
@@ -3078,10 +3113,12 @@ async function toggleBorrowerStatus(idx){
 }
 function deleteBorrower(idx){
   const b=borrowers[idx];
-  showConfirm('Delete borrower "'+b.name+'"?',()=>{
+  showConfirm('Delete borrower "'+b.name+'"?',async()=>{
+    const {error}=await sb.from('borrowers').update({status:'deleted'}).eq('id',b.bId);
+    if(error){showModal('DB error: '+error.message);return;}
     borrowers.splice(idx,1);
-    sb.from('borrowers').delete().eq('id',b.bId);
     renderBorrowers();
+    showToast('Borrower deleted');
   });
 }
 
@@ -3264,7 +3301,9 @@ function renderTransferHistory(){
     },100);
   }));
 }
+let _xhCurrent=null;
 function openXferHistPopup(t){
+  _xhCurrent=t;
   const toName=t.notes.replace(/^To /,'');
   document.getElementById('xhFromName').textContent=t.fromName;
   document.getElementById('xhToName').textContent=toName;
@@ -3286,7 +3325,82 @@ function openXferHistPopup(t){
   const xhNotesRow=document.getElementById('xhNotesRow');
   if(t.notes_raw){xhNotesEl.textContent=t.notes_raw;xhNotesRow.style.display='';}
   else{xhNotesRow.style.display='none';}
+  // show delete button only if record is within 10 days
+  const refDate=t.created_at?new Date(t.created_at):new Date(t.date);
+  const daysDiff=(Date.now()-refDate.getTime())/(1000*60*60*24);
+  const xhDelBtn=document.getElementById('xhDelBtn');
+  xhDelBtn.style.display=daysDiff<=10?'':'none';
   document.getElementById('xferHistPopup').classList.add('open');
+}
+async function deleteAccTxn(){
+  const t=_xhCurrent;
+  if(!t)return;
+  const typeLabel=t._type==='loan'?'loan':t._type==='receipt'?'receipt':'transfer';
+  showConfirm('Delete this '+typeLabel+' record? This cannot be undone.',async()=>{
+    if(t._type==='transfer'){
+      // find transfer DB row by matching from_id + date + amount
+      const {data:xRows}=await sb.from('transfers').select('id,from_id,to_id,cash,upi,bank,amount').eq('from_id',t.fromId).eq('date',t.date).eq('amount',t.amount);
+      if(!xRows||!xRows.length){showModal('Transfer record not found');return;}
+      const xRow=xRows[0];
+      const {error}=await sb.from('transfers').delete().eq('id',xRow.id);
+      if(error){showModal('DB error: '+error.message);return;}
+      // reverse balances: restore from-partner, deduct to-partner
+      const pFrom=partners.find(p=>p.partnerId===xRow.from_id);
+      const pTo=partners.find(p=>p.partnerId===xRow.to_id);
+      if(pFrom){
+        pFrom.cash_bal+=Number(xRow.cash||0);pFrom.upi_bal+=Number(xRow.upi||0);pFrom.bank_bal+=Number(xRow.bank||0);pFrom.balance+=Number(xRow.amount);
+        await sb.from('partners').update({cash_bal:pFrom.cash_bal,upi_bal:pFrom.upi_bal,bank_bal:pFrom.bank_bal,balance:pFrom.balance}).eq('id',pFrom.partnerId);
+      }
+      if(pTo){
+        pTo.cash_bal-=Number(xRow.cash||0);pTo.upi_bal-=Number(xRow.upi||0);pTo.bank_bal-=Number(xRow.bank||0);pTo.balance-=Number(xRow.amount);
+        await sb.from('partners').update({cash_bal:pTo.cash_bal,upi_bal:pTo.upi_bal,bank_bal:pTo.bank_bal,balance:pTo.balance}).eq('id',pTo.partnerId);
+      }
+      // remove from in-memory transactions
+      partners.forEach(p=>{p.transactions=p.transactions.filter(x=>!(x.date===t.date&&x.amount===t.amount&&(x.type==='transfer-out'||x.type==='transfer-in')));});
+      showToast('Transfer deleted');
+      document.getElementById('xferHistPopup').classList.remove('open');
+      renderPartners();
+    } else if(t._type==='loan'){
+      const loan=loans.find(l=>l.id===t.loanId);
+      if(!loan){showModal('Loan not found');return;}
+      const {error}=await sb.from('loans').delete().eq('id',t.loanId);
+      if(error){showModal('DB error: '+error.message);return;}
+      for(const s of (loan.sources||[])){
+        const p=partners.find(x=>x.partnerId===s.partner_id);
+        if(!p)continue;
+        p.cash_bal+=Number(s.cash||0);p.upi_bal+=Number(s.upi||0);p.bank_bal+=Number(s.bank||0);
+        p.balance+=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+        await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',p.partnerId);
+      }
+      showToast('Loan '+t.loanId+' deleted');
+      document.getElementById('xferHistPopup').classList.remove('open');
+      await loadLoans();
+    } else if(t._type==='receipt'){
+      const recvRaw=receipts.find(x=>x.id===t.receiptId);
+      if(!recvRaw){showModal('Receipt not found');return;}
+      const loan=loans.find(l=>l.id===recvRaw.loan_id);
+      if(loan){
+        const currentOut=Number(String(loan.outstanding).replace(/[^0-9]/g,''));
+        const loanAmt=Number(String(loan.amount).replace(/[^0-9]/g,''));
+        const principal=Number(recvRaw.amount||0)-Number(recvRaw.interest||0);
+        const restoredOut=Math.min(loanAmt,currentOut+principal);
+        const {error:lErr}=await sb.from('loans').update({outstanding:restoredOut}).eq('id',loan.id);
+        if(lErr){showModal('DB error restoring loan: '+lErr.message);return;}
+      }
+      const {error}=await sb.from('receipts').delete().eq('id',t.receiptId);
+      if(error){showModal('DB error: '+error.message);return;}
+      for(const s of (recvRaw.sources||[])){
+        const p=partners.find(x=>x.partnerId===s.partner_id);
+        if(!p)continue;
+        p.cash_bal-=Number(s.cash||0);p.upi_bal-=Number(s.upi||0);p.bank_bal-=Number(s.bank||0);
+        p.balance-=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+        await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',p.partnerId);
+      }
+      showToast('Receipt '+t.receiptId+' deleted');
+      document.getElementById('xferHistPopup').classList.remove('open');
+      await loadLoans();
+    }
+  });
 }
 async function togglePartnerStatus(idx){
   const p=partners[idx];
