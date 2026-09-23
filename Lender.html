@@ -2255,7 +2255,7 @@ function updateSummaryCards(){
   // home page stat cards
   document.getElementById('homeOutstanding').textContent='₹'+fmtK(totalOut);
   document.getElementById('homeOutSub').textContent='Across '+active.length+' active loan'+(active.length!==1?'s':'');
-  document.getElementById('homeAvailable').textContent='₹'+fmtK(totalAvailable);
+  document.getElementById('homeAvailable').textContent='₹'+totalAvailable.toLocalString('en-IN');
   const totalInterestCollected=receipts.reduce((s,r)=>s+Number(r.interest||0),0);
   document.getElementById('homeSettled').textContent='₹'+totalInterestCollected.toLocaleString('en-IN');
   // upcoming & due list
