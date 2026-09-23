@@ -2253,7 +2253,7 @@ function updateSummaryCards(){
   document.querySelector('.sum-card.red .sum-number').textContent='₹'+fmtK(totalOut);
   document.querySelector('.sum-card.purple .sum-number').textContent=settled.length;
   // home page stat cards
-  document.getElementById('homeOutstanding').textContent='₹'+fmtK(totalOut);
+  document.getElementById('homeOutstanding').textContent='₹'+totalOut.toLocaleString('en-IN');
   document.getElementById('homeOutSub').textContent='Across '+active.length+' active loan'+(active.length!==1?'s':'');
   document.getElementById('homeAvailable').textContent='₹'+totalAvailable.toLocaleString('en-IN');
   const totalInterestCollected=receipts.reduce((s,r)=>s+Number(r.interest||0),0);
