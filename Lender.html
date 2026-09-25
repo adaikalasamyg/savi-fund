@@ -52,6 +52,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .summary-section{padding:18px 20px 0}
 .section-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
 .summary-grid-2x2{display:grid;grid-template-columns:0.7fr 1.3fr 1.3fr 0.7fr;gap:8px}
+.summary-grid-3{display:grid;grid-template-columns:0.8fr 1.2fr 1fr;gap:8px}
 .sum-card{border-radius:16px;padding:14px 8px;box-shadow:0 4px 20px rgba(31,45,61,.05);border:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;position:relative}
 .sum-card.blue{background:#EEF4FF}
 .sum-card.green{background:#F1FAF6}
@@ -495,9 +496,52 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
   .rpt-chart-card{box-shadow:none!important;border:1px solid #E2E8F0!important;break-inside:avoid}
   .header,.rpt-kpi{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 }
+
+/* ══════════ DESKTOP VIEW (≥1024px) — a real desktop app shell: sidebar nav + full-width workspace.
+   Everything below this breakpoint (phones & tablets) keeps the exact mobile layout, untouched. ══════════ */
+@media(min-width:1024px){
+  html,body{height:100vh;overflow:hidden}
+  body{background:#EEF2F6;padding:0;display:block}
+  .app-shell{position:static;margin:0;transform:none;width:100%;height:100vh}
+  .phone{
+    width:100%;max-width:100%;height:100vh;
+    border-radius:0;box-shadow:none;border:none;
+    flex-direction:row-reverse; /* DOM order is .screen then .bottom-nav; row-reverse puts the nav on the left */
+  }
+  .screen{height:100vh}
+  .screen>.page.active{
+    max-width:900px;margin:0 auto;padding:0 12px;
+  }
+  .header{border-radius:0 0 20px 20px}
+
+  /* bottom tab bar → left sidebar (same DOM/nav-items, just restyled) */
+  .bottom-nav{
+    width:240px;min-width:240px;height:100vh;
+    padding:20px 14px;background:transparent;position:static;
+  }
+  .nav-dock{
+    flex-direction:column;align-items:stretch;justify-content:flex-start;
+    height:100%;border-radius:22px;padding:14px 10px;gap:4px;
+  }
+  .nav-item{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:12px}
+  .nav-item:hover{background:rgba(255,255,255,.08)}
+  .nav-icon-wrap{width:26px;height:26px;flex-shrink:0}
+  .nav-label{font-size:13.5px;letter-spacing:.2px}
+
+  /* dashboard-style KPI row: use the extra width instead of wrapping 2x2 */
+  .rpt-kpi-row{grid-template-columns:repeat(4,1fr)}
+
+  /* bottom-sheets become centered dialogs on desktop */
+  .popup-overlay,.edit-popup-overlay,.notif-overlay{align-items:center}
+  .popup-sheet{border-radius:28px;max-width:460px}
+  .edit-sheet{margin-bottom:0;max-width:420px}
+  .notif-sheet{border-radius:28px;max-width:420px}
+}
+
 </style>
 </head>
 <body>
+<div class="app-shell">
 <div class="phone">
   <div class="screen">
 
@@ -743,7 +787,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
     </div>
 
     <div class="summary-section">
-      <div class="summary-grid-2x2">
+      <div class="summary-grid-3">
         <div class="sum-card blue">
           <div class="sum-number">0</div>
           <div class="sum-card-label">Records</div>
@@ -759,11 +803,13 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
           <div class="sum-card-label">Interest</div>
           <svg class="sum-wave" viewBox="0 0 140 48" preserveAspectRatio="none"><path d="M0,0 L140,0 L140,18 Q105,8 70,23 Q35,38 0,18 Z" fill="rgba(124,58,237,0.12)"/><path d="M0,0 L140,0 L140,10 Q110,6 80,14 Q40,26 0,10 Z" fill="rgba(124,58,237,0.18)"/></svg>
         </div>
+        <!--
         <div class="sum-card orange">
           <div class="sum-number">₹0</div>
           <div class="sum-card-label">This Month</div>
           <svg class="sum-wave" viewBox="0 0 140 48" preserveAspectRatio="none"><path d="M0,0 L140,0 L140,18 Q105,8 70,23 Q35,38 0,18 Z" fill="rgba(234,88,12,0.12)"/><path d="M0,0 L140,0 L140,10 Q110,6 80,14 Q40,26 0,10 Z" fill="rgba(234,88,12,0.18)"/></svg>
         </div>
+         -->
       </div>
     </div>
 
@@ -802,7 +848,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
           <div class="info-cell lb"><div class="info-icon">📅</div><div class="info-text"><div class="info-label">Last Recv</div><div class="info-val" id="rceLastDate">10 Jan 2026</div></div></div>
         </div>
         <div class="lce-actions">
-          <button class="view-btn" onclick="document.getElementById('recvPopup').classList.add('open')">View Receive Details ›</button>
+          <button class="view-btn" onclick="document.getElementById('recvPopup').classList.add('open')">View Receive Detail ›</button>
           <button class="edit-sq" onclick="openEditRecvPopup()"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <button class="del-sq" id="rceDelBtn" onclick="deleteRecv()"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
@@ -865,11 +911,6 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
     <div class="acc-tab-content active" id="acc-partner">
       <button class="acc-add-btn" onclick="openPartnerPopup(null)">+ Add Partner</button>
       <div id="partnerList"></div>
-      <!-- Transaction History Section -->
-      <div id="transferHistorySection" style="display:none;margin-top:4px">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Transaction History</div>
-        <div id="transferHistoryList"></div>
-      </div>
     </div>
 
     <!-- USER TAB -->
@@ -973,6 +1014,14 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
       <div class="rpt-chart-card">
         <div class="rpt-chart-title">📋 Active &amp; Due Loans</div>
         <div id="rptLoanList"></div>
+      </div>
+    </div>
+
+    <!-- TRANSACTION HISTORY -->
+    <div id="transferHistorySection" style="display:none" class="rpt-section">
+      <div class="rpt-chart-card">
+        <div class="rpt-chart-title">🔄 Transaction History</div>
+        <div id="transferHistoryList"></div>
       </div>
     </div>
 
@@ -1322,6 +1371,36 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
     </div>
   </div>
 
+  <!-- BORROWER DETAIL POPUP -->
+  <div class="popup-overlay" id="borrowerDetailPopup" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="popup-sheet">
+      <div class="popup-handle"></div>
+      <div class="popup-top">
+        <div class="popup-top-row">
+          <div class="popup-title" id="bdName">—</div>
+          <button class="popup-close" onclick="document.getElementById('borrowerDetailPopup').classList.remove('open')">✕</button>
+        </div>
+        <div class="popup-id-row" style="gap:6px">
+          <span class="popup-status-badge" id="bdId"></span>
+          <span class="popup-status-badge" id="bdStatus"></span>
+        </div>
+        <div class="popup-meta" id="bdMobile"></div>
+      </div>
+      <div class="popup-body">
+        <div class="popup-section">
+          <div class="rpt-kpi-row" id="bdKpiRow" style="grid-template-columns:1fr 1fr"></div>
+        </div>
+        <div class="popup-section">
+          <div class="popup-section-title">📋 Loan History</div>
+          <div id="bdLoanList"></div>
+        </div>
+        <div class="popup-actions">
+          <button class="pa-close" onclick="document.getElementById('borrowerDetailPopup').classList.remove('open')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- BORROWER POPUP -->
   <div class="edit-popup-overlay" id="borrowerPopup" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="edit-sheet">
@@ -1650,6 +1729,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
     <div class="modal-actions" id="modalActions"></div>
   </div>
 </div>
+</div><!-- end app-shell -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
@@ -1658,7 +1738,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
   window.addEventListener('resize',setVh);
 })();
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return day+' '+months[+m-1];}
-function fmtK(n){if(n>=10000000)return(n/10000000).toFixed(1).replace(/\.0$/,'')+'Cr';if(n>=100000)return(n/100000).toFixed(1).replace(/\.0$/,'')+'L';if(n>=1000)return(n/1000).toFixed(1).replace(/\.0$/,'')+'K';return n.toLocaleString('en-IN');}
+function fmtK(n){if(n>=10000000)return(n/10000000).toFixed(1).replace(/\.0$/,'')+'Cr';if(n>=100000)return(n/100000).toFixed(2).replace(/\.0$/,'')+'L';return n.toLocaleString('en-IN');}
 function fmtRate(rate,type){if(!rate)return'—';const sym=type==='fixed'?'₹':'%';return rate+sym+(type?' '+type.charAt(0).toUpperCase()+type.slice(1):'');}
 
 function showModal(msg,type='error'){
@@ -1941,9 +2021,12 @@ function updateList(){
   const list=document.getElementById('loanList');
   list.innerHTML=filtered.filter((_,i)=>loans.indexOf(filtered[i])!==lceIdx).map((l,i)=>{
     const idx=loans.indexOf(l);
-    return '<div class="loan-row" data-idx="'+idx+'" onclick="loadLoan('+idx+')" style="margin-bottom:10px">'
-      +'<div class="lr-info"><div class="lr-name">'+l.name+'</div><div class="lr-loan">'+l.id+'</div></div>'
-      +'<div class="lr-right"><div class="lr-amounts"><div class="lr-amount">'+l.amount+'</div><div class="lr-outstanding">'+l.updated+'</div></div><div class="lr-btns"><button class="lr-arrow">›</button></div></div>'
+    const hasRecv=activeFilter==='settled'&&receipts.some(r=>r.loan_id===l.id);
+    const rowBg=activeFilter==='settled'?(hasRecv?'background:#F0FDF4;border-color:#86EFAC':'background:#F8FAFC;border-color:#E2E8F0'):'';
+    const amtColor=activeFilter==='settled'?(hasRecv?'color:#16A34A':'color:#94A3B8'):'';
+    return '<div class="loan-row" data-idx="'+idx+'" onclick="loadLoan('+idx+')" style="margin-bottom:10px;'+rowBg+'">'
+      +'<div class="lr-info"><div class="lr-name">'+l.name+'</div><div class="lr-loan">'+l.id+(activeFilter==='settled'?(hasRecv?' <span style="font-size:9px;font-weight:700;background:#DCFCE7;color:#16A34A;padding:1px 5px;border-radius:999px">receipts</span>':' <span style="font-size:9px;font-weight:700;background:#F1F5F9;color:#94A3B8;padding:1px 5px;border-radius:999px">no receipts</span>'):'')+'</div></div>'
+      +'<div class="lr-right"><div class="lr-amounts"><div class="lr-amount" style="'+amtColor+'">'+l.amount+'</div><div class="lr-outstanding">'+l.updated+'</div></div><div class="lr-btns"><button class="lr-arrow">›</button></div></div>'
       +'</div>';
   }).join('');
   document.getElementById('loanListSection').style.display=list.innerHTML?'':'none';
@@ -2258,12 +2341,35 @@ function updateSummaryCards(){
   document.getElementById('homeAvailable').textContent='₹'+totalAvailable.toLocaleString('en-IN');
   const totalInterestCollected=receipts.reduce((s,r)=>s+Number(r.interest||0),0);
   document.getElementById('homeSettled').textContent='₹'+totalInterestCollected.toLocaleString('en-IN');
-  // upcoming & due list
-  const due=active.filter(l=>l.due_date);
-  const dueHtml=due.length?due.map(l=>{
-    return '<div style="background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #EEF1F5">'
-      +'<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#14213D">'+l.name+'</div><div style="font-size:11px;color:#64748B;margin-top:2px">'+l.id+' · Due: '+(l.due_date||'—')+'</div></div>'
-      +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#EF4444">'+l.outstanding+'</div><div style="font-size:10px;color:#64748B">outstanding</div></div>'
+  // upcoming & due list — show ALL active loans, sorted by due date (no-due at bottom)
+  const today=new Date();today.setHours(0,0,0,0);
+  function _dueDiff(l){if(!l.due_date)return null;const d=new Date(l.due_date);d.setHours(0,0,0,0);return Math.round((d-today)/86400000);}
+  const sorted=[...active].sort((a,b)=>{
+    const da=_dueDiff(a),db=_dueDiff(b);
+    // no-due-date always last
+    if(da===null&&db===null)return (a.given_date||'')>(b.given_date||'')?1:-1;
+    if(da===null)return 1;
+    if(db===null)return -1;
+    // overdue (negative) before upcoming (positive), sorted by diff ascending
+    return da-db;
+  });
+  const dueHtml=sorted.length?sorted.map(l=>{
+    let dueLine,dueBg='#EEF1F5',dueColor='#64748B';
+    if(l.due_date){
+      const dueD=new Date(l.due_date);dueD.setHours(0,0,0,0);
+      const diff=Math.round((dueD-today)/(86400000));
+      if(diff<0){dueLine='Overdue '+Math.abs(diff)+'d';dueBg='#FFF1F1';dueColor='#EF4444';}
+      else if(diff===0){dueLine='Due today';dueBg='#FFF8E8';dueColor='#D97706';}
+      else if(diff<=7){dueLine='Due in '+diff+'d';dueBg='#FFF8E8';dueColor='#D97706';}
+      else{dueLine='Due '+fmtDate(l.due_date);}
+    } else {
+      const givenD=new Date(l.given_date);givenD.setHours(0,0,0,0);
+      const days=Math.round((today-givenD)/(86400000));
+      dueLine=days+' day'+(days!==1?'s':'')+' pending';
+    }
+    return '<div style="background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid '+dueBg+'">'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#14213D">'+l.name+'</div><div style="font-size:11px;color:#64748B;margin-top:2px">'+l.id+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#EF4444">'+l.outstanding+'</div><div style="font-size:10px;font-weight:600;color:'+dueColor+';margin-top:2px">'+dueLine+'</div></div>'
       +'</div>';
   }).join(''):'<div style="text-align:center;padding:24px 0;color:#64748B;font-size:13px">No active loans</div>';
   document.getElementById('homeDueList').innerHTML=dueHtml;
@@ -2483,9 +2589,20 @@ async function saveEditLoan(){
     if(!p)continue;
     await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',pid);
   }
-  showToast('Loan updated successfully');
   document.getElementById('editPopup').classList.remove('open');
   await loadLoans();
+  // auto-settle if outstanding was manually set to 0
+  if(outstanding===0&&l.status==='active'){
+    const totalInterest=receipts.filter(r=>r.loan_id===l.id).reduce((s,r)=>s+Number(r.interest||0),0);
+    const settleDate=new Date().toISOString().split('T')[0];
+    await sb.from('loans').update({status:'settled',settle_date:settleDate,interest_due:totalInterest}).eq('id',l.id);
+    await loadLoans();
+    showModal('Loan '+l.id+' updated and settled. 🎉','info');
+    const settledBtn=document.querySelector('#page-loans .toggle-group .tgl-btn:nth-child(2)');
+    if(settledBtn)setToggle(settledBtn);
+  } else {
+    showToast('Loan updated successfully');
+  }
 }
 
 // ── ADD INTEREST (settled loans) ──
@@ -2890,12 +3007,21 @@ async function saveNewRecv(){
     if(pe){showModal('Partner update error ('+p.name+'): '+pe.message);return;}
     p.cash_bal=newCash;p.upi_bal=newUpi;p.bank_bal=newBank;p.balance=newBal;
   }
-  showToast('Receive recorded — ₹'+totalRecv.toLocaleString('en-IN')+' received');
   document.getElementById('newRecvPopup').classList.remove('open');
-  await loadLoans();
-  // point detail card to the newly saved receipt
-  const newIdx=recvs.findIndex(r=>r.id===recvId);
-  if(newIdx!==-1){rceIdx=newIdx;rceRender();updateRecvList();}
+  // auto-settle if outstanding is now 0
+  if(newOut===0){
+    const totalInterest=receipts.filter(r=>r.loan_id===loanId).reduce((s,r)=>s+Number(r.interest||0),0)+interestAmt;
+    const settleDate=date||new Date().toISOString().split('T')[0];
+    const {error:sErr}=await sb.from('loans').update({status:'settled',settle_date:settleDate,outstanding:0,interest_due:totalInterest}).eq('id',loanId);
+    if(sErr){showModal('Settle error: '+sErr.message);return;}
+    await loadLoans();
+    showModal('Loan '+loanId+' is fully settled and moved to Settled section. 🎉','info');
+  } else {
+    showToast('Receive recorded — ₹'+totalRecv.toLocaleString('en-IN')+' received');
+    await loadLoans();
+    const newIdx=recvs.findIndex(r=>r.id===recvId);
+    if(newIdx!==-1){rceIdx=newIdx;rceRender();updateRecvList();}
+  }
 }
 function _isLatestReceipt(recvIdx){
   const r=recvs[recvIdx];
@@ -2912,16 +3038,36 @@ function _isLatestReceipt(recvIdx){
 async function deleteLoan(loanId){
   const loan=loans.find(l=>l.id===loanId);
   if(!loan)return;
-  showConfirm('Delete loan '+loanId+' for '+loan.name+'? This cannot be undone.',async()=>{
+  const loanReceipts=receipts.filter(r=>r.loan_id===loanId);
+  const msg=loanReceipts.length
+    ?'Delete loan '+loanId+' for '+loan.name+' and its '+loanReceipts.length+' receipt(s)? This cannot be undone.'
+    :'Delete loan '+loanId+' for '+loan.name+'? This cannot be undone.';
+  showConfirm(msg,async()=>{
+    // reverse receipt partner credits first
+    for(const r of loanReceipts){
+      for(const s of (r.sources||[])){
+        const p=partners.find(x=>x.partnerId===s.partner_id);
+        if(!p)continue;
+        p.cash_bal-=Number(s.cash||0);p.upi_bal-=Number(s.upi||0);p.bank_bal-=Number(s.bank||0);
+        p.balance-=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+        await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',p.partnerId);
+      }
+    }
+    if(loanReceipts.length){
+      const {error:rErr}=await sb.from('receipts').delete().eq('loan_id',loanId);
+      if(rErr){showModal('DB error deleting receipts: '+rErr.message);return;}
+    }
     const {error}=await sb.from('loans').delete().eq('id',loanId);
     if(error){showModal('DB error: '+error.message);return;}
-    // restore partner balances
-    for(const s of (loan.sources||[])){
-      const p=partners.find(x=>x.partnerId===s.partner_id);
-      if(!p)continue;
-      p.cash_bal+=Number(s.cash||0);p.upi_bal+=Number(s.upi||0);p.bank_bal+=Number(s.bank||0);
-      p.balance+=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
-      await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',p.partnerId);
+    // restore loan source partner balances (only for active loans; settled loans already credited back via receipts)
+    if(loan.status!=='settled'){
+      for(const s of (loan.sources||[])){
+        const p=partners.find(x=>x.partnerId===s.partner_id);
+        if(!p)continue;
+        p.cash_bal+=Number(s.cash||0);p.upi_bal+=Number(s.upi||0);p.bank_bal+=Number(s.bank||0);
+        p.balance+=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
+        await sb.from('partners').update({cash_bal:p.cash_bal,upi_bal:p.upi_bal,bank_bal:p.bank_bal,balance:p.balance}).eq('id',p.partnerId);
+      }
     }
     showToast('Loan '+loanId+' deleted');
     await loadLoans();
@@ -2931,11 +3077,9 @@ async function settleLoan(loanId){
   const loan=loans.find(l=>l.id===loanId);
   if(!loan)return;
   const outNum=Number(String(loan.outstanding).replace(/[^0-9]/g,''));
-  if(outNum!==0){showModal('Cannot settle — delete all related receive transactions first, then the loan will move to Settled.');return;}
-  showConfirm('Settle loan '+loanId+' for '+loan.name+'? All receipts will be deleted.',async()=>{
+  if(outNum!==0){showModal('Cannot settle — outstanding balance exists.');return;}
+  showConfirm('Mark loan '+loanId+' for '+loan.name+' as Settled?',async()=>{
     const totalInterest=receipts.filter(r=>r.loan_id===loanId).reduce((s,r)=>s+Number(r.interest||0),0);
-    const {error:rErr}=await sb.from('receipts').delete().eq('loan_id',loanId);
-    if(rErr){showModal('DB error deleting receipts: '+rErr.message);return;}
     const settleDate=new Date().toISOString().split('T')[0];
     const {error:lErr}=await sb.from('loans').update({status:'settled',settle_date:settleDate,outstanding:0,interest_due:totalInterest}).eq('id',loanId);
     if(lErr){showModal('DB error settling loan: '+lErr.message);return;}
@@ -3029,21 +3173,24 @@ function _renderBorrowerList(listId){
     const isActive=b.status!=='inactive';
     const delCls='del-sq'+(blocked?' del-disabled':'');
     const delStyle=blocked?'pointer-events:none;opacity:.4':'';
-    return '<div class="acc-card" style="'+(isActive?'':'opacity:.6;background:#FAFAFA')+'">'
-      +'<div class="acc-info">'
-        +'<div class="acc-name">'+b.name+'</div>'
-        +'<div style="margin-top:2px">'
-          +'<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EEF4FF;color:#2563EB">'+b.bId+'</span>'
-          +' <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:'+(isActive?'#EFFAF5':'#FFF8E8')+';color:'+(isActive?'#16A34A':'#D97706')+'">'
-            +(isActive?'Active':'Inactive')
-          +'</span>'
+    return '<div style="background:'+(isActive?'#fff':'#FAFAFA')+';border-radius:16px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,.05);border:1px solid #EEF1F5;margin-bottom:10px;opacity:'+(isActive?'1':'.7')+';">'
+      +'<div style="display:flex;align-items:center;gap:12px">'
+        +'<div onclick="openBorrowerDetail(\''+b.bId+'\')" style="width:40px;height:40px;border-radius:14px;background:'+col.bg+';color:'+col.c+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;cursor:pointer">'+b.name[0].toUpperCase()+'</div>'
+        +'<div onclick="openBorrowerDetail(\''+b.bId+'\')" style="flex:1;min-width:0;cursor:pointer">'
+          +'<div style="font-size:14px;font-weight:700;color:#14213D;margin-bottom:3px">'+b.name+'</div>'
+          +'<div style="display:flex;align-items:center;gap:5px">'
+            +'<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#EEF4FF;color:#2563EB">'+b.bId+'</span>'
+          +'</div>'
+          +'<div style="font-size:11px;color:#64748B;margin-top:3px;display:flex;align-items:center;gap:4px">'
+            +'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 18a19.5 19.5 0 0 1-3.39-3.39A19.79 19.79 0 0 1 4.08 5.18 2 2 0 0 1 6.07 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L10.09 10a16 16 0 0 0 3.91 3.91l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"/></svg>'
+            +b.mobile
+          +'</div>'
         +'</div>'
-        +'<div class="acc-sub" style="margin-top:2px">'+b.mobile+'</div>'
-      +'</div>'
-      +'<div class="acc-actions">'
-        +'<button class="edit-sq" data-edit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-        +'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-btoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>'
-        +'<button class="'+delCls+'" data-del="'+i+'" style="'+delStyle+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +'<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'
+          +'<button class="edit-sq" data-edit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+          +'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-btoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>'
+          +'<button class="'+delCls+'" data-del="'+i+'" style="'+delStyle+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+        +'</div>'
       +'</div>'
     +'</div>';
   }).join('');
@@ -3110,6 +3257,67 @@ async function toggleBorrowerStatus(idx){
   borrowers[idx].status=newStatus;
   renderBorrowers();
   showToast('Borrower '+newStatus);
+}
+function openBorrowerDetail(bId){
+  const b=borrowers.find(x=>x.bId===bId);
+  if(!b)return;
+  const bLoans=loans.filter(l=>l.borrower_id===bId);
+  const activeLoans=bLoans.filter(l=>l.status==='active');
+  const settledLoans=bLoans.filter(l=>l.status==='settled');
+  const totalGiven=bLoans.reduce((s,l)=>s+Number(String(l.amount).replace(/[^0-9]/g,'')),0);
+  const totalOut=activeLoans.reduce((s,l)=>s+Number(String(l.outstanding).replace(/[^0-9]/g,'')),0);
+  const totalInterest=receipts.filter(r=>r.borrower_id===bId).reduce((s,r)=>s+Number(r.interest||0),0);
+  const totalRecv=receipts.filter(r=>r.borrower_id===bId).reduce((s,r)=>s+Number(r.amount||0),0);
+  document.getElementById('bdName').textContent=b.name;
+  document.getElementById('bdId').textContent=b.bId;
+  document.getElementById('bdStatus').textContent=b.status==='inactive'?'Inactive':'Active';
+  document.getElementById('bdStatus').style.background=b.status==='inactive'?'rgba(245,158,11,.25)':'rgba(16,185,129,.25)';
+  document.getElementById('bdMobile').textContent='📱 '+b.mobile+(b.address?' · '+b.address:'');
+  document.getElementById('bdKpiRow').innerHTML=
+    '<div class="rpt-kpi" style="background:linear-gradient(135deg,#2563EB,#1d4ed8)">'
+      +'<div class="rpt-kpi-lbl" style="color:rgba(255,255,255,.75)">Active Loans</div>'
+      +'<div class="rpt-kpi-val" style="color:#fff">'+activeLoans.length+'</div>'
+      +'<div class="rpt-kpi-sub" style="color:rgba(255,255,255,.65)">'+settledLoans.length+' settled</div>'
+    +'</div>'
+    +'<div class="rpt-kpi" style="background:linear-gradient(135deg,#EF4444,#DC2626)">'
+      +'<div class="rpt-kpi-lbl" style="color:rgba(255,255,255,.75)">Outstanding</div>'
+      +'<div class="rpt-kpi-val" style="color:#fff">₹'+fmtK(totalOut)+'</div>'
+      +'<div class="rpt-kpi-sub" style="color:rgba(255,255,255,.65)">of ₹'+fmtK(totalGiven)+' given</div>'
+    +'</div>'
+    +'<div class="rpt-kpi" style="background:linear-gradient(135deg,#10B981,#059669)">'
+      +'<div class="rpt-kpi-lbl" style="color:rgba(255,255,255,.75)">Received</div>'
+      +'<div class="rpt-kpi-val" style="color:#fff">₹'+fmtK(totalRecv)+'</div>'
+      +'<div class="rpt-kpi-sub" style="color:rgba(255,255,255,.65)">'+receipts.filter(r=>r.borrower_id===bId).length+' receipts</div>'
+    +'</div>'
+    +'<div class="rpt-kpi" style="background:linear-gradient(135deg,#7C3AED,#6D28D9)">'
+      +'<div class="rpt-kpi-lbl" style="color:rgba(255,255,255,.75)">Interest</div>'
+      +'<div class="rpt-kpi-val" style="color:#fff">₹'+fmtK(totalInterest)+'</div>'
+      +'<div class="rpt-kpi-sub" style="color:rgba(255,255,255,.65)">Collected</div>'
+    +'</div>';
+  const today=new Date();today.setHours(0,0,0,0);
+  document.getElementById('bdLoanList').innerHTML=bLoans.length?bLoans.map((l,i)=>{
+    const col=accAvatarColors[i%accAvatarColors.length];
+    const isSettled=l.status==='settled';
+    const outNum=Number(String(l.outstanding).replace(/[^0-9]/g,''));
+    let badge,badgeBg,badgeColor;
+    if(isSettled){badge='Settled';badgeBg='#DCFCE7';badgeColor='#16A34A';}
+    else if(l.due_date){
+      const diff=Math.round((new Date(l.due_date)-today)/86400000);
+      if(diff<0){badge='Overdue '+Math.abs(diff)+'d';badgeBg='#FFF1F1';badgeColor='#EF4444';}
+      else if(diff===0){badge='Due today';badgeBg='#FFF8E8';badgeColor='#D97706';}
+      else if(diff<=7){badge='Due in '+diff+'d';badgeBg='#FFF8E8';badgeColor='#D97706';}
+      else{badge='Due '+fmtDate(l.due_date);badgeBg='#EEF4FF';badgeColor='#2563EB';}
+    } else {badge='Active';badgeBg='#EEF4FF';badgeColor='#2563EB';}
+    return '<div class="rpt-loan-row">'
+      +'<div class="rpt-loan-avatar" style="background:'+col.bg+';color:'+col.c+'">'+l.id.replace('LN','')+'</div>'
+      +'<div class="rpt-loan-info"><div class="rpt-loan-name">'+l.id+'</div><div class="rpt-loan-id">Given: '+fmtDate(l.given_date)+(l.due_date?' · Due: '+fmtDate(l.due_date):'')+'</div></div>'
+      +'<div class="rpt-loan-right">'
+        +'<div class="rpt-loan-amt" style="color:'+(isSettled?'#16A34A':'#EF4444')+'">'+l.outstanding+'</div>'
+        +'<div class="rpt-loan-badge" style="background:'+badgeBg+';color:'+badgeColor+'">'+badge+'</div>'
+      +'</div>'
+    +'</div>';
+  }).join(''):'<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">No loans yet</div>';
+  document.getElementById('borrowerDetailPopup').classList.add('open');
 }
 function deleteBorrower(idx){
   const b=borrowers[idx];
@@ -3325,11 +3533,11 @@ function openXferHistPopup(t){
   const xhNotesRow=document.getElementById('xhNotesRow');
   if(t.notes_raw){xhNotesEl.textContent=t.notes_raw;xhNotesRow.style.display='';}
   else{xhNotesRow.style.display='none';}
-  // show delete button only if record is within 10 days
+  // show delete button only if record is within 30 days
   const refDate=t.created_at?new Date(t.created_at):new Date(t.date);
   const daysDiff=(Date.now()-refDate.getTime())/(1000*60*60*24);
   const xhDelBtn=document.getElementById('xhDelBtn');
-  xhDelBtn.style.display=daysDiff<=10?'':'none';
+  xhDelBtn.style.display=daysDiff<=30?'':'none';
   document.getElementById('xferHistPopup').classList.add('open');
 }
 async function deleteAccTxn(){
@@ -3645,6 +3853,7 @@ function renderUsers(){
     const sc=statusCfg[u.status||'active']||statusCfg.active;
     const isActive=u.status==='active';
     const isSelf=u.id===loggedIn.id;
+    const isAdmin=(u.username||'').toLowerCase()==='admin';
     return '<div class="acc-card" style="'+(isActive?'':'opacity:.7')+'">'
       +'<div class="acc-avatar" style="background:'+tc.bg+';color:'+tc.c+'">'+u.name[0]+'</div>'
       +'<div class="acc-info">'
@@ -3656,9 +3865,9 @@ function renderUsers(){
         +'<div class="acc-sub">'+u.id+' &nbsp;&middot;&nbsp; @'+u.username+'</div>'
       +'</div>'
       +'<div class="acc-actions">'
-        +'<button class="edit-sq" data-uedit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-        +(!isSelf?'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-utoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>':'')
-        +(!isSelf?'<button class="del-sq" data-udel="'+i+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':'')
+        +(!isAdmin?'<button class="edit-sq" data-uedit="'+i+'" title="Edit"><svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':'')
+        +(!isSelf&&!isAdmin?'<button style="width:38px;height:38px;border-radius:10px;border:1.5px solid '+(isActive?'#F59E0B':'#16A34A')+';background:'+(isActive?'#FFF8E8':'#EFFAF5')+';cursor:pointer;font-size:13px" data-utoggle="'+i+'" title="'+(isActive?'Deactivate':'Activate')+'">'+(isActive?'⏸':'▶')+'</button>':'')
+        +(!isSelf&&!isAdmin?'<button class="del-sq" data-udel="'+i+'"><svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':'')
       +'</div>'
     +'</div>';
   }).join('');
@@ -3732,8 +3941,10 @@ async function toggleUserStatus(idx){
   showToast('User '+newStatus);
 }
 function deleteUser(idx){
-  showConfirm('Delete user "'+users[idx].name+'"?',()=>{
-    const u=users.splice(idx,1)[0];
+  const u=users[idx];
+  if((u.username||'').toLowerCase()==='admin'){showModal('The admin user cannot be deleted.','info');return;}
+  showConfirm('Delete user "'+u.name+'"?',()=>{
+    users.splice(idx,1);
     sb.from('users').delete().eq('id',u.id);
     renderUsers();
   });
@@ -3932,6 +4143,7 @@ function renderReports(){
   drawBars(d.borrowers);
   drawLoanList(d.borrowers);
   drawTrend();
+  renderTransferHistory();
 }
 function setRptPeriod(period,el){
   document.querySelectorAll('.rpt-period-btn').forEach(b=>b.classList.remove('active'));
