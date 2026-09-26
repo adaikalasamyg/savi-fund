@@ -551,7 +551,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
       <div class="header-top">
         <img src="Logo.jpeg" style="width:36px;height:36px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1.5px solid rgba(255,255,255,.3)">
         <div class="header-titles">
-          <div class="page-subtitle" style="color:rgba(255,255,255,.65);font-size:13px">Welcome 👋</div>
+          <div class="page-subtitle" id="homeSubtitle" style="color:rgba(255,255,255,.65);font-size:13px">Welcome</div>
           <div class="page-title">Savi Fino</div>
         </div>
         <div class="header-right">
@@ -593,12 +593,23 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
         <div onclick="openAvailablePopup()" style="background:linear-gradient(135deg,#10B981,#059669);border-radius:18px;padding:16px 14px;box-shadow:0 6px 20px rgba(16,185,129,.2);cursor:pointer">
           <div style="font-size:10px;color:rgba(255,255,255,.75);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Available</div>
           <div style="font-size:22px;font-weight:800;color:#fff;line-height:1" id="homeAvailable">₹0</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:4px">Total given</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:4px" id="homeTotalGiven">Total given</div>
         </div>
         <div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);border-radius:18px;padding:16px 14px;box-shadow:0 6px 20px rgba(124,58,237,.2)">
           <div style="font-size:10px;color:rgba(255,255,255,.75);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Interest</div>
           <div style="font-size:22px;font-weight:800;color:#fff;line-height:1" id="homeSettled">0</div>
           <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:4px">Interest collected</div>
+        </div>
+      </div>
+      <!-- Total -->
+      <div style="background:linear-gradient(135deg,#0F4C81,#0e7490);border-radius:18px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 20px rgba(15,76,129,.2)">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,.75);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Fund</div>
+          <div style="font-size:22px;font-weight:800;color:#fff;line-height:1" id="homeTotalFund">₹0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:4px">Outstanding + Available</div>
+        </div>
+        <div style="width:42px;height:42px;background:rgba(255,255,255,.18);border-radius:12px;display:flex;align-items:center;justify-content:center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 3h18v4H3zM3 10h18v4H3zM3 17h18v4H3"/></svg>
         </div>
       </div>
     </div>
@@ -910,6 +921,10 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
     <!-- PARTNER TAB -->
     <div class="acc-tab-content active" id="acc-partner">
       <button class="acc-add-btn" onclick="openPartnerPopup(null)">+ Add Partner</button>
+      <div id="partnerTotalBanner" style="display:none;background:linear-gradient(135deg,#0F4C81,#0e7490);border-radius:14px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.5px">Total Available</div>
+        <div style="font-size:20px;font-weight:800;color:#fff" id="partnerTotalAmt">₹0</div>
+      </div>
       <div id="partnerList"></div>
     </div>
 
@@ -967,7 +982,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
         <div class="rpt-kpi" style="background:linear-gradient(135deg,#F59E0B,#D97706)">
           <div class="rpt-kpi-lbl" style="color:rgba(255,255,255,.75)">Due Loans</div>
           <div class="rpt-kpi-val" style="color:#fff" id="rptDueCount">0</div>
-          <div class="rpt-kpi-sub" style="color:rgba(255,255,255,.65)">Overdue / soon</div>
+          <div class="rpt-kpi-sub" style="color:rgba(255,255,255,.65)">Active loans</div>
         </div>
       </div>
     </div>
@@ -975,7 +990,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
     <!-- OUTSTANDING vs AVAILABLE DONUT -->
     <div class="rpt-section">
       <div class="rpt-chart-card">
-        <div class="rpt-chart-title">📊 Outstanding vs Received</div>
+        <div class="rpt-chart-title">📊 Outstanding vs Available</div>
         <div class="rpt-chart-row">
           <div class="rpt-donut-wrap">
             <svg viewBox="0 0 36 36" id="donutSvg"></svg>
@@ -1596,6 +1611,16 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
           </select>
         </div>
         <div class="field-group" id="uPasswordGroup"><div class="field-label">Password</div><input id="uPassword" class="field-input" type="password" placeholder="Enter password"></div>
+        <div class="field-group">
+          <div class="field-label">Photo (optional)</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div id="uPhotoPreview" style="width:48px;height:48px;border-radius:50%;background:#EEF4FF;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#2563EB;flex-shrink:0;overflow:hidden">?</div>
+            <label style="flex:1;padding:10px 14px;border:1.5px dashed #93C5FD;border-radius:12px;font-size:13px;color:#2563EB;font-weight:600;cursor:pointer;text-align:center;background:#F8FAFF">
+              Choose Photo
+              <input id="uPhotoFile" type="file" accept="image/*" style="display:none" onchange="_uPhotoPreview(this)">
+            </label>
+          </div>
+        </div>
         <div style="display:flex;gap:10px">
           <button class="edit-save-btn" style="flex:1" onclick="saveUser()">Save</button>
           <button class="edit-save-btn" style="flex:1;background:#e2e8f0;color:var(--muted);box-shadow:none" onclick="document.getElementById('userPopup').classList.remove('open')">Cancel</button>
@@ -1674,7 +1699,7 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
 
   <!-- AVAILABLE POPUP (outside .phone to avoid overflow:hidden clipping) -->
   <div class="popup-overlay" id="availablePopup" style="z-index:500" onclick="if(event.target===this)this.classList.remove('open')">
-    <div class="popup-sheet" style="padding-bottom:24px;max-height:72vh;margin-bottom:90px">
+    <div class="popup-sheet" style="padding-bottom:24px;max-height:72vh;margin-bottom:90px;max-width:320px">
       <div class="popup-handle"></div>
       <div class="popup-top">
         <div class="popup-top-row">
@@ -1816,15 +1841,23 @@ async function applyLogin(user){
   const role=user.type||'User';
   currentUserType=role;
   document.getElementById('loginPage').classList.add('hidden');
-  document.querySelector('.avatar').textContent=name[0].toUpperCase();
-  document.getElementById('amAvatar').textContent=name[0].toUpperCase();
+  const _avatarEl=document.querySelector('.avatar');
+  const _amAvatarEl=document.getElementById('amAvatar');
+  if(user.photo_url){
+    _avatarEl.innerHTML='<img src="'+user.photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+    _amAvatarEl.innerHTML='<img src="'+user.photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else {
+    _avatarEl.textContent=name[0].toUpperCase();
+    _amAvatarEl.textContent=name[0].toUpperCase();
+  }
+  const _hs=document.getElementById('homeSubtitle');if(_hs)_hs.textContent=name+'';
   document.getElementById('amName').textContent=name;
   document.getElementById('amRole').textContent=role;
   // load all users from DB
-  const {data:dbUsers}=await sb.from('users').select('id,username,name,type,password,status');
+  const {data:dbUsers}=await sb.from('users').select('id,username,name,type,password,status,photo_url');
   if(dbUsers){
     users.length=0;
-    dbUsers.forEach(u=>users.push({id:u.id,username:u.username,name:u.name,type:u.type,password:u.password||'',status:u.status||'active'}));
+    dbUsers.forEach(u=>users.push({id:u.id,username:u.username,name:u.name,type:u.type,password:u.password||'',status:u.status||'active',photo_url:u.photo_url||null}));
     userSeq=users.length+1;
     renderUsers();
   }
@@ -1847,6 +1880,9 @@ async function applyLogin(user){
     });
     renderPartners();
   }
+  // load partner fund transactions
+  const {data:dbFunds}=await sb.from('partner_funds').select('*').order('date',{ascending:true});
+  if(dbFunds){dbFunds.forEach(f=>{const pf=partners.find(x=>x.partnerId===f.partner_id);if(pf)pf.transactions.push({type:f.type,amount:Number(f.amount),cash:Number(f.cash||0),upi:Number(f.upi||0),bank:Number(f.bank||0),date:f.date,notes:f.notes||null,created_at:f.created_at||null});});}
   // load transfer history
   const {data:dbXfers}=await sb.from('transfers').select('*').order('date',{ascending:true});
   if(dbXfers){
@@ -2103,9 +2139,9 @@ function openNewLoanPopup(){
         <button class="src-del-btn" onclick="this.closest('.source-entry').remove();_nlRefreshSelect()" title="Remove">✕</button>
       </div>
       <div class="source-method-fields">
-        <div class="method-field"><div class="method-field-label">Cash (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-        <div class="method-field"><div class="method-field-label">UPI (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
-        <div class="method-field"><div class="method-field-label">Bank (₹)</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">Cash (${p.cash_bal.toLocaleString('en-IN')})</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">UPI (${p.upi_bal.toLocaleString('en-IN')})</div><input class="method-field-input" type="number" placeholder="0"></div>
+        <div class="method-field"><div class="method-field-label">Bank (${p.bank_bal.toLocaleString('en-IN')})</div><input class="method-field-input" type="number" placeholder="0"></div>
       </div>`;
     document.getElementById('new-sources-list').appendChild(el);
     this.value='';
@@ -2273,6 +2309,7 @@ async function loadReceipts(){
   renderBorrowers(); // re-render so delete buttons reflect actual transaction state
   renderPartners();
   renderNotifPanel();
+  renderTransferHistory();
 }
 function _buildRecvs(){
   recvs.length=0;
@@ -2339,6 +2376,8 @@ function updateSummaryCards(){
   document.getElementById('homeOutstanding').textContent='₹'+totalOut.toLocaleString('en-IN');
   document.getElementById('homeOutSub').textContent='Across '+active.length+' active loan'+(active.length!==1?'s':'');
   document.getElementById('homeAvailable').textContent='₹'+totalAvailable.toLocaleString('en-IN');
+  const homeTotalGivenEl=document.getElementById('homeTotalGiven');if(homeTotalGivenEl)homeTotalGivenEl.textContent='Given: ₹'+totalGiven.toLocaleString('en-IN');
+  const homeTotalFundEl=document.getElementById('homeTotalFund');if(homeTotalFundEl)homeTotalFundEl.textContent='₹'+(totalOut+totalAvailable).toLocaleString('en-IN');
   const totalInterestCollected=receipts.reduce((s,r)=>s+Number(r.interest||0),0);
   document.getElementById('homeSettled').textContent='₹'+totalInterestCollected.toLocaleString('en-IN');
   // upcoming & due list — show ALL active loans, sorted by due date (no-due at bottom)
@@ -2407,9 +2446,9 @@ function openLoanPopup(){
     const col=srcColors2[i%srcColors2.length];
     const total=(Number(s.cash||0)+Number(s.upi||0)+Number(s.bank||0));
     const methods=[
-      s.cash?`<div class="method-row"><div class="method-icon cash">${cashSvg}</div><div class="method-label">Cash</div><div class="method-amount">₹${Number(s.cash).toLocaleString('en-IN')}</div></div>`:null,
-      s.upi?`<div class="method-row"><div class="method-icon upi">${upiSvg}</div><div class="method-label">UPI</div><div class="method-amount">₹${Number(s.upi).toLocaleString('en-IN')}</div></div>`:null,
-      s.bank?`<div class="method-row"><div class="method-icon bank">${bankSvg}</div><div class="method-label">Bank</div><div class="method-amount">₹${Number(s.bank).toLocaleString('en-IN')}</div></div>`:null
+      s.cash?`<div class="method-row"><div class="method-icon cash">${cashSvg}</div><div class="method-amount">₹${Number(s.cash).toLocaleString('en-IN')}</div></div>`:null,
+      s.upi?`<div class="method-row"><div class="method-icon upi">${upiSvg}</div><div class="method-amount">₹${Number(s.upi).toLocaleString('en-IN')}</div></div>`:null,
+      s.bank?`<div class="method-row"><div class="method-icon bank">${bankSvg}</div><div class="method-amount">₹${Number(s.bank).toLocaleString('en-IN')}</div></div>`:null
     ].filter(Boolean).join('');
     return `<div class="source-row"><div class="source-header"><div class="source-avatar" style="background:${col.bg};color:${col.c}">${name[0].toUpperCase()}</div><div class="source-name">${name}</div><div class="source-total">₹${total.toLocaleString('en-IN')}</div></div><div class="source-methods">${methods}</div></div>`;
   }).join('')||'<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">No sources</div>';
@@ -2774,9 +2813,9 @@ function rceRender(){
         <div class="source-total">₹${partnerTotal.toLocaleString('en-IN')}</div>
       </div>
       <div class="source-methods">
-        <div class="method-row"><div class="method-icon cash"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/></svg></div><div class="method-label">Cash</div><div class="method-amount">${s.cash}</div></div>
-        <div class="method-row"><div class="method-icon upi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#2563EB" stroke-width="1.5"/></svg></div><div class="method-label">UPI</div><div class="method-amount">${s.upi}</div></div>
-        <div class="method-row"><div class="method-icon bank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg></div><div class="method-label">Bank</div><div class="method-amount">${s.bank}</div></div>
+        <div class="method-row"><div class="method-icon cash"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/></svg></div><div class="method-amount">${s.cash}</div></div>
+        <div class="method-row"><div class="method-icon upi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#2563EB" stroke-width="1.5"/></svg></div><div class="method-amount">${s.upi}</div></div>
+        <div class="method-row"><div class="method-icon bank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg></div><div class="method-amount">${s.bank}</div></div>
       </div>
     </div>`;
   }).join('');
@@ -3334,6 +3373,11 @@ function deleteBorrower(idx){
 function renderPartners(){
   const list=document.getElementById('partnerList');
   const avMap=_calcAvailableMap();
+  const grandTotal=Object.values(avMap).reduce((s,f)=>s+Math.max(0,f.cash)+Math.max(0,f.upi)+Math.max(0,f.bank),0);
+  const banner=document.getElementById('partnerTotalBanner');
+  const bannerAmt=document.getElementById('partnerTotalAmt');
+  if(banner)banner.style.display=partners.length?'flex':'none';
+  if(bannerAmt)bannerAmt.textContent='₹'+grandTotal.toLocaleString('en-IN');
   list.innerHTML=partners.map((p,i)=>{
     const col=accAvatarColors[i%accAvatarColors.length];
     const isActive=p.status!=='inactive';
@@ -3448,6 +3492,15 @@ function renderTransferHistory(){
     });
   });
 
+  // Partner Add / Return transactions
+  partners.forEach(p=>{
+    p.transactions.filter(t=>t.type==='add'||t.type==='ret'||t.type==='return').forEach(t=>{
+      const isAdd=t.type==='add';
+      const label=isAdd?'Add Funds':'Return Funds';
+      allTxns.push({_type:'fund',date:t.date||'',created_at:t.created_at||null,label:p.name+(isAdd?' — Add Funds':' — Return Funds'),sub:t.notes||'',amount:t.amount,cash:t.cash||0,upi:t.upi||0,bank:t.bank||0,sign:isAdd?1:-1,color:isAdd?'#16A34A':'#EF4444',bg:isAdd?'#EFFAF5':'#FFF1F1',icon:isAdd?'💰':'↩'});
+    });
+  });
+
   // Sort newest first (by date, then created_at)
   allTxns.sort((a,b)=>{
     if(b.date!==a.date)return b.date>a.date?1:-1;
@@ -3461,7 +3514,14 @@ function renderTransferHistory(){
   sec.style.display='';
 
   let xferIdx=0;
+  // Compute running balance oldest→newest, then reverse for display
+  const txnsOldFirst=[...allTxns].reverse();
+  let runBal=0;
+  const balAfter=txnsOldFirst.map(t=>{runBal+=t.sign*t.amount;return runBal;});
+  balAfter.reverse(); // now index-aligned with allTxns (newest first)
   listEl.innerHTML=allTxns.map((t,i)=>{
+    const bal=balAfter[i];
+    const balColor=bal>=0?'#0F4C81':'#EF4444';
     const amtStr='₹'+t.amount.toLocaleString('en-IN');
     const amtColor=t.sign===1?'#16A34A':t.sign===-1?'#EF4444':'#2563EB';
     const amtPrefix=t.sign===1?'+':t.sign===-1?'−':'';
@@ -3470,7 +3530,8 @@ function renderTransferHistory(){
     ;
     const xDataAttr=t._type==='transfer'?(' data-xhist="'+xferIdx+'"'):
       t._type==='loan'?(' data-txloan="'+t.loanId+'"'):
-      (' data-txrecv="'+t.receiptId+'"');
+      t._type==='receipt'?(' data-txrecv="'+t.receiptId+'"'):
+      '';
     if(t._type==='transfer')xferIdx++;
     return '<div style="background:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #EEF1F5;cursor:pointer"'+xDataAttr+'>'
       +'<div style="width:36px;height:36px;border-radius:50%;background:'+t.bg+';display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">'+t.icon+'</div>'
@@ -3479,9 +3540,9 @@ function renderTransferHistory(){
         +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+fmtDate(t.date)+(t.sub?' · '+t.sub:'')+'</div>'
       +'</div>'
       +'<div style="text-align:right;flex-shrink:0">'
-        +'<div style="font-size:14px;font-weight:800;color:'+amtColor+'">'+amtPrefix+amtStr+'</div>'
-        +interestBadge
-      +'</div>'
+        +'<div style="font-size:14px;font-weight:800;color:'+amtColor+'">'+amtPrefix+amtStr+(t._type==='receipt'&&t.interest?' <span style="font-size:11px;font-weight:600;color:#7C3AED">(Int ₹'+t.interest.toLocaleString('en-IN')+')</span>':'')+'</div>'
+        +(()=>{const p=[];if(t.cash)p.push('C:₹'+Number(t.cash).toLocaleString('en-IN'));if(t.upi)p.push('U:₹'+Number(t.upi).toLocaleString('en-IN'));if(t.bank)p.push('B:₹'+Number(t.bank).toLocaleString('en-IN'));return p.length>1?'<div style="font-size:10px;color:var(--muted);margin-top:2px">'+p.join(' · ')+'</div>':'';})()
+        +'<div style="font-size:10px;font-weight:600;color:'+balColor+';margin-top:3px;border-top:1px solid #F1F5F9;padding-top:3px">Bal: ₹'+bal.toLocaleString('en-IN')+'</div>'      +'</div>'
     +'</div>';
   }).join('');
 
@@ -3495,18 +3556,14 @@ function renderTransferHistory(){
     const l=loans.find(x=>x.id===row.dataset.txloan);
     if(!l)return;
     lceIdx=loans.indexOf(l);
-    switchPage('loans');
-    setTimeout(()=>openLoanPopup(),100);
+    openLoanPopup();
   }));
   listEl.querySelectorAll('[data-txrecv]').forEach(row=>row.addEventListener('click',()=>{
     const idx=recvs.findIndex(x=>x.id===row.dataset.txrecv);
     if(idx===-1)return;
     rceIdx=idx;
-    switchPage('receive');
-    setTimeout(()=>{
-      rceRender();
-      document.getElementById('recvPopup').classList.add('open');
-    },100);
+    rceRender();
+    document.getElementById('recvPopup').classList.add('open');
   }));
 }
 let _xhCurrent=null;
@@ -3702,6 +3759,10 @@ function openPartnerFund(idx,mode){
   document.getElementById('pfUpi').value='';
   document.getElementById('pfBank').value='';
   document.getElementById('pfTotalDisplay').textContent='₹0';
+  const _pfP=partners[idx];
+  document.querySelector('#partnerFundPopup .method-field:nth-child(1) .method-field-label').textContent='Cash ('+(_pfP.cash_bal||0).toLocaleString('en-IN')+')';
+  document.querySelector('#partnerFundPopup .method-field:nth-child(2) .method-field-label').textContent='UPI ('+(_pfP.upi_bal||0).toLocaleString('en-IN')+')';
+  document.querySelector('#partnerFundPopup .method-field:nth-child(3) .method-field-label').textContent='Bank ('+(_pfP.bank_bal||0).toLocaleString('en-IN')+')';
   document.getElementById('pfDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('pfNotes').value='';
   document.getElementById('partnerFundPopup').classList.add('open');
@@ -3725,7 +3786,13 @@ async function savePartnerFund(){
   if(error){showModal('DB error: '+error.message);return;}
   p.invested=newInvested;p.balance=newBalance;
   p.cash_bal=newCash;p.upi_bal=newUpi;p.bank_bal=newBank;
-  p.transactions.push({type:mode,amount:amt,cash,upi,bank,date:document.getElementById('pfDate').value,notes:document.getElementById('pfNotes').value.trim()||null});
+  const _pfDate=document.getElementById('pfDate').value;
+  const _pfNotes=document.getElementById('pfNotes').value.trim()||null;
+  const _pfUser=JSON.parse(sessionStorage.getItem('sf_user')||localStorage.getItem('sf_user')||'{}');
+  const _pfAt=new Date().toISOString();
+  const {error:pfErr}=await sb.from('partner_funds').insert({partner_id:p.partnerId,type:mode,amount:amt,cash,upi,bank,date:_pfDate,notes:_pfNotes,created_by:_pfUser.id||null,created_at:_pfAt});
+  if(pfErr){showModal('DB error (fund log): '+pfErr.message);return;}
+  p.transactions.push({type:mode,amount:amt,cash,upi,bank,date:_pfDate,notes:_pfNotes,created_at:_pfAt});
   renderPartners();
   updateSummaryCards();
   document.getElementById('partnerFundPopup').classList.remove('open');
@@ -3741,6 +3808,13 @@ function _xferOnToChange(){
   document.getElementById('xferSelfToRow').style.display=isSelf?'':'none';
   document.getElementById('xferAmtLabel').textContent=isSelf?'New Distribution (₹)':'Amount by Method (₹)';
   document.getElementById('xferTotalLabel').textContent='Total';
+  const _xfFrom=parseInt(document.getElementById('xferFromIdx').value);
+  const _xfP=partners[_xfFrom];
+  if(_xfP){
+    document.querySelector('#partnerXferPopup .method-field:nth-child(1) .method-field-label').textContent='Cash ('+(_xfP.cash_bal||0).toLocaleString('en-IN')+')';
+    document.querySelector('#partnerXferPopup .method-field:nth-child(2) .method-field-label').textContent='UPI ('+(_xfP.upi_bal||0).toLocaleString('en-IN')+')';
+    document.querySelector('#partnerXferPopup .method-field:nth-child(3) .method-field-label').textContent='Bank ('+(_xfP.bank_bal||0).toLocaleString('en-IN')+')';
+  }
   if(isSelf){
     // pre-fill with current balances
     const from=parseInt(document.getElementById('xferFromIdx').value);
@@ -3888,6 +3962,10 @@ function openUserPopup(idx){
     document.getElementById('uType').value='Admin';
     document.getElementById('uPassword').value='';
     document.getElementById('uPasswordGroup').style.display='';
+    document.getElementById('uPhotoFile').value='';
+    const prev2=document.getElementById('uPhotoPreview');
+    if(u.photo_url){prev2.innerHTML='<img src="'+u.photo_url+'" style="width:100%;height:100%;object-fit:cover">';prev2.style.background='none';}
+    else{prev2.innerHTML=u.name[0].toUpperCase();prev2.style.background='#EEF4FF';}
   } else {
     const u=users[idx];
     uIdEl.value=u.id;
@@ -3898,8 +3976,16 @@ function openUserPopup(idx){
     document.getElementById('uType').value=u.type;
     document.getElementById('uPassword').value='';
     document.getElementById('uPasswordGroup').style.display='';
+    document.getElementById('uPhotoFile').value='';
+    const prev=document.getElementById('uPhotoPreview');prev.innerHTML='?';prev.style.background='#EEF4FF';
   }
   document.getElementById('userPopup').classList.add('open');
+}
+function _uPhotoPreview(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{const p=document.getElementById('uPhotoPreview');p.innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover">';p.style.background='none';};
+  reader.readAsDataURL(file);
 }
 async function saveUser(){
   const idx=parseInt(document.getElementById('uPopIdx').value);
@@ -3910,16 +3996,28 @@ async function saveUser(){
     status:idx===-1?'active':(users[idx].status||'active')};
   if(!obj.name||!obj.id||!obj.username)return;
   const pwd=document.getElementById('uPassword').value;
+  // upload photo if selected
+  let photoUrl=idx===-1?null:(users[idx].photo_url||null);
+  const photoFile=document.getElementById('uPhotoFile').files[0];
+  if(photoFile){
+    const ext=photoFile.name.split('.').pop();
+    const path=obj.id+'.'+ext;
+    const {error:upErr}=await sb.storage.from('avatars').upload(path,photoFile,{upsert:true});
+    if(upErr){showModal('Photo upload error: '+upErr.message);return;}
+    const {data:urlData}=sb.storage.from('avatars').getPublicUrl(path);
+    photoUrl=urlData.publicUrl;
+  }
   if(idx===-1){
     if(!pwd)return;
     obj.password=pwd;
     userSeq++;
-    const {error:insertErr}=await sb.from('users').insert({id:obj.id,username:obj.username,name:obj.name,type:obj.type,password:pwd,status:'active'});
+    const {error:insertErr}=await sb.from('users').insert({id:obj.id,username:obj.username,name:obj.name,type:obj.type,password:pwd,status:'active',photo_url:photoUrl||null});
     if(insertErr){showModal('DB error: '+insertErr.message);return;}
+    obj.photo_url=photoUrl;
     users.push(obj);
   } else {
     obj.password=pwd||users[idx].password;
-    const updateData={username:obj.username,name:obj.name,type:obj.type};
+    const updateData={username:obj.username,name:obj.name,type:obj.type,photo_url:photoUrl};
     if(pwd)updateData.password=pwd;
     const {error:updateErr}=await sb.from('users').update(updateData).eq('id',obj.id);
     if(updateErr){showModal('DB error: '+updateErr.message);return;}
@@ -3967,9 +4065,9 @@ function openAvailablePopup(){
         <div class="source-total">₹${total.toLocaleString('en-IN')}</div>
       </div>
       <div class="source-methods">
-        <div class="method-row"><div class="method-icon cash"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/></svg></div><div class="method-label">Cash</div><div class="method-amount">₹${cash.toLocaleString('en-IN')}</div></div>
-        <div class="method-row"><div class="method-icon upi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#2563EB" stroke-width="1.5"/></svg></div><div class="method-label">UPI</div><div class="method-amount">₹${upi.toLocaleString('en-IN')}</div></div>
-        <div class="method-row"><div class="method-icon bank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg></div><div class="method-label">Bank</div><div class="method-amount">₹${bank.toLocaleString('en-IN')}</div></div>
+        <div class="method-row"><div class="method-icon cash"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" stroke="#16A34A" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="#16A34A" stroke-width="1.5"/></svg></div><div class="method-amount">₹${cash.toLocaleString('en-IN')}</div></div>
+        <div class="method-row"><div class="method-icon upi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#2563EB" stroke-width="1.5"/></svg></div><div class="method-amount">₹${upi.toLocaleString('en-IN')}</div></div>
+        <div class="method-row"><div class="method-icon bank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v9h18v-9" stroke="#7C3AED" stroke-width="1.5"/><rect x="9" y="14" width="6" height="5" stroke="#7C3AED" stroke-width="1.5"/></svg></div><div class="method-amount">₹${bank.toLocaleString('en-IN')}</div></div>
       </div>
     </div>`;
   }).join('');
@@ -3987,7 +4085,7 @@ renderUsers();
 const rptColors=['#2563EB','#10B981','#F59E0B','#7C3AED','#EF4444'];
 const rptMonths=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 let rptPeriod='current';
-function rptFmt(n){return n>=1000?'₹'+(n/1000).toFixed(n%1000===0?0:1)+'k':'₹'+n.toLocaleString('en-IN');}
+function rptFmt(n){return '₹'+Number(n).toLocaleString('en-IN');}
 function _rptBuildData(period){
   const now=new Date();
   const cy=now.getFullYear(),cm=now.getMonth()+1;
@@ -4000,23 +4098,21 @@ function _rptBuildData(period){
   }
   const activeLoansFull=loans.filter(l=>l.status==='active');
   const totalOut=activeLoansFull.reduce((s,l)=>s+Number(String(l.outstanding).replace(/[^0-9]/g,'')),0);
-  const totalInvested=partners.reduce((s,p)=>s+Number(p.invested||0),0);
-  const totalAvailable=totalInvested-totalOut;
+  const _avMap=_calcAvailableMap();
+  const totalAvailable=Object.values(_avMap).reduce((s,f)=>s+Math.max(0,f.cash)+Math.max(0,f.upi)+Math.max(0,f.bank),0);
   const periodReceipts=receipts.filter(r=>inPeriod(r.receipt_date));
   const totalReceived=periodReceipts.reduce((s,r)=>s+Number(r.amount||0),0);
   const totalInterest=periodReceipts.reduce((s,r)=>s+Number(r.interest||0),0);
   // borrower-wise
-  const bMap={};
-  activeLoansFull.forEach(l=>{
-    if(!bMap[l.name])bMap[l.name]={name:l.name,loans:[],outstanding:0,received:0,due:l.due_date||'—',status:'active'};
-    bMap[l.name].loans.push(l.id);
-    bMap[l.name].outstanding+=Number(String(l.outstanding).replace(/[^0-9]/g,''));
+  const borrowerRows=activeLoansFull.map(l=>{
     const loanAmt=Number(String(l.amount).replace(/[^0-9]/g,''));
-    bMap[l.name].received+=loanAmt-Number(String(l.outstanding).replace(/[^0-9]/g,''));
-    if(l.due_date&&new Date(l.due_date)<now)bMap[l.name].status='overdue';
-    else if(l.due_date){const d=new Date(l.due_date);const diff=(d-now)/86400000;if(diff<=30)bMap[l.name].status='upcoming';}
+    const out=Number(String(l.outstanding).replace(/[^0-9]/g,''));
+    let status='active';
+    if(l.due_date&&new Date(l.due_date)<now)status='overdue';
+    else if(l.due_date){const d=new Date(l.due_date);const diff=(d-now)/86400000;if(diff<=30)status='upcoming';}
+    return{name:l.name,loans:[l.id],outstanding:out,received:loanAmt-out,due:l.due_date||'—',status};
   });
-  return{outstanding:totalOut,available:totalAvailable,received:totalReceived,interest:totalInterest,borrowers:Object.values(bMap)};
+  return{outstanding:totalOut,available:totalAvailable,received:totalReceived,interest:totalInterest,borrowers:borrowerRows};
 }
 function drawDonut(segs){
   const total=segs.reduce((s,x)=>s+x.val,0);
@@ -4036,6 +4132,7 @@ function drawDonut(segs){
   }).join('');
 }
 function drawBars(borrowers){
+  if(!borrowers.length){document.getElementById('borrowerBarChart').innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">No active loans</div>';return;}
   const maxOut=Math.max(...borrowers.map(b=>b.outstanding),1);
   document.getElementById('borrowerBarChart').innerHTML=borrowers.map((b,i)=>{
     const pct=Math.round(b.outstanding/maxOut*100);
@@ -4043,6 +4140,7 @@ function drawBars(borrowers){
   }).join('');
 }
 function drawLoanList(borrowers){
+  if(!borrowers.length){document.getElementById('rptLoanList').innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">No active loans</div>';return;}
   const cfg={overdue:{bg:'#FFF1F1',c:'#EF4444',lbl:'Overdue'},upcoming:{bg:'#EEF4FF',c:'#2563EB',lbl:'Upcoming'},active:{bg:'#EFFAF5',c:'#16A34A',lbl:'Active'},settled:{bg:'#F1F5F9',c:'#64748B',lbl:'Settled'}};
   document.getElementById('rptLoanList').innerHTML=borrowers.map((b,i)=>{
     const s=cfg[b.status]||cfg.active;
@@ -4135,10 +4233,10 @@ function renderReports(){
   document.getElementById('rptOutSub').textContent=d.borrowers.filter(b=>b.status!=='settled').length+' active loans';
   document.getElementById('rptReceived').textContent=rptFmt(d.received);
   document.getElementById('rptInterest').textContent=rptFmt(d.interest);
-  document.getElementById('rptDueCount').textContent=d.borrowers.filter(b=>b.status==='overdue'||b.status==='upcoming').length;
+  document.getElementById('rptDueCount').textContent=d.borrowers.length;
   drawDonut([
     {val:d.outstanding,color:'#EF4444',label:'Outstanding'},
-    {val:Math.max(0,d.available),color:'#10B981',label:'Received'}
+    {val:Math.max(0,d.available),color:'#10B981',label:'Available'}
   ]);
   drawBars(d.borrowers);
   drawLoanList(d.borrowers);
