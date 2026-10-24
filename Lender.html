@@ -403,10 +403,17 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
 .am-role{font-size:11px;color:var(--muted)}
 .am-logout{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;font-size:13px;font-weight:600;color:#EF4444}
 .am-logout:hover{background:#FFF0F0}
+.am-push{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--dark-text);border-bottom:1px solid #F1F5F9}.am-push:hover{background:#F8FAFC}.am-push small{margin-left:auto;color:var(--muted);font-weight:600;font-size:11px}
 
 /* LOGIN PAGE */
-#loginPage{position:fixed;inset:0;background:#e8edf2;display:flex;justify-content:center;align-items:center;z-index:1000}
-#loginPage.hidden{display:none}
+#loginPage,#devWaitPage{position:fixed;inset:0;background:#e8edf2;display:flex;justify-content:center;align-items:center;z-index:1000}
+#loginPage.hidden,#devWaitPage.hidden{display:none}
+.dev-ov{position:fixed;inset:0;background:#F8FAFC;z-index:500;display:none;flex-direction:column}.dev-ov.open{display:flex}
+.dev-h{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:#fff;border-bottom:1px solid #E8ECF3;font-weight:800;color:#14213D}
+.dev-l{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}.dev-c{background:#fff;border:1px solid #E8ECF3;border-radius:14px;padding:12px 14px}
+.dev-c b{color:#14213D}.dev-c small{display:block;color:#64748B;margin-top:2px}.dev-a{display:flex;gap:8px;margin-top:10px}
+.dev-a button{flex:1;padding:9px;border-radius:10px;border:1px solid #E8ECF3;background:#fff;font:inherit;font-weight:700;cursor:pointer}.dev-a .ok{background:#16A34A;color:#fff;border-color:#16A34A}.dev-a .no{color:#EF4444}
+.dev-s{font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px}.dev-s.p{background:#FEF3C7;color:#B45309}.dev-s.a{background:#DCFCE7;color:#15803D}
 .login-card{background:#fff;border-radius:28px;padding:32px 28px 28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(15,76,129,.15);margin:16px}
 .login-logo{width:64px;height:64px;border-radius:20px;object-fit:cover;display:block;margin:0 auto 16px}
 .login-title{font-size:22px;font-weight:800;color:#14213D;text-align:center;margin-bottom:4px}
@@ -563,6 +570,8 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
                 <div class="am-avatar" id="amAvatar">A</div>
                 <div><div class="am-name" id="amName">—</div><div class="am-role" id="amRole">—</div></div>
               </div>
+              <div class="am-push" id="amDevices" style="display:none" onclick="devOpen()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Devices<small id="devCount"></small></div>
+              <div class="am-push" onclick="pushToggle()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>Phone alerts<small id="pushState">Off</small></div>
               <div class="am-logout" onclick="doLogout()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 Logout
@@ -1741,6 +1750,18 @@ select.field-input:invalid,select.field-input:has(option[value=""]:checked){colo
   </div>
 </div>
 
+<div id="devWaitPage" class="hidden">
+  <div class="login-card">
+    <img src="Logo.jpeg" class="login-logo" onerror="this.style.display='none'">
+    <div class="login-title">Waiting for approval</div>
+    <div class="login-sub">This is a new device. Ask an admin to approve it, then tap Check again.</div>
+    <div class="login-field"><div class="login-label">Device code</div><div id="devCode" style="font:700 16px ui-monospace,Menlo,monospace;letter-spacing:1px;color:#14213D"></div></div>
+    <button class="login-btn" onclick="devCheck()">Check again</button>
+    <button class="login-btn" id="devNotifyBtn" style="margin-top:10px;background:#fff;color:#0F4C81;border:1.5px solid #0F4C81;box-shadow:none" onclick="devNotify()">Notify me when approved</button>
+    <button class="login-btn" style="margin-top:10px;background:none;color:#64748B;box-shadow:none" onclick="devBack()">Back to sign in</button>
+  </div>
+</div>
+<div class="dev-ov" id="devOv"><div class="dev-h"><span>Devices</span><button onclick="document.getElementById('devOv').classList.remove('open')" style="border:none;background:none;font-size:22px;cursor:pointer">&#10005;</button></div><div class="dev-l" id="devList"></div></div>
 <div id="toast" class="toast"></div>
 
 <!-- CUSTOM MODAL -->
@@ -1822,7 +1843,10 @@ function showToast(msg){
 
 async function checkAutoLogin(){
   const saved=localStorage.getItem('sf_user')||sessionStorage.getItem('sf_user');
-  if(saved){await applyLogin(JSON.parse(saved));return;}
+  if(saved){let su={};try{su=JSON.parse(saved)}catch(e){}
+    if(su.username&&await devGate(su,!!localStorage.getItem('sf_user'))){await applyLogin(su);return;}
+    if(!_devPending){localStorage.removeItem('sf_user');sessionStorage.removeItem('sf_user');document.getElementById('loginPage').classList.remove('hidden');}
+    return;}
   document.getElementById('loginPage').classList.remove('hidden');
 }
 async function doLogin(){
@@ -1832,14 +1856,12 @@ async function doLogin(){
   const {data,error}=await sb.from('users').select('*').eq('username',username).eq('password',pwd).eq('status','active').single();
   if(error||!data){document.getElementById('loginErr').textContent='Invalid username or password';return;}
   const remember=document.getElementById('loginRemember').checked;
-  if(remember)localStorage.setItem('sf_user',JSON.stringify(data));
-  else sessionStorage.setItem('sf_user',JSON.stringify(data));
-  await applyLogin(data);
+  if(await devGate(data,remember))await devFinish(data,remember);
 }
 async function applyLogin(user){
   const name=user.name||user.username;
   const role=user.type||'User';
-  currentUserType=role;
+  currentUserType=role;devMenu();setTimeout(pushAutoAttach,1500);
   document.getElementById('loginPage').classList.add('hidden');
   const _avatarEl=document.querySelector('.avatar');
   const _amAvatarEl=document.getElementById('amAvatar');
@@ -1897,7 +1919,7 @@ async function applyLogin(user){
   await loadLoans();
   await loadReceipts();
 }
-async function doLogout(){
+async function doLogout(){pushDetach();
   sessionStorage.removeItem('sf_user');
   localStorage.removeItem('sf_user');
   document.getElementById('loginUser').value='';
@@ -4343,6 +4365,85 @@ async function recalcPartnerBalances(){
   showToast('Balances recalculated');
 }
 checkAutoLogin();
+// ── PUSH ALERTS ──
+const PUSH_VAPID='BK2wlPzb3lkZt0Mf0Dar8xzM8Tp-dWOTZe2ihxBX1o_iuvUr5w8dBzOcVtgK268qYU-L-i8hAQCNhXrW5jNeWN4';
+function pushUser(){try{return JSON.parse(sessionStorage.getItem('sf_user')||localStorage.getItem('sf_user')||'{}')}catch(e){return{}}}
+function pushFlag(v,uid){const k='sf_push_'+(uid||pushUser().id||'');try{if(v===undefined)return localStorage.getItem(k)==='1';if(v)localStorage.setItem(k,'1');else localStorage.removeItem(k)}catch(e){}}
+function pushKey(){const b=(PUSH_VAPID+'='.repeat((4-PUSH_VAPID.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b),o=new Uint8Array(r.length);for(let i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
+function pushSupported(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
+function pushLabel(){const el=document.getElementById('pushState');if(!el)return;el.textContent=!pushSupported()?'Not supported':Notification.permission==='denied'?'Blocked':(Notification.permission==='granted'&&pushFlag())?'On':'Off'}
+async function pushSub(){
+  const reg=await Promise.race([navigator.serviceWorker.ready,new Promise((_,rej)=>setTimeout(()=>rej(new Error('The app is not ready yet. Reload it and try again.')),15000))]);
+  const key=pushKey();let sub=await reg.pushManager.getSubscription();
+  if(sub){const cur=sub.options&&sub.options.applicationServerKey;if(cur&&!(cur.byteLength===key.length&&new Uint8Array(cur).every((b,i)=>b===key[i]))){await sub.unsubscribe();sub=null}}
+  return sub||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key});
+}
+async function pushSave(sub){const u=pushUser();if(!u.id)throw new Error('Please log in first');
+  const {error}=await sb.rpc('register_push',{p_endpoint:sub.endpoint,p_data:sub.toJSON(),p_user:String(u.id),p_device:devId()});
+  if(error)throw new Error(error.message||'Could not save this phone');pushFlag(true)}
+async function pushToggle(){
+  if(!pushSupported()){showModal('Phone alerts are not available here. On iPhone, add SaVi to the Home Screen and open it from there.','info');return}
+  if(Notification.permission==='denied'){showModal('Notifications are blocked for this app. Allow them in the phone settings, then try again.','info');return}
+  try{
+    if(Notification.permission==='granted'&&pushFlag()){
+      const sub=await (await navigator.serviceWorker.ready).pushManager.getSubscription();
+      if(sub){await sb.rpc('unregister_push',{p_endpoint:sub.endpoint});await sub.unsubscribe()}
+      pushFlag(false);pushLabel();showToast('Phone alerts off');return}
+    if(Notification.permission!=='granted'&&await Notification.requestPermission()!=='granted'){pushLabel();return}
+    await pushSave(await pushSub());pushLabel();showToast('Phone alerts on');
+  }catch(e){pushLabel();showModal('Could not turn on alerts: '+(e&&e.message||e))}
+}
+async function pushAutoAttach(){   // after login: a phone that already allowed alerts follows the logged-in user
+  try{pushLabel();if(!pushSupported()||Notification.permission!=='granted')return;
+    const sub=await (await navigator.serviceWorker.ready).pushManager.getSubscription();
+    if(sub){await pushSave(sub);pushLabel()}}catch(e){}
+}
+async function pushDetach(){       // on logout: stop alerts for the previous user on this phone
+  const uid=pushUser().id;
+  try{if(!pushSupported())return;const sub=await (await navigator.serviceWorker.ready).pushManager.getSubscription();
+    if(sub)await sb.rpc('unregister_push',{p_endpoint:sub.endpoint});pushFlag(false,uid)}catch(e){}
+}
+window.addEventListener('focus',pushLabel);
+// ── DEVICE APPROVAL ──
+const _e=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function devId(){let d=localStorage.getItem('sf_dev');if(!d||!/^[0-9a-f-]{36}$/.test(d)){d=crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)});try{localStorage.setItem('sf_dev',d)}catch(e){}}return d}
+function devLabel(){const ua=navigator.userAgent,os=/Android/.test(ua)?'Android':/iPhone|iPad/.test(ua)?'iOS':/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'Mac':'Device',br=/Edg\//.test(ua)?'Edge':/Chrome\//.test(ua)?'Chrome':/Firefox\//.test(ua)?'Firefox':/Safari\//.test(ua)?'Safari':'';return os+(br?' \u00b7 '+br:'')}
+let _devPending=null;   // a signed-in user whose phone is waiting for approval
+function devCreds(){const u=pushUser();return{p_admin:u.username||'',p_password:String(u.password||'')}}
+async function devGate(user,remember){   // true = this phone is approved
+  const {data,error}=await sb.rpc('request_device',{p_device:devId(),p_username:user.username,p_password:String(user.password||''),p_label:devLabel()});
+  if(error){document.getElementById('loginErr').textContent='Could not check this device. Try again.';showToast('Could not check this device');return false}
+  if(data==='approved')return true;
+  if(data==='pending'){_devPending={user,remember};devShowWait();return false}
+  document.getElementById('loginErr').textContent='Invalid username or password';return false;
+}
+function devShowWait(){document.getElementById('loginPage').classList.add('hidden');document.getElementById('devWaitPage').classList.remove('hidden');document.getElementById('devCode').textContent=devId().slice(0,8).toUpperCase()}
+function devBack(){_devPending=null;document.getElementById('devWaitPage').classList.add('hidden');document.getElementById('loginPage').classList.remove('hidden')}
+async function devFinish(user,remember){_devPending=null;document.getElementById('devWaitPage').classList.add('hidden');
+  if(remember)localStorage.setItem('sf_user',JSON.stringify(user));else sessionStorage.setItem('sf_user',JSON.stringify(user));await applyLogin(user)}
+async function devCheck(){const p=_devPending;if(!p){devBack();return}if(await devGate(p.user,p.remember))await devFinish(p.user,p.remember);else showToast('Still waiting for approval')}
+async function devNotify(){
+  if(!pushSupported()){showModal('Notifications are not available here. On iPhone, add SaVi to the Home Screen and open it from there.','info');return}
+  if(Notification.permission==='denied'){showModal('Notifications are blocked for this app. Allow them in the phone settings, then try again.','info');return}
+  try{if(Notification.permission!=='granted'&&await Notification.requestPermission()!=='granted')return;
+    const sub=await pushSub();const {error}=await sb.rpc('register_push',{p_endpoint:sub.endpoint,p_data:sub.toJSON(),p_user:null,p_device:devId()});
+    if(error)throw new Error(error.message);const b=document.getElementById('devNotifyBtn');b.textContent='Notification is on';b.disabled=true;
+  }catch(e){showModal('Could not turn on notification: '+(e&&e.message||e))}
+}
+function devMenu(){const a=String(pushUser().type||'').toLowerCase()==='admin',el=document.getElementById('amDevices');if(el)el.style.display=a?'flex':'none';if(a)devBadge()}
+async function devBadge(){try{const {data}=await sb.rpc('admin_devices',devCreds());const n=Array.isArray(data)?data.filter(d=>d.status==='pending').length:0;const el=document.getElementById('devCount');if(el)el.textContent=n?n+' waiting':''}catch(e){}}
+async function devOpen(){document.getElementById('avatarMenu').classList.remove('open');document.getElementById('devOv').classList.add('open');await devLoad()}
+async function devLoad(){const box=document.getElementById('devList');box.innerHTML='<div style="color:#64748B;padding:12px">Loading\u2026</div>';
+  const {data,error}=await sb.rpc('admin_devices',devCreds());
+  if(error||!Array.isArray(data)){box.innerHTML='<div style="color:#EF4444;padding:12px">Could not load devices.</div>';return}
+  const dt=x=>new Date(x).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});
+  box.innerHTML=data.length?data.map(d=>`<div class="dev-c"><div style="display:flex;justify-content:space-between;gap:8px"><b>${_e(d.name||d.username)}</b><span class="dev-s ${d.status==='pending'?'p':'a'}">${d.status==='pending'?'Waiting':'Approved'}</span></div><small>${_e(d.label||'Device')} \u00b7 ${_e(d.device_id.slice(0,8).toUpperCase())}</small><small>${d.last_seen?'Last seen '+dt(d.last_seen):'Requested '+dt(d.created_at)}</small><div class="dev-a">${d.status==='pending'?`<button class="ok" onclick="devAct('${d.device_id}','approve')">Approve</button>`:''}<button class="no" onclick="devAct('${d.device_id}','delete')">Remove</button></div></div>`).join(''):'<div style="color:#64748B;padding:12px">No devices yet.</div>';
+  devBadge()}
+async function devAct(id,act){if(act==='delete'&&!confirm('Remove this device? It will need approval again.'))return;
+  const {data,error}=await sb.rpc('admin_set_device',{...devCreds(),p_device:id,p_action:act});
+  if(error||data!=='ok'){showModal('Could not update the device.');return}showToast(act==='approve'?'Device approved':'Device removed');devLoad()}
+window.addEventListener('focus',()=>{if(String(pushUser().type||'').toLowerCase()==='admin')devBadge()});
+
 if('serviceWorker' in navigator && location.protocol !== 'null:' && location.hostname !== '')navigator.serviceWorker.register('sw.js');
 </script>
 </body>
